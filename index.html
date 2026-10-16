@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>聖文嘉中英文幼稚園 (利東) - 好習慣小達人 3.0</title>
+<style>
+  :root {
+    --stm-yellow: #FFD600;
+    --stm-blue: #64B5F6;
+    --stm-purple: #6A1B9A;
+    --stm-pink: #E91E63;
+    --compass: #1E88E5;
+    --interact: #43A047;
+    --value: #E91E63;
+    --bg: #FFFDF7;
+  }
+  * { box-sizing: border-box; font-family: "PingFang HK", "Heiti TC", "Microsoft JhengHei", sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+  body { margin: 0; background: #E8EAF6; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+  #game-container {
+    width: 100%; max-width: 430px; height: 100vh; max-height: 900px;
+    background: var(--bg); position: relative; overflow-y: auto; overflow-x: hidden;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+  }
+
+  /* 頂部：還原 schoolname.jpg 聖文嘉七彩白邊校名與紫色校徽橫幅 */
+  header {
+    background: linear-gradient(135deg, #281B36 0%, #4A148C 100%);
+    color: white; padding: 10px 12px; text-align: center;
+    border-bottom: 4px solid var(--stm-yellow);
+    border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+    box-shadow: 0 4px 12px rgba(74,20,140,0.3); position: sticky; top: 0; z-index: 30;
+  }
+  .brand-row {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .school-logo-svg { width: 46px; height: 54px; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+  .school-title-box { text-align: left; }
+  
+  /* 還原七彩白邊校名字體：聖文嘉(紅橙) 中(黃) 英文(綠) 幼稚(藍) 園(紫) (利東)(桃紅) */
+  .rainbow-zh {
+    font-size: 1.08rem; font-weight: 900; letter-spacing: 0.5px; line-height: 1.2;
+    text-shadow: -1.5px -1.5px 0 #FFF, 1.5px -1.5px 0 #FFF, -1.5px 1.5px 0 #FFF, 1.5px 1.5px 0 #FFF, 0 2px 4px rgba(0,0,0,0.4);
+  }
+  .c-1 { color: #E53935; } /* 聖 */
+  .c-2 { color: #FB8C00; } /* 文嘉 */
+  .c-3 { color: #FDD835; } /* 中 */
+  .c-4 { color: #43A047; } /* 英文 */
+  .c-5 { color: #039BE5; } /* 幼稚 */
+  .c-6 { color: #8E24AA; } /* 園 */
+  .c-7 { color: #D81B60; } /* (利東) */
+
+  .school-en {
+    font-size: 0.58rem; font-weight: 900; color: #F06292; letter-spacing: 0.2px;
+    text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;
+    margin-top: 2px;
+  }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.2); border-radius: 20px; height: 17px; margin-top: 7px; overflow: hidden; position: relative;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #FFEE58, #FFCA28); height: 100%; width: 0%; transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .progress-text {
+    position: absolute; inset: 0; font-size: 0.72rem; line-height: 17px; color: #FFF; font-weight: 900; text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  }
+
+  .screen { display: none; padding: 12px; flex: 1; flex-direction: column; }
+  .screen.active { display: flex; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* 主畫面：聖文嘉課室與主角換裝舞台 */
+  .classroom-banner {
+    background: linear-gradient(180deg, #FFF8E1 0%, #FFECB3 68%, #D7CCC8 68%, #A1887F 100%);
+    border-radius: 20px; padding: 10px; text-align: center; margin-bottom: 12px;
+    border: 3px solid #FFCA28; position: relative; overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .wall-deco {
+    display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; padding: 0 4px;
+  }
+  .voice-badge {
+    background: #FFF; border: 2px solid #CE93D8; border-radius: 20px; padding: 3px 10px;
+    font-size: 0.72rem; color: #6A1B9A; font-weight: 900; cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+
+  .character-stage {
+    height: 135px; display: flex; justify-content: center; align-items: center; position: relative; margin: 2px 0;
+  }
+  .svg-char {
+    width: 115px; height: 130px;
+    animation: charFloat 2.4s ease-in-out infinite;
+    transform-origin: bottom center; cursor: pointer;
+  }
+  @keyframes charFloat {
+    0%, 100% { transform: translateY(0) scaleY(1); }
+    50% { transform: translateY(-5px) scaleY(1.02); }
+  }
+  .char-jump { animation: happyJump 0.55s ease 3 !important; }
+  @keyframes happyJump {
+    0%, 100% { transform: translateY(0) scale(1); }
+    45% { transform: translateY(-20px) scale(1.08) rotate(3deg); }
+    75% { transform: translateY(-8px) scale(1.03) rotate(-3deg); }
+  }
+
+  /* 校服與角色控制列 */
+  .wardrobe-bar {
+    display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin-top: 6px;
+  }
+  .wardrobe-btn {
+    background: #FFF; color: #37474F; border: 2px solid #90CAF9;
+    border-radius: 10px; padding: 5px 8px; font-size: 0.76rem; font-weight: 900; cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.15s;
+  }
+  .wardrobe-btn.active-uni {
+    background: var(--stm-yellow); color: #B71C1C; border-color: #FBC02D;
+  }
+  .input-name {
+    padding: 5px 8px; border-radius: 10px; border: 2px solid #CE93D8; font-size: 0.82rem;
+    text-align: center; width: 120px; outline: none; background: white; font-weight: bold;
+  }
+
+  /* 四大場景探索區 */
+  .zone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 12px; }
+  .zone-btn {
+    background: white; border: 2.5px solid #FFE082; border-radius: 16px; padding: 10px 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; text-align: center;
+    transition: transform 0.15s;
+  }
+  .zone-btn:active { transform: scale(0.95); }
+  .zone-icon { font-size: 1.85rem; display: block; margin-bottom: 2px; }
+  .zone-title { font-size: 0.92rem; font-weight: 900; color: #37474F; display: block; }
+  .zone-count {
+    font-size: 0.72rem; color: #4A148C; background: #F3E5F5;
+    padding: 2px 8px; border-radius: 10px; margin-top: 3px; display: inline-block; font-weight: bold;
+  }
+
+  /* 互動動畫劇場舞台 */
+  .theater-box {
+    background: linear-gradient(180deg, #FFF9C4 0%, #FFECB3 68%, #D7CCC8 68%, #8D6E63 100%);
+    border-radius: 18px; height: 195px; margin: 8px 0; position: relative;
+    overflow: hidden; border: 3px solid #FFCA28; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; box-shadow: inset 0 4px 12px rgba(0,0,0,0.08);
+  }
+  /* 體能室紅藍黃綠軟墊地板樣式 (呼應圖5、圖17) */
+  .theater-box.mat-floor {
+    background: linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 68%, #42A5F5 68%, #EF5350 84%, #FFEE58 100%);
+  }
+  .theater-stage {
+    position: relative; z-index: 2; width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+  }
+  .action-prop {
+    font-size: 2.5rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); cursor: pointer;
+  }
+  .anim-swing { animation: swing 1.3s ease-in-out infinite; }
+  @keyframes swing { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } }
+  .anim-bounce { animation: bounce 1.1s ease infinite; }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  .anim-slide-car { animation: slideCar 1.6s ease-in-out infinite; }
+  @keyframes slideCar { 0%, 100% { transform: translateX(-10px); } 50% { transform: translateX(12px); } }
+
+  /* 動手做互動小任務提示橫幅 */
+  .mini-task-bar {
+    position: absolute; top: 6px; left: 8px; right: 8px; z-index: 5;
+    background: rgba(255, 255, 255, 0.94); border: 2px solid #FF7043; border-radius: 12px;
+    padding: 4px 8px; font-size: 0.78rem; color: #D84315; font-weight: 900;
+    animation: bounce 1.5s infinite; cursor: pointer;
+  }
+  .theater-caption {
+    position: absolute; bottom: 5px; left: 8px; right: 8px; z-index: 3;
+    background: rgba(255,255,255,0.92); border-radius: 10px; padding: 3px 8px;
+    font-size: 0.75rem; color: #4E342E; font-weight: bold;
+  }
+
+  /* 問答卡片與選項 */
+  .quiz-card {
+    background: white; border-radius: 20px; padding: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.07); margin-bottom: 10px; text-align: center;
+  }
+  .badge-tag {
+    display: inline-block; padding: 3px 10px; border-radius: 20px; color: white;
+    font-size: 0.74rem; font-weight: bold;
+  }
+  .cat-compass { background: var(--compass); }
+  .cat-interact { background: var(--interact); }
+  .cat-value { background: var(--value); }
+
+  .habit-title { font-size: 1.3rem; color: #D84315; margin: 4px 0; }
+  .habit-def { font-size: 0.78rem; color: #555; background: #FFF8E1; padding: 4px 8px; border-radius: 8px; }
+  .scenario-box {
+    font-size: 0.96rem; line-height: 1.45; color: #263238; background: #F3E5F5;
+    padding: 10px 12px; border-radius: 14px; margin: 8px 0 10px; font-weight: bold;
+    border-left: 4px solid var(--stm-purple); text-align: left;
+  }
+  .choice-btn {
+    width: 100%; background: #FFF; border: 2.5px solid #FFE082; border-radius: 14px;
+    padding: 11px; margin-bottom: 8px; font-size: 0.92rem; font-weight: bold; color: #333;
+    cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.04); transition: all 0.2s;
+  }
+  .choice-btn:active { transform: scale(0.97); }
+  .choice-btn.correct-anim { background: #E8F5E9; border-color: #4CAF50; }
+  .choice-btn.wrong-anim { background: #FFEBEE; border-color: #EF5350; animation: shake 0.4s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  /* 20個好習慣印章冊 */
+  .stamp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+  .stamp-item {
+    background: #F5F5F5; border-radius: 12px; padding: 6px 2px; text-align: center;
+    font-size: 0.75rem; color: #9E9E9E; border: 2px solid #E0E0E0; cursor: pointer;
+  }
+  .stamp-item.unlocked {
+    background: linear-gradient(135deg, #FFFDE7, #FFF59D); color: #B71C1C;
+    border-color: #FBC02D; font-weight: 900; box-shadow: 0 3px 8px rgba(251,192,45,0.35);
+  }
+  .stamp-emoji { font-size: 1.3rem; display: block; margin-bottom: 2px; }
+
+  .speak-btn {
+    background: linear-gradient(135deg, #EC407A, #AB47BC); color: white; border: none; border-radius: 50px;
+    padding: 6px 14px; font-size: 0.82rem; font-weight: bold; cursor: pointer;
+    box-shadow: 0 3px 8px rgba(236,64,122,0.35);
+  }
+  .nav-bar {
+    display: flex; gap: 8px; padding: 9px 12px; background: white;
+    border-top: 1px solid #EEE; position: sticky; bottom: 0; z-index: 20;
+  }
+  .nav-btn {
+    flex: 1; padding: 10px; border: none; border-radius: 12px; font-weight: bold;
+    font-size: 0.88rem; cursor: pointer;
+  }
+  .btn-primary { background: #FF7043; color: white; }
+  .btn-secondary { background: #CFD8DC; color: #37474F; }
+
+  #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 150; }
+
+  #modal {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 100; justify-content: center; align-items: center; padding: 20px;
+  }
+  .modal-content {
+    background: white; border-radius: 24px; padding: 20px; max-width: 350px; width: 100%;
+    text-align: center; border: 4px solid var(--stm-yellow); animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div id="game-container">
+  <!-- 頂部：還原 schoolname.jpg 與 LOGO.png -->
+  <header>
+    <div class="brand-row">
+      <!-- 聖文嘉官方皇冠盾牌校徽 SVG (還原 LOGO.png) -->
+      <svg viewBox="0 0 100 120" class="school-logo-svg">
+        <!-- 頂部五瓣皇冠 -->
+        <path d="M10,32 Q20,18 30,32 Z M30,32 L40,15 L48,32 Z M38,14 L50,2 L62,14 L50,32 Z M52,32 L60,15 L70,32 Z M70,32 Q80,18 90,32 Z" fill="#FFF" stroke="#6A1B9A" stroke-width="2.5"/>
+        <line x1="22" y1="36" x2="78" y2="36" stroke="#6A1B9A" stroke-width="3"/>
+        <!-- 盾牌外框 -->
+        <path d="M24,40 L76,40 L76,72 Q76,98 50,106 Q24,98 24,72 Z" fill="#FFF" stroke="#6A1B9A" stroke-width="3.5"/>
+        <!-- ST MONICA 字樣 -->
+        <text x="29" y="55" font-size="11" font-weight="900" fill="#2E7D32">ST</text>
+        <text x="42" y="55" font-size="9" font-weight="900" fill="#6A1B9A">MONICA</text>
+        <!-- 左側綠葉 -->
+        <path d="M32,88 Q26,70 42,60 Q36,72 32,88 Z M32,88 Q30,78 40,72 Q37,82 32,88 Z" fill="#2E7D32"/>
+        <!-- 中間紅衣大人與黃衣小孩幾何圖形 -->
+        <circle cx="49" cy="66" r="6" fill="none" stroke="#D32F2F" stroke-width="2.5"/>
+        <path d="M40,94 L46,74 L52,74 L58,94" fill="none" stroke="#D32F2F" stroke-width="2.5"/>
+        <circle cx="62" cy="72" r="5" fill="none" stroke="#FBC02D" stroke-width="2.5"/>
+        <line x1="55" y1="81" x2="69" y2="81" stroke="#FBC02D" stroke-width="2.5"/>
+        <!-- 底部聖文嘉飄帶 -->
+        <path d="M12,92 Q50,118 88,92 L92,102 Q50,126 8,102 Z" fill="#FFF" stroke="#6A1B9A" stroke-width="2"/>
+        <text x="50" y="109" font-size="9" font-weight="900" fill="#6A1B9A" text-anchor="middle">聖 文 嘉</text>
+      </svg>
+
+      <div class="school-title-box">
+        <div class="rainbow-zh">
+          <span class="c-1">聖</span><span class="c-2">文嘉</span><span class="c-3">中</span><span class="c-4">英文</span><span class="c-5">幼稚</span><span class="c-6">園</span> <span class="c-7">(利東)</span>
+        </div>
+        <div class="school-en">ST. MONICA'S ANGLO-CHINESE KINDERGARTEN</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-fill" id="progress-fill"></div>
+      <div class="progress-text" id="progress-text">🌟 好習慣小達人印章：0 / 20</div>
+    </div>
+  </header>
+
+  <!-- 畫面 1：聖文嘉課室主畫面與校服換裝間 -->
+  <div id="screen-home" class="screen active">
+    <div class="classroom-banner">
+      <div class="wall-deco">
+        <span>🌞 🌸 🐻</span>
+        <button class="voice-badge" id="voice-mode-btn" onclick="toggleVoiceMode()">
+          👧🏻 粵語配音：小朋友童聲
+        </button>
+        <span>🐰 🐘 🌈</span>
+      </div>
+      
+      <!-- 聖文嘉小主角動態舞台 (點擊主角會說話打招呼) -->
+      <div class="character-stage" id="home-avatar-stage" onclick="greetStudent()"></div>
+
+      <div style="font-weight:900; color:#4E342E; font-size:0.88rem;">
+        👆 點擊小主角聽我講嘢！我係：<span id="display-name" style="color:#D81B60;">文嘉小星</span>
+      </div>
+
+      <!-- 校服換裝與姓名列 -->
+      <div class="wardrobe-bar">
+        <input type="text" id="student-name" class="input-name" placeholder="輸入姓名/班別" onchange="saveStudentName()">
+        <button class="wardrobe-btn" onclick="toggleGender()" id="btn-gender">👦🏻👧🏻 換男女生</button>
+        <button class="wardrobe-btn active-uni" onclick="toggleUniform()" id="btn-uniform">👕 運動服 (黃藍)</button>
+      </div>
+    </div>
+
+    <div style="text-align:center; font-weight:900; color:#4A148C; margin-bottom:6px; font-size:0.9rem;">
+      👇 點擊校園 4 大區域，動手玩小遊戲學好習慣 👇
+    </div>
+
+    <div class="zone-grid">
+      <button class="zone-btn" onclick="openZone('classroom')">
+        <span class="zone-icon">📚</span>
+        <span class="zone-title">木地板課室</span>
+        <span class="zone-count" id="count-classroom">0 / 6 完成</span>
+      </button>
+      <button class="zone-btn" onclick="openZone('playground')">
+        <span class="zone-icon">🛝</span>
+        <span class="zone-title">體能軟墊與草地</span>
+        <span class="zone-count" id="count-playground">0 / 6 完成</span>
+      </button>
+      <button class="zone-btn" onclick="openZone('art')">
+        <span class="zone-icon">🪭</span>
+        <span class="zone-title">美勞與舞蹈室</span>
+        <span class="zone-count" id="count-art">0 / 4 完成</span>
+      </button>
+      <button class="zone-btn" onclick="openZone('community')">
+        <span class="zone-icon">🚇</span>
+        <span class="zone-title">家庭與港鐵社區</span>
+        <span class="zone-count" id="count-community">0 / 4 完成</span>
+      </button>
+    </div>
+
+    <div style="font-weight:900; color:#546E7A; font-size:0.84rem;">🏅 20 個好習慣印章圖鑑（點擊可重溫動畫）：</div>
+    <div class="stamp-grid" id="stamp-grid"></div>
+  </div>
+
+  <!-- 畫面 2：好習慣動畫劇場 ＋ 動手做小任務 ＋ 問答 -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-card">
+      <span id="q-category" class="badge-tag cat-compass">🧭 個人修養與內在能力</span>
+      <h2 class="habit-title" id="q-title">謙讓</h2>
+      <div class="habit-def" id="q-def">核心定義</div>
+
+      <!-- 動態好習慣小劇場 (支援點擊互動) -->
+      <div class="theater-box" id="theater-box" onclick="triggerTheaterAction()">
+        <div class="mini-task-bar" id="mini-task-bar">👆 點擊畫面幫小主角完成好習慣動作！</div>
+        <div class="theater-stage" id="theater-stage"></div>
+        <div class="theater-caption" id="theater-caption">動畫演示中...</div>
+      </div>
+
+      <button class="speak-btn" onclick="speakCurrentScenario()">🔊 聽小朋友讀題目（粵語童聲）</button>
+      <div class="scenario-box" id="q-scenario"></div>
+      <div id="q-choices"></div>
+    </div>
+    <button class="nav-btn btn-secondary" onclick="showHome()">⬅️ 返回聖文嘉校園地圖</button>
+  </div>
+
+  <div class="nav-bar">
+    <button class="nav-btn btn-secondary" onclick="resetProgress()">🔄 重新開始</button>
+    <button class="nav-btn btn-primary" onclick="exportReport()">📤 獎狀與成績表</button>
+  </div>
+</div>
+
+<!-- 過關動畫彈窗 -->
+<div id="modal">
+  <div class="modal-content">
+    <div id="modal-char-box" style="height:120px; display:flex; justify-content:center;"></div>
+    <h2 id="modal-title" style="margin: 6px 0; color:#D81B60;">好嘢！答啱喇！</h2>
+    <p id="modal-msg" style="color:#37474F; line-height: 1.5; font-size: 0.95rem; font-weight:bold;"></p>
+    <button class="nav-btn btn-primary" style="width:100%; margin-top:10px; font-size:1rem;" onclick="closeModal()">繼續挑戰 🚀</button>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// 🎵 Web Audio API 歡樂卡通音效合成器 (免外部音檔)
+// ==========================================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+
+    if (type === 'pop') {
+      osc.frequency.setValueAtTime(520, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
+      osc.start(now); osc.stop(now + 0.09);
+    } else if (type === 'win') {
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.setValueAtTime(freq, now + i * 0.09);
+        g.gain.setValueAtTime(0.16, now + i * 0.09);
+        g.gain.linearRampToValueAtTime(0.01, now + i * 0.09 + 0.22);
+        o.start(now + i * 0.09); o.stop(now + i * 0.09 + 0.22);
+      });
+    } else if (type === 'oops') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(300, now);
+      osc.frequency.linearRampToValueAtTime(180, now + 0.25);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now); osc.stop(now + 0.25);
+    }
+  } catch(e) {}
+}
+
+// ==========================================
+// 👕 聖文嘉雙校服 SVG 產生器
+// 1. 運動校服 (pe)：還原《運動校服去背景.jpg》黃身、天藍牛角袖、紅肩線、白領雙藍線、左胸RED LOGO、黃短褲紅邊
+// 2. 夏季校服 (summer)：還原《男女學生相 C.jpeg》男童藍白直間恤衫配深藍短褲 / 女童粉紅白直間裙配雙丸子頭紅蝴蝶結
+// ==========================================
+function getRedCrestSVG(x, y, scale = 1) {
+  // 精細還原 RED LOGO.png 皇冠盾牌校徽
+  return `
+  <g transform="translate(${x}, ${y}) scale(${scale})">
+    <path d="M0,4 L3,0 L6,4 L9,0 L12,4 L15,0 L18,4 Z" fill="none" stroke="#D32F2F" stroke-width="1.3"/>
+    <path d="M1,5.5 L17,5.5 L17,15 Q17,22 9,24 Q1,22 1,15 Z" fill="#FFF" stroke="#D32F2F" stroke-width="1.5"/>
+    <circle cx="8" cy="12" r="2.2" fill="none" stroke="#D32F2F" stroke-width="1.2"/>
+    <circle cx="13" cy="14" r="1.8" fill="none" stroke="#D32F2F" stroke-width="1.2"/>
+    <path d="M5,20 L8,14 L11,20" fill="none" stroke="#D32F2F" stroke-width="1.2"/>
+  </g>`;
+}
+
+function getStudentSVG(gender = 'girl', pose = 'normal', uniform = 'pe', crying = false) {
+  const uid = Math.random().toString(36).substr(2, 5);
+  
+  // 髮型：夏季校服女童配雙丸子頭+紅蝴蝶結(圖11)，運動服女童配雙馬尾(圖17)
+  let hairBack = '';
+  if (gender === 'girl') {
+    if (uniform === 'summer') {
+      hairBack = `
+        <circle cx="22" cy="18" r="10" fill="#212121"/>
+        <circle cx="78" cy="18" r="10" fill="#212121"/>
+        <path d="M18,22 L26,18 L26,25 Z M26,22 L18,18 L18,25 Z" fill="#D32F2F"/>
+        <path d="M74,22 L82,18 L82,25 Z M82,22 L74,18 L74,25 Z" fill="#D32F2F"/>`;
+    } else {
+      hairBack = `
+        <path d="M22,32 Q9,42 13,60 Q19,54 24,44 Z" fill="#212121"/>
+        <path d="M78,32 Q91,42 87,60 Q81,54 76,44 Z" fill="#212121"/>
+        <circle cx="23" cy="34" r="3.5" fill="#D32F2F"/>
+        <circle cx="77" cy="34" r="3.5" fill="#D32F2F"/>`;
+    }
+  }
+
+  // 手臂姿勢
+  const sleeveColor = uniform === 'pe' ? '#64B5F6' : (gender === 'boy' ? '#E3F2FD' : '#FCE4EC');
+  const leftArm = pose === 'balance'
+    ? `<path d="M30,62 L8,54" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/>
+       <path d="M34,61 L19,57" stroke="${sleeveColor}" stroke-width="11" stroke-linecap="round"/>`
+    : pose === 'wave'
+    ? `<path d="M30,62 L14,40" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/>
+       <path d="M34,61 L22,49" stroke="${sleeveColor}" stroke-width="11" stroke-linecap="round"/>`
+    : `<path d="M32,62 L22,80" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/>
+       <path d="M34,61 L26,72" stroke="${sleeveColor}" stroke-width="11" stroke-linecap="round"/>`;
+
+  const rightArm = pose === 'balance'
+    ? `<path d="M70,62 L92,54" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/>
+       <path d="M66,61 L81,57" stroke="${sleeveColor}" stroke-width="11" stroke-linecap="round"/>`
+    : pose === 'give'
+    ? `<path d="M68,62 L88,52" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/>
+       <path d="M66,61 L78,56" stroke="${sleeveColor}" stroke-width="11" stroke-linecap="round"/>`
+    : `<path d="M68,62 L78,80" stroke="#FFCCBC" stroke-width="8" stroke-linecap="round"/>
+       <path d="M66,61 L74,72" stroke="${sleeveColor}" stroke-width="11" stroke-linecap="round"/>`;
+
+  // 服裝本體 (運動服 vs 夏季校服)
+  let outfitSVG = '';
+  if (uniform === 'pe') {
+    // 運動校服：黃色上衣、天藍牛角袖、紅肩線、白領雙藍線、左胸紅校徽、黃短褲側紅線
+    outfitSVG = `
+      <path d="M33,84 L67,84 L69,100 L52,100 L50,92 L48,100 L31,100 Z" fill="#FFD600" stroke="#FBC02D" stroke-width="1"/>
+      <line x1="33" y1="85" x2="32" y2="99" stroke="#D32F2F" stroke-width="2.5"/>
+      <line x1="67" y1="85" x2="68" y2="99" stroke="#D32F2F" stroke-width="2.5"/>
+      ${leftArm} ${rightArm}
+      <rect x="32" y="55" width="36" height="31" rx="5" fill="#FFD600"/>
+      <!-- 天藍牛角袖肩部與紅滾邊 -->
+      <path d="M32,56 L41,56 L32,68 Z" fill="#64B5F6"/>
+      <path d="M68,56 L59,56 L68,68 Z" fill="#64B5F6"/>
+      <line x1="41" y1="56" x2="32" y2="68" stroke="#D32F2F" stroke-width="1.8"/>
+      <line x1="59" y1="56" x2="68" y2="68" stroke="#D32F2F" stroke-width="1.8"/>
+      <!-- 白色翻領配天藍雙線 -->
+      <polygon points="41,55 50,63 35,61" fill="#FFFFFF" stroke="#64B5F6" stroke-width="1.2"/>
+      <polygon points="59,55 50,63 65,61" fill="#FFFFFF" stroke="#64B5F6" stroke-width="1.2"/>
+      <circle cx="50" cy="65" r="1.3" fill="#FBC02D"/>
+      <circle cx="50" cy="70" r="1.3" fill="#FBC02D"/>
+      ${getRedCrestSVG(54, 64, 0.55)}
+    `;
+  } else if (gender === 'boy') {
+    // 男童夏季校服：藍白直間恤衫 + 白色圓領 + 左胸 St.Monica. 名牌 + 深藍短褲 (圖11左)
+    outfitSVG = `
+      <defs>
+        <pattern id="blueStripe_${uid}" width="5" height="10" patternUnits="userSpaceOnUse">
+          <rect width="2.5" height="10" fill="#FFFFFF"/>
+          <rect x="2.5" width="2.5" height="10" fill="#90CAF9"/>
+        </pattern>
+      </defs>
+      <path d="M33,84 L67,84 L69,100 L52,100 L50,92 L48,100 L31,100 Z" fill="#0D47A1"/>
+      ${leftArm} ${rightArm}
+      <rect x="32" y="55" width="36" height="30" rx="4" fill="url(#blueStripe_${uid})" stroke="#64B5F6" stroke-width="1"/>
+      <!-- 白色圓領 -->
+      <path d="M40,55 Q45,62 50,58 Q55,62 60,55 Z" fill="#FFFFFF" stroke="#90CAF9" stroke-width="1.2"/>
+      <!-- 左胸 St.Monica. 名牌 -->
+      <rect x="53" y="65" width="13" height="6" rx="1" fill="#FFFFFF" stroke="#0D47A1" stroke-width="0.8"/>
+      <text x="59.5" y="69.5" font-size="3.2" font-weight="900" fill="#0D47A1" text-anchor="middle">St.Monica</text>
+    `;
+  } else {
+    // 女童夏季校服：粉紅白直間A字連身裙 + 白色方領 + 右下角紅校徽口袋 (圖11右)
+    outfitSVG = `
+      <defs>
+        <pattern id="pinkStripe_${uid}" width="5" height="10" patternUnits="userSpaceOnUse">
+          <rect width="2.5" height="10" fill="#FFFFFF"/>
+          <rect x="2.5" width="2.5" height="10" fill="#F48FB1"/>
+        </pattern>
+      </defs>
+      ${leftArm} ${rightArm}
+      <polygon points="34,55 66,55 73,97 27,97" fill="url(#pinkStripe_${uid})" stroke="#F06292" stroke-width="1"/>
+      <!-- 白色方領 -->
+      <polygon points="39,55 61,55 59,63 41,63" fill="#FFFFFF" stroke="#F06292" stroke-width="1.2"/>
+      <!-- 裙擺右下口袋與紅校徽 -->
+      <path d="M54,80 L65,80 L65,90 Q59.5,94 54,90 Z" fill="#FFFFFF" stroke="#80DEEA" stroke-width="1"/>
+      ${getRedCrestSVG(56, 81, 0.42)}
+    `;
+  }
+
+  // 表情 (正常微笑 vs 哭泣流淚 圖17)
+  const faceSVG = crying ? `
+    <path d="M37,37 Q41,34 45,37" fill="none" stroke="#212121" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M55,37 Q59,34 63,37" fill="none" stroke="#212121" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M40,39 L39,47 M60,39 L61,47" stroke="#29B6F6" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M45,47 Q50,43 55,47" fill="none" stroke="#B71C1C" stroke-width="2.2" stroke-linecap="round"/>
+  ` : `
+    <circle cx="41" cy="37" r="3.2" fill="#212121"/>
+    <circle cx="59" cy="37" r="3.2" fill="#212121"/>
+    <circle cx="42" cy="36" r="1.1" fill="#FFF"/>
+    <circle cx="60" cy="36" r="1.1" fill="#FFF"/>
+    <ellipse cx="35" cy="42" rx="3.5" ry="2" fill="#FF8A80" opacity="0.65"/>
+    <ellipse cx="65" cy="42" rx="3.5" ry="2" fill="#FF8A80" opacity="0.65"/>
+    <path d="M44,44 Q50,50 56,44" fill="#EF5350" stroke="#B71C1C" stroke-width="1.5" stroke-linecap="round"/>
+  `;
+
+  return `
+  <svg viewBox="0 0 100 130" class="svg-char">
+    ${hairBack}
+    <!-- 雙腿與白襪白波鞋 -->
+    <rect x="38" y="95" width="8" height="22" rx="4" fill="#FFCCBC"/>
+    <rect x="54" y="95" width="8" height="22" rx="4" fill="#FFCCBC"/>
+    <rect x="37" y="109" width="10" height="7" fill="#FFFFFF"/>
+    <rect x="53" y="109" width="10" height="7" fill="#FFFFFF"/>
+    <rect x="34" y="115" width="15" height="8" rx="4" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="1.5"/>
+    <rect x="51" y="115" width="15" height="8" rx="4" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="1.5"/>
+    ${outfitSVG}
+    <!-- 頭部 -->
+    <circle cx="50" cy="35" r="21" fill="#FFE0B2"/>
+    <path d="M28,33 Q29,11 50,11 Q71,11 72,33 Q64,23 50,25 Q36,23 28,33 Z" fill="#212121"/>
+    ${faceSVG}
+  </svg>`;
+}
+
+function getTeacherSVG() {
+  return `
+  <svg viewBox="0 0 100 130" class="svg-char">
+    <path d="M72,28 Q88,30 85,50 Q78,45 72,38 Z" fill="#4E342E"/>
+    <circle cx="73" cy="31" r="3" fill="#D32F2F"/>
+    <rect x="37" y="86" width="11" height="30" rx="4" fill="#263238"/>
+    <rect x="52" y="86" width="11" height="30" rx="4" fill="#263238"/>
+    <rect x="35" y="114" width="14" height="7" rx="3" fill="#FFFFFF"/>
+    <rect x="51" y="114" width="14" height="7" rx="3" fill="#FFFFFF"/>
+    <path d="M30,56 L20,74" stroke="#FFE0B2" stroke-width="7" stroke-linecap="round"/>
+    <path d="M70,56 L82,46" stroke="#FFE0B2" stroke-width="7" stroke-linecap="round"/>
+    <rect x="31" y="52" width="38" height="36" rx="6" fill="#C62828"/>
+    <polygon points="41,52 50,60 35,58" fill="#1A237E" stroke="#FFFFFF" stroke-width="1"/>
+    <polygon points="59,52 50,60 65,58" fill="#1A237E" stroke="#FFFFFF" stroke-width="1"/>
+    <path d="M55,63 L61,63 L61,69 Q58,72 55,69 Z" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
+    <circle cx="50" cy="32" r="20" fill="#FFE0B2"/>
+    <path d="M29,30 Q30,10 50,10 Q70,10 71,30 Q60,20 50,23 Q40,20 29,30 Z" fill="#4E342E"/>
+    <circle cx="42" cy="34" r="2.8" fill="#212121"/>
+    <circle cx="58" cy="34" r="2.8" fill="#212121"/>
+    <path d="M44,41 Q50,46 56,41" fill="none" stroke="#C62828" stroke-width="2" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// ==========================================
+// 📚 20 個好習慣完整題庫 (融合全部 17 張參考圖情境)
+// ==========================================
+const HABITS_DATA = [
+  // 【1. 木地板課室 classroom】
+  { id: 1, zone: 'classroom', name: '謙讓', icon: '🚙', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '謙虛禮讓，以學習態度面對他人，有禮貌。',
+    taskHint: '👆 點擊畫面中的藍色玩具車，把它禮讓遞給女同學啦！',
+    caption: '🎬 聖文嘉課室：男同學雙手把藍色玩具車禮讓給女同學，女同學開心拍手道謝！',
+    animType: 'share_car', // 對應新圖16 (分享藍色玩具車)
+    q: '在課室玩具角（後面有小熊、粉紅兔和藍大象公仔），你和女同學都想玩架藍色玩具車，怎樣做才是「謙讓」？',
+    options: [
+      { text: '微笑用雙手把藍色玩具車遞給同學：「禮讓妳先玩，我們一起分享！」', correct: true, fb: '太有禮貌和謙讓精神了！你看女同學雙手合十笑得多開心！' },
+      { text: '把藍色玩具車藏在身後，大聲說「係我攞先嘅，唔俾妳玩！」', correct: false, fb: '謙虛禮讓、有禮貌地分享玩具，兩個好朋友會玩得更開心喔！' }
+    ]
+  },
+  { id: 2, zone: 'classroom', name: '承諾', icon: '🤙', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '言出必行、言行一致，遵守承諾。',
+    taskHint: '👆 點擊散落的積木，幫男女同學履行「拉勾勾承諾」放進藍色箱！',
+    caption: '🎬 聖文嘉課室：男女同學在藍色收納箱旁勾手指拉勾，遵守承諾一起收拾積木！',
+    animType: 'promise_blocks', // 對應圖1
+    q: '你和好朋友勾手指拉勾答應過老師，玩完木積木一定會放回藍色大收納箱，現在鐘聲響了，你會怎樣做？',
+    options: [
+      { text: '言出必行！馬上和好朋友一起把積木放進藍色箱子裡。', correct: true, fb: '一諾千金！你做到了言行一致、遵守承諾！' },
+      { text: '把積木丟在木地板上不管，自己跑去排隊。', correct: false, fb: '勾手指答應過的事要言出必行，快把積木收進藍色箱子吧！' }
+    ]
+  },
+  { id: 3, zone: 'classroom', name: '誠實', icon: '🪴', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '真誠實在表達自己，不說謊、不作假，贏得信任。',
+    taskHint: '👆 點擊地上打破的藍色花盆，向紅衫老師誠實認錯並修好它！',
+    caption: '🎬 聖文嘉課室：藍色花盆不小心打破了，男同學按著胸口誠實向紅衫老師承認！',
+    animType: 'honest_pot', // 對應圖10
+    q: '在課室不小心碰跌並打破了藍色的植物花盆，穿紅衫黑褲的老師走過來跪下關心，你會怎樣做？',
+    options: [
+      { text: '按著胸口誠實對老師說：「老師對不起，是我不小心打破的。」', correct: true, fb: '好誠實！不說謊、勇於承認錯誤，老師最欣賞誠實的孩子！' },
+      { text: '說謊騙老師是旁邊捂住嘴的女同學打破的。', correct: false, fb: '說謊會失去大家的信任喔，誠實告訴老師，老師一定會溫柔教導你的！' }
+    ]
+  },
+  { id: 4, zone: 'classroom', name: '聆聽', icon: '📖', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '用耳、用心專注聽取他人意見，並理解其含義。',
+    taskHint: '👆 點擊《小白兔和小烏龜》圖書，專心聽老師講故事！',
+    caption: '🎬 聖文嘉課室：紅衫老師拿著《小白兔和小烏龜》大繪本，6位同學坐好專心聽！',
+    animType: 'listen_story', // 對應圖7
+    q: '老師正在講《小白兔和小烏龜一起去森林散步》的故事，怎樣做才是「專心聆聽」的好學生？',
+    options: [
+      { text: '盤腿坐好，眼睛望著老師，用耳和心專注聽故事內容。', correct: true, fb: '好乖巧！你用耳、用心專注聆聽，明白了故事裡的美好道理！' },
+      { text: '轉身跟後面的同學大聲傾偈，完全不看圖書。', correct: false, fb: '專心聆聽別人說話，才是尊重老師和愛學習的表現喔！' }
+    ]
+  },
+  { id: 5, zone: 'classroom', name: '求知', icon: '💡', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '求取更多知識，每天進步以達到不斷創新。',
+    taskHint: '👆 點擊小主角頭上的發光小燈泡，一齊動腦筋學新知識！',
+    caption: '🎬 聖文嘉課室：在圖書角主動探索新繪本，舉手發問求取更多知識！',
+    animType: 'curious_book',
+    q: '在木書架看到小熊、小兔和森林的新繪本，遇到不懂的問題時，怎樣做才是「求知」？',
+    options: [
+      { text: '主動翻書探索，並舉手向老師請教：「老師，點解會咁嘅？」', correct: true, fb: '充滿求知慾！每天多學一點，你一定會不斷進步和創新！' },
+      { text: '覺得唔識就合上書本，從來唔問亦唔想學。', correct: false, fb: '勇敢發問求知，每天都會變得更聰明喔！' }
+    ]
+  },
+  { id: 6, zone: 'classroom', name: '自律', icon: '⏰', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '自我約束，克制情緒以完成既定目標，不受誘惑。',
+    taskHint: '👆 點擊小鬧鐘，測試自己可唔可以聽到鐘聲馬上收好玩具！',
+    caption: '🎬 聖文嘉課室：聽到收拾鐘聲，自我約束馬上把玩具放回紅、藍、綠、粉紅收納箱！',
+    animType: 'self_control',
+    q: '遊戲時間結束鐘聲響起，但你還想繼續玩玩具車，怎樣做才是「自律」？',
+    options: [
+      { text: '自我約束克制想玩的心，馬上把玩具放回彩色收納箱排隊。', correct: true, fb: '太有自律了！不受誘惑，準時完成課室目標！' },
+      { text: '假裝聽唔到鐘聲，躲在桌子下繼續玩。', correct: false, fb: '自律就是懂得自我約束，聽從規則收好玩具吧！' }
+    ]
+  },
+
+  // 【2. 體能軟墊與草地 playground】(對應新圖17 及 圖3, 4, 5)
+  { id: 7, zone: 'playground', name: '關愛', icon: '❤️', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '真心誠懇關心愛護他人，尤其在對方無助時。',
+    taskHint: '👆 點擊正在流眼淚的同學，拍拍她肩膀幫她擦乾眼淚、重拾笑容啦！',
+    caption: '🎬 聖文嘉體能室：女同學在彩色軟墊上哭泣，好朋友跪在旁邊溫柔拍肩安慰她！',
+    animType: 'comfort_friend', // 對應新圖17 (運動服.jpg 體能墊上安慰哭泣同學)
+    q: '在體能室的紅藍黃綠軟墊上，看見女同學不小心跌倒或者不開心正在掩面哭泣，你會怎樣做？',
+    options: [
+      { text: '主動跪坐在她身邊，溫柔輕拍她的肩膀安慰：「唔好喊啦，我陪妳！」', correct: true, fb: '你的關愛太溫暖了！在同學最無助傷心時關心愛護她，她終於笑返喇！' },
+      { text: '指著哭泣的同學笑，或者自己跑去鑽彩虹拱門不理她。', correct: false, fb: '當好朋友傷心無助時，我們要真心誠懇地關心和愛護她喔！' }
+    ]
+  },
+  { id: 8, zone: 'playground', name: '情緒', icon: '😊', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '覺察並管理開心、不開心或惶恐等感受與行為反應。',
+    taskHint: '👆 點擊畫面幫傷心的小主角做「深呼吸」，把眼淚變成開心太陽！',
+    caption: '🎬 聖文嘉體能室：當心裡感到不開心或惶恐想哭時，懂得深呼吸管理情緒並向人傾訴！',
+    animType: 'comfort_friend', // 呼應圖17牆上微笑太陽與哭泣情緒調節
+    q: '如果在學校遇到困難覺得傷心想哭（就像軟墊上流淚的小朋友），我們可以怎樣管理自己的「情緒」？',
+    options: [
+      { text: '先深呼吸冷靜下來，擦乾眼淚，溫柔地向好朋友或老師說出感受。', correct: true, fb: '做得好！像牆上的微笑太陽一樣，你懂得覺察並管理自己的情緒反應！' },
+      { text: '不停尖叫大發脾氣，還動手推身邊關心你的同學。', correct: false, fb: '有不開心的情緒很正常，深呼吸並說出來，大家都會幫助你的！' }
+    ]
+  },
+  { id: 9, zone: 'playground', name: '毅力', icon: '💪', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '堅毅努力，堅持克服障礙以完成任務。',
+    taskHint: '👆 點擊平衡木上的小主角，為她加油打氣一步一步走過去！',
+    caption: '🎬 聖文嘉體能室：女同學張開雙手勇敢行平衡木，紅衫老師在旁保護打氣！',
+    animType: 'balance_beam', // 對應圖5
+    q: '在體能室練習行木製平衡木，走了一半覺得有點難，紅衫老師在旁笑著保護你，你會怎樣做？',
+    options: [
+      { text: '張開雙臂保持平衡，拿出毅力堅持走完全程，不放棄！', correct: true, fb: '太有毅力了！堅持克服障礙完成任務，老師為你拍手歡呼！' },
+      { text: '馬上坐下來放棄，說「太難喇我唔行喇！」', correct: false, fb: '拿出堅毅努力的精神再試一步，你一定可以克服障礙的！' }
+    ]
+  },
+  { id: 10, zone: 'playground', name: '團隊合作', icon: '🌈', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '同心合力、向同一目標奮鬥，發揮最大價值。',
+    taskHint: '👆 點擊七彩降落傘（彩虹傘），和5位同學一齊將彩球彈高啦！',
+    caption: '🎬 聖文嘉戶外草地：五位同學同心合力拉動七彩降落傘，中間彩球開心彈跳！',
+    animType: 'parachute_team', // 對應圖4
+    q: '在陽光草地上，五位同學一起拉著七彩降落傘玩彈彩球，怎樣才不會讓彩球跌落草地？',
+    options: [
+      { text: '大家同心合力，看著彩球一起配合節奏上下搖動彩虹傘！', correct: true, fb: '最棒的團隊合作！大家向同一目標奮鬥，彩球跳得又高又穩！' },
+      { text: '自己一個人亂拉亂扯，完全唔理其他同學。', correct: false, fb: '團隊合作需要同心合力，大家齊心才能發揮最大價值喔！' }
+    ]
+  },
+  { id: 11, zone: 'playground', name: '表達', icon: '✋', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '善意、尊重、關愛地把思想感情表示出來。',
+    taskHint: '👆 點擊好朋友的手掌，一齊開心擊掌 High-Five 打招呼！',
+    caption: '🎬 聖文嘉課室：《好朋友》海報前，同學打招呼、點點頭、擊掌一齊玩！',
+    animType: 'good_friends', // 對應圖3
+    q: '牆上《好朋友》兒歌寫道：「走走走，找朋友，打招呼，點點頭，一起玩，不爭吵」。你想同朋友玩，會點樣表達？',
+    options: [
+      { text: '微笑揮手擊掌，善意尊重地說：「你好！我們一起砌積木好嗎？」', correct: true, fb: '好溫暖的表達！用善意、尊重和關愛說出心意，大家都愛跟你做朋友！' },
+      { text: '大聲呼喝同學，直接搶走他手上的積木。', correct: false, fb: '記住《好朋友》兒歌：一起玩、不爭吵，用善意的話語表達吧！' }
+    ]
+  },
+  { id: 12, zone: 'playground', name: '信任', icon: '🔴', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '相信而委任，不作猜疑。',
+    taskHint: '👆 點擊紅色大皮球，放心把球傳給好拍檔！',
+    caption: '🎬 聖文嘉體能墊：兩位雙馬尾女同學跪坐藍墊上，互相信任傳遞紅色大皮球！',
+    animType: 'pass_ball', // 對應圖3右
+    q: '在藍色軟墊上和好朋友玩傳紅球遊戲，怎樣做才是「信任」你的拍檔？',
+    options: [
+      { text: '放心地把紅球傳給她，相信她一定會努力接住，不猜疑！', correct: true, fb: '這就是信任！相信好朋友、不作猜疑，合作得天衣無縫！' },
+      { text: '懷疑同學一定會接唔住，抱住個波唔肯傳俾人。', correct: false, fb: '相信而委任你的好拍檔，一齊享受傳球遊戲的樂趣吧！' }
+    ]
+  },
+
+  // 【3. 美勞與舞蹈室 art】(對應圖9 等)
+  { id: 13, zone: 'art', name: '積極', icon: '🪭', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '主動不拖延、不找藉口，有效行動以創造機會。',
+    taskHint: '👆 點擊美麗的彩虹扇，跟著紅衫老師精神奕奕跳舞啦！',
+    caption: '🎬 聖文嘉舞蹈課：紅衫老師帶領同學單膝跪地、高舉彩虹扇，精神奕奕積極練習！',
+    animType: 'rainbow_fan', // 對應圖9
+    q: '紅衫老師帶領大家拿著彩虹扇排練中國舞，怎樣做才是「積極」的聖文嘉小舞者？',
+    options: [
+      { text: '主動站好隊形不拖延，精神奕奕高舉彩虹扇跟老師認真跳！', correct: true, fb: '太積極了！主動不拖延、不找藉口，你們的彩虹扇舞真精彩！' },
+      { text: '找藉口話「隻手好攰」，坐喺地下唔肯郁。', correct: false, fb: '積極的小朋友不會找藉口拖延，一齊舉起彩虹扇創造好表現吧！' }
+    ]
+  },
+  { id: 14, zone: 'art', name: '勇敢', icon: '🦁', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '有勇氣承擔與面對困難，不退縮、不逃避。',
+    taskHint: '👆 點擊小主角為自己打氣，勇敢踏上舞台表演！',
+    caption: '🎬 聖文嘉小舞台：面對新舞蹈動作或上台表演，挺起胸膛勇敢面對不退縮！',
+    animType: 'rainbow_fan',
+    q: '學校準備表演彩虹扇舞，有個單膝跪地的動作比較難，你心裡有點怕做不好，會怎樣做？',
+    options: [
+      { text: '鼓起勇氣面對困難，不退縮、不逃避，跟著老師用心練習！', correct: true, fb: '好勇敢！有勇氣承擔與面對困難，你跳得超棒！' },
+      { text: '躲在課室後面逃避，哭著說唔肯練習。', correct: false, fb: '不用怕，拿出勇氣面對困難不退縮，老師和同學都會支持你！' }
+    ]
+  },
+  { id: 15, zone: 'art', name: '包容', icon: '🤗', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '接納他人的錯誤與缺點，寬容大度。',
+    taskHint: '👆 點擊顏色筆筒，笑著原諒不小心犯錯的同學！',
+    caption: '🎬 聖文嘉美勞區：同學不小心碰跌桌上的彩色鉛筆筒，寬容大度地原諒他！',
+    animType: 'forgive_art',
+    q: '美勞課時，旁邊的同學不小心碰跌了木桌上的彩色鉛筆筒，他向你說對不起，你會怎樣做？',
+    options: [
+      { text: '寬容大度地笑著說：「唔緊要啦！我同你一齊執返好啲顏色筆！」', correct: true, fb: '你真有包容心！懂得接納別人的無心之失，寬容大度！' },
+      { text: '大聲責罵他，仲話以後都唔同佢做朋友。', correct: false, fb: '每個人都會不小心犯錯，學習包容和寬容，大家相處更融洽喔！' }
+    ]
+  },
+  { id: 16, zone: 'art', name: '珍惜', icon: '🌱', cat: '❤️ 處世態度與價值觀', catClass: 'cat-value',
+    def: '愛惜身邊每個人、每件事、每件物件和時間。',
+    taskHint: '👆 點擊小圖書與顏色筆，好好愛惜課室每件物品！',
+    caption: '🎬 聖文嘉課室：愛惜木書架上的繪本、顏色筆、小盆栽與寶貴的學習時間！',
+    animType: 'cherish_items',
+    q: '面對課室裡的圖書、顏色筆、玩具車和上課時間，怎樣做才是「珍惜」？',
+    options: [
+      { text: '輕手翻閱圖書、愛護玩具和顏色筆，珍惜每一分學習時間。', correct: true, fb: '太棒了！懂得珍惜身邊每個人、每件事、每件物件和時間！' },
+      { text: '隨便撕爛圖書，把顏色筆亂丟在地上踩爛。', correct: false, fb: '每件物品都很珍貴，我們要好好愛惜身邊的所有物件喔！' }
+    ]
+  },
+
+  // 【4. 家庭與港鐵社區 community】(對應圖2, 6, 8)
+  { id: 17, zone: 'community', name: '尊重', icon: '🚇', cat: '🤝 人際互動與溝通', catClass: 'cat-interact',
+    def: '尊敬重視並顧及他人感受，不傷及他人。',
+    taskHint: '👆 點擊港鐵座位，站起來禮貌請拿枴杖的婆婆坐低！',
+    caption: '🎬 港鐵車廂：背著小熊書包的聖文嘉同學主動站起來，微笑尊重讓座給長者婆婆！',
+    animType: 'mtr_seat', // 對應圖2
+    q: '放學搭港鐵時，看見一位拿著枴杖的老婆婆上車，怎樣做才是尊敬長者、顧及他人感受？',
+    options: [
+      { text: '主動站起來，雙手禮貌示意：「婆婆您好，請您坐這個位！」', correct: true, fb: '太有禮貌和尊重長者了！婆婆笑得好開心，媽媽也在旁邊讚賞你！' },
+      { text: '在車廂裡大聲喧嘩，還把書包放在空位上不讓婆婆坐。', correct: false, fb: '我們要尊敬長者、顧及他人感受與需要，主動讓座給婆婆吧！' }
+    ]
+  },
+  { id: 18, zone: 'community', name: '付出', icon: '👕', cat: '❤️ 處世態度與價值觀', catClass: 'cat-value',
+    def: '助人為快樂之本，不求回報地奉獻。',
+    taskHint: '👆 點擊洗衣籃的衣服，幫媽媽把衣服摺得整整齊齊！',
+    caption: '🎬 溫馨家裡：小主角主動幫穿著圍裙的媽媽摺好衣服並雙手遞上，樂於付出！',
+    animType: 'fold_clothes', // 對應圖6
+    q: '回到家裡，看見穿圍裙的媽媽正在整理一大籃洗好的衣服，怎樣做才能實踐「付出」？',
+    options: [
+      { text: '主動走過去幫忙把衣服摺整齊並雙手遞給媽媽，不求回報地做家務！', correct: true, fb: '助人為快樂之本！謝謝你不求回報的付出，你是媽媽的好幫手！' },
+      { text: '問媽媽：「如果俾糖我食，我先至幫手摺衫。」', correct: false, fb: '真正的付出是不求回報地奉獻，主動幫媽媽分擔家務本身就好快樂！' }
+    ]
+  },
+  { id: 19, zone: 'community', name: '感恩', icon: '💌', cat: '❤️ 處世態度與價值觀', catClass: 'cat-value',
+    def: '對別人給予的幫助表示感激致謝。',
+    taskHint: '👆 點擊紅心感恩卡，送給爸爸媽媽大聲說「多謝你們」！',
+    caption: '🎬 溫馨家裡：小主角雙手捧著親手畫的紅心卡，送給梳化上的爸爸媽媽表示感恩！',
+    animType: 'thank_card', // 對應圖8
+    q: '爸爸媽媽每天辛苦照顧我們，老師和校工姐姐也常常幫助我們，怎樣做才是「感恩」？',
+    options: [
+      { text: '親手畫一張愛心卡雙手送給父母，並真誠對幫助我們的人說「多謝！」', correct: true, fb: '常懷感恩之心！你看爸爸媽媽收到你的紅心卡感動得合不攏嘴！' },
+      { text: '覺得別人照顧自己是應該的，從來唔講多謝或唔該。', correct: false, fb: '對別人給予的幫助，記得真誠表示感激和致謝喔！' }
+    ]
+  },
+  { id: 20, zone: 'community', name: '負責任', icon: '🎒', cat: '🧭 個人修養與內在能力', catClass: 'cat-compass',
+    def: '完成自己範疇內該做的事，不推託、不責怪他人。',
+    taskHint: '👆 點擊小熊掛飾書包，自己收拾好上學用品！',
+    caption: '🎬 聖文嘉好學生：自己背好小熊書包、自己換校服和收拾物品，不推託給父母！',
+    animType: 'self_bag', // 呼應圖2背小熊書包
+    q: '每天上學和放學，你的聖文嘉校服、白波鞋和掛著小熊公仔的書包，應該由誰負責整理？',
+    options: [
+      { text: '完成自己範疇內該做的事，自己主動收拾書包和穿好校服，不推託！', correct: true, fb: '100分負責任的聖文嘉小達人！自己的事情自己做好，太棒了！' },
+      { text: '把書包丟在地上，發脾氣怪媽媽無幫自己執書包。', correct: false, fb: '負責任就是完成自己該做的事，不推託、不責怪他人喔！' }
+    ]
+  }
+];
+
+let unlockedIds = JSON.parse(localStorage.getItem('stm_v3_unlocked') || '[]');
+let currentHabit = null;
+let gender = localStorage.getItem('stm_v3_gender') || 'girl';
+let uniform = localStorage.getItem('stm_v3_uniform') || 'pe'; // 'pe' 運動服 或 'summer' 夏季校服
+let childVoiceMode = true; // 預設使用兒童高音活潑粵語模式
+
+function initGame() {
+  const savedName = localStorage.getItem('stm_v3_name') || '';
+  if (savedName) {
+    document.getElementById('student-name').value = savedName;
+    document.getElementById('display-name').innerText = savedName;
+  }
+  updateUniformBtnText();
+  renderHomeAvatar();
+  updateUI();
+}
+
+function renderHomeAvatar() {
+  document.getElementById('home-avatar-stage').innerHTML = getStudentSVG(gender, 'wave', uniform, false);
+}
+
+function toggleGender() {
+  playSound('pop');
+  gender = gender === 'girl' ? 'boy' : 'girl';
+  localStorage.setItem('stm_v3_gender', gender);
+  renderHomeAvatar();
+  speakText(gender === 'boy' ? '哈囉！我係聖文嘉男同學！' : '哈囉！我係聖文嘉女同學！');
+}
+
+function toggleUniform() {
+  playSound('pop');
+  uniform = uniform === 'pe' ? 'summer' : 'pe';
+  localStorage.setItem('stm_v3_uniform', uniform);
+  updateUniformBtnText();
+  renderHomeAvatar();
+  speakText(uniform === 'pe' ? '我換咗黃色藍色運動服喇！好有活力呀！' : '我換咗靚靚嘅夏季校服喇！');
+}
+
+function updateUniformBtnText() {
+  const btn = document.getElementById('btn-uniform');
+  if (uniform === 'pe') {
+    btn.innerText = '👕 運動服 (黃藍)';
+    btn.classList.add('active-uni');
+  } else {
+    btn.innerText = '👔 夏季校服 (直間)';
+    btn.classList.remove('active-uni');
+  }
+}
+
+function toggleVoiceMode() {
+  playSound('pop');
+  childVoiceMode = !childVoiceMode;
+  const btn = document.getElementById('voice-mode-btn');
+  btn.innerText = childVoiceMode ? '👧🏻 粵語配音：小朋友童聲' : '👩🏻‍🏫 粵語配音：老師溫柔聲';
+  speakText(childVoiceMode ? '依家係小朋友把聲同你一齊玩呀！' : '現在由老師溫柔地為你朗讀題目。');
+}
+
+function greetStudent() {
+  playSound('pop');
+  const stage = document.getElementById('home-avatar-stage').querySelector('svg');
+  if (stage) {
+    stage.classList.remove('char-jump');
+    void stage.offsetWidth;
+    stage.classList.add('char-jump');
+  }
+  const name = localStorage.getItem('stm_v3_name') || '文嘉小星';
+  speakText(`哈囉${name}！我係聖文嘉中英文幼稚園嘅好習慣小達人，快啲揀一個場景同我一齊玩啦！`);
+}
+
+function saveStudentName() {
+  const val = document.getElementById('student-name').value.trim() || '文嘉小星';
+  localStorage.setItem('stm_v3_name', val);
+  document.getElementById('display-name').innerText = val;
+}
+
+function updateUI() {
+  const count = unlockedIds.length;
+  document.getElementById('progress-fill').style.width = (count / 20 * 100) + '%';
+  document.getElementById('progress-text').innerText = `🌟 好習慣小達人印章：${count} / 20`;
+
+  ['classroom', 'playground', 'art', 'community'].forEach(zone => {
+    const total = HABITS_DATA.filter(h => h.zone === zone).length;
+    const done = HABITS_DATA.filter(h => h.zone === zone && unlockedIds.includes(h.id)).length;
+    document.getElementById('count-' + zone).innerText = `${done} / ${total} 完成`;
+  });
+
+  const grid = document.getElementById('stamp-grid');
+  grid.innerHTML = '';
+  HABITS_DATA.forEach(h => {
+    const isDone = unlockedIds.includes(h.id);
+    const div = document.createElement('div');
+    div.className = 'stamp-item ' + (isDone ? 'unlocked' : '');
+    div.innerHTML = `<span class="stamp-emoji">${isDone ? h.icon : '🔒'}</span>${h.name}`;
+    div.onclick = () => { playSound('pop'); startQuiz(h); };
+    grid.appendChild(div);
+  });
+}
+
+function openZone(zoneName) {
+  playSound('pop');
+  const zoneHabits = HABITS_DATA.filter(h => h.zone === zoneName);
+  const nextHabit = zoneHabits.find(h => !unlockedIds.includes(h.id)) || zoneHabits[Math.floor(Math.random() * zoneHabits.length)];
+  startQuiz(nextHabit);
+}
+
+// ==========================================
+// 🎬 渲染動畫小劇場與點擊互動 (Mini-Game)
+// ==========================================
+let theaterInteracted = false;
+
+function renderTheaterAnimation(habit) {
+  theaterInteracted = false;
+  const box = document.getElementById('theater-box');
+  const stage = document.getElementById('theater-stage');
+  const hintBar = document.getElementById('mini-task-bar');
+  
+  box.className = habit.zone === 'playground' ? 'theater-box mat-floor' : 'theater-box';
+  hintBar.innerText = habit.taskHint || '👆 點擊畫面幫小主角完成好習慣動作！';
+  hintBar.style.background = 'rgba(255,255,255,0.95)';
+  hintBar.style.borderColor = '#FF7043';
+  document.getElementById('theater-caption').innerText = habit.caption;
+
+  switch (habit.animType) {
+    case 'share_car': // 圖16：分享藍色玩具車
+      stage.innerHTML = `
+        ${getStudentSVG('boy', 'give', uniform)}
+        <div class="action-prop anim-slide-car" id="interactive-prop">🚙✨</div>
+        ${getStudentSVG('girl', 'wave', uniform)}
+      `;
+      break;
+    case 'comfort_friend': // 圖17：安慰哭泣同學
+      stage.innerHTML = `
+        ${getStudentSVG('girl', 'give', uniform, false)}
+        <div class="action-prop anim-bounce" id="interactive-prop">😢💧</div>
+        <div id="crying-friend-wrap">${getStudentSVG('girl', 'normal', uniform, true)}</div>
+      `;
+      break;
+    case 'promise_blocks': // 圖1：勾手指收積木進藍箱
+      stage.innerHTML = `
+        ${getStudentSVG('girl', 'give', uniform)}
+        <div class="action-prop anim-bounce" id="interactive-prop">🧱🔺🟦</div>
+        ${getStudentSVG('boy', 'wave', uniform)}
+      `;
+      break;
+    case 'honest_pot': // 圖10：打破花盆向紅衣老師認錯
+      stage.innerHTML = `
+        ${getStudentSVG('boy', 'normal', uniform)}
+        <div class="action-prop anim-swing" id="interactive-prop">🏺💥🌱</div>
+        ${getTeacherSVG()}
+      `;
+      break;
+    case 'listen_story': // 圖7：小白兔與小烏龜繪本
+      stage.innerHTML = `
+        ${getStudentSVG(gender, 'normal', uniform)}
+        <div class="action-prop anim-bounce" id="interactive-prop">📖🐰🐢</div>
+        ${getTeacherSVG()}
+      `;
+      break;
+    case 'balance_beam': // 圖5：行平衡木
+      stage.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center;">
+          ${getStudentSVG('girl', 'balance', 'pe')}
+          <div style="width:115px; height:10px; background:#FFA726; border-radius:4px; border:2px solid #E65100; margin-top:-8px;"></div>
+        </div>
+        <div class="action-prop anim-bounce" id="interactive-prop">💪⭐</div>
+        ${getTeacherSVG()}
+      `;
+      break;
+    case 'parachute_team': // 圖4：草地彩虹傘
+      stage.innerHTML = `
+        ${getStudentSVG('girl', 'wave', 'pe')}
+        <div style="width:110px; height:42px; border-radius:55px 55px 8px 8px; background:repeating-linear-gradient(90deg,#F44336 0 18px,#FFEB3B 18px 36px,#2196F3 36px 54px,#4CAF50 54px 72px); display:flex; justify-content:center; align-items:flex-end;" class="anim-bounce" id="interactive-prop">
+          <span style="font-size:1.9rem;">⚽</span>
+        </div>
+        ${getStudentSVG('boy', 'wave', 'pe')}
+      `;
+      break;
+    case 'rainbow_fan': // 圖9：彩虹扇舞
+      stage.innerHTML = `
+        ${getTeacherSVG()}
+        <div class="action-prop anim-swing" id="interactive-prop">🌈🪭🎶</div>
+        ${getStudentSVG(gender, 'wave', 'pe')}
+      `;
+      break;
+    case 'mtr_seat': // 圖2：港鐵讓座給婆婆
+      stage.innerHTML = `
+        ${getStudentSVG('boy', 'give', uniform)}
+        <div class="action-prop anim-bounce" id="interactive-prop">🚇💺</div>
+        <div style="font-size:3.3rem;" class="anim-swing">👵🏻🦯</div>
+      `;
+      break;
+    case 'fold_clothes': // 圖6：幫媽媽摺衫
+      stage.innerHTML = `
+        ${getStudentSVG('boy', 'give', uniform)}
+        <div class="action-prop anim-bounce" id="interactive-prop">👕🧺✨</div>
+        <div style="font-size:3.3rem;">👩🏻</div>
+      `;
+      break;
+    case 'thank_card': // 圖8：送心形感恩卡給父母
+      stage.innerHTML = `
+        ${getStudentSVG(gender, 'give', uniform)}
+        <div class="action-prop anim-bounce" id="interactive-prop">💌❤️</div>
+        <div style="font-size:3rem;">👩🏻👨🏻</div>
+      `;
+      break;
+    default:
+      stage.innerHTML = `
+        ${getStudentSVG(gender, 'wave', uniform)}
+        <div class="action-prop anim-bounce" id="interactive-prop">${habit.icon}✨</div>
+        ${getTeacherSVG()}
+      `;
+  }
+}
+
+// 當小朋友點擊劇場畫面時觸發的趣味互動反饋！
+function triggerTheaterAction() {
+  playSound('win');
+  const hintBar = document.getElementById('mini-task-bar');
+  const prop = document.getElementById('interactive-prop');
+  hintBar.innerText = '🌟 哇！你幫小主角做好咗好習慣動作喇！快啲揀下面嘅正確答案啦！';
+  hintBar.style.background = '#E8F5E9';
+  hintBar.style.borderColor = '#4CAF50';
+  hintBar.style.color = '#2E7D32';
+
+  if (currentHabit.animType === 'comfort_friend') {
+    // 哭泣的同學變成開心笑臉！
+    const wrap = document.getElementById('crying-friend-wrap');
+    if (wrap) wrap.innerHTML = getStudentSVG('girl', 'wave', uniform, false);
+    if (prop) prop.innerText = '😊💖🌞';
+    speakText('唔好喊啦！我陪妳一齊玩，笑返啦！');
+  } else if (currentHabit.animType === 'share_car') {
+    if (prop) prop.innerText = '🚙🤝😊';
+    speakText('架藍色車仔借俾妳玩先啦！唔該晒！');
+  } else if (currentHabit.animType === 'honest_pot') {
+    if (prop) prop.innerText = '🪴🌸✨';
+    speakText('對唔住老師，我誠實認錯，一齊種返靚棵花！');
+  } else if (currentHabit.animType === 'promise_blocks') {
+    if (prop) prop.innerText = '🟦✨👍';
+    speakText('拉勾勾，我哋一齊將積木放入藍色箱喇！');
+  } else {
+    if (prop) prop.style.transform = 'scale(1.35)';
+    speakText(`好嘢！一齊做好${currentHabit.name}嘅好習慣！`);
+  }
+}
+
+function startQuiz(habit) {
+  currentHabit = habit;
+  document.getElementById('screen-home').classList.remove('active');
+  document.getElementById('screen-quiz').classList.add('active');
+
+  const catEl = document.getElementById('q-category');
+  catEl.innerText = habit.cat;
+  catEl.className = 'badge-tag ' + habit.catClass;
+
+  document.getElementById('q-title').innerText = `${habit.icon} ${habit.name}`;
+  document.getElementById('q-def').innerText = `核心定義：${habit.def}`;
+  document.getElementById('q-scenario').innerText = habit.q;
+
+  renderTheaterAnimation(habit);
+
+  const choicesBox = document.getElementById('q-choices');
+  choicesBox.innerHTML = '';
+  const shuffled = [...habit.options].sort(() => Math.random() - 0.5);
+  shuffled.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span style="font-size:1.3rem;">${idx === 0 ? '🅰️' : '🅱️'}</span> <span>${opt.text}</span>`;
+    btn.onclick = () => checkAnswer(opt, btn);
+    choicesBox.appendChild(btn);
+  });
+}
+
+function checkAnswer(option, btnEl) {
+  const modal = document.getElementById('modal');
+  const charBox = document.getElementById('modal-char-box');
+  const title = document.getElementById('modal-title');
+  const msg = document.getElementById('modal-msg');
+
+  if (option.correct) {
+    playSound('win');
+    btnEl.classList.add('correct-anim');
+    fireConfetti();
+    charBox.innerHTML = getStudentSVG(gender, 'wave', uniform, false).replace('svg-char', 'svg-char char-jump');
+    title.innerText = `🎉 耶！獲得【${currentHabit.name}】印章！`;
+    msg.innerText = option.fb;
+
+    if (!unlockedIds.includes(currentHabit.id)) {
+      unlockedIds.push(currentHabit.id);
+      localStorage.setItem('stm_v3_unlocked', JSON.stringify(unlockedIds));
+      syncProgressToServer();
+    }
+    speakText(`好嘢！答啱喇！你識得${currentHabit.name}！` + option.fb);
+    setTimeout(() => { modal.style.display = 'flex'; updateUI(); }, 420);
+  } else {
+    playSound('oops');
+    btnEl.classList.add('wrong-anim');
+    setTimeout(() => btnEl.classList.remove('wrong-anim'), 500);
+    charBox.innerHTML = getTeacherSVG();
+    title.innerText = '💡 唔緊要，再諗一諗啦！';
+    msg.innerText = option.fb;
+    speakText('唔緊要，再諗一諗啦！' + option.fb);
+    modal.style.display = 'flex';
+  }
+}
+
+function closeModal() {
+  playSound('pop');
+  document.getElementById('modal').style.display = 'none';
+  if (unlockedIds.includes(currentHabit.id)) {
+    showHome();
+  }
+}
+
+function showHome() {
+  playSound('pop');
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-home').classList.add('active');
+}
+
+// ==========================================
+// 👧🏻 粵語兒童聲音合成引擎 (高音調 Pitch + 粵語語音優化)
+// ==========================================
+function speakText(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'zh-HK';
+
+  // 優先尋找廣東話語音包
+  const voices = window.speechSynthesis.getVoices();
+  const hkVoice = voices.find(v => v.lang.includes('HK') || v.lang.includes('yue') || v.name.includes('Sin-ji') || v.name.includes('Tracy'));
+  if (hkVoice) utter.voice = hkVoice;
+
+  if (childVoiceMode) {
+    // 兒童聲音設定：提高音調 (Pitch 1.55) + 輕快語速 (Rate 1.05)，呈現活潑幼稚園小朋友聲線
+    utter.pitch = 1.55;
+    utter.rate = 1.04;
+  } else {
+    // 老師溫柔聲線
+    utter.pitch = 1.1;
+    utter.rate = 0.92;
+  }
+  window.speechSynthesis.speak(utter);
+}
+
+function speakCurrentScenario() {
+  playSound('pop');
+  if (!currentHabit) return;
+  speakText(`好習慣：${currentHabit.name}。${currentHabit.q}`);
+}
+
+// 🎊 過關漫天彩紙動畫
+function fireConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({ length: 60 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    r: Math.random() * 6 + 4,
+    color: ['#FFD600', '#29B6F6', '#E91E63', '#69F0AE', '#AB47BC'][Math.floor(Math.random() * 5)],
+    vy: Math.random() * 4.5 + 3,
+    vx: Math.random() * 2 - 1
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      p.y += p.vy;
+      p.x += p.vx;
+    });
+    if (frame++ < 75) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+function resetProgress() {
+  if (confirm('確定要清除目前的印章紀錄，重新開始挑戰嗎？')) {
+    unlockedIds = [];
+    localStorage.removeItem('stm_v3_unlocked');
+    updateUI();
+  }
+}
+
+// 雲端資料儲存預留接口 (供技術人員連接資料庫)
+function syncProgressToServer() {
+  const payload = {
+    school: '聖文嘉中英文幼稚園 (利東)',
+    studentName: localStorage.getItem('stm_v3_name') || '未命名',
+    uniformStyle: uniform,
+    completedCount: unlockedIds.length,
+    unlockedHabits: unlockedIds.map(id => HABITS_DATA.find(h => h.id === id).name),
+    timestamp: new Date().toISOString()
+  };
+  console.log('已同步聖文嘉學生進度：', payload);
+}
+
+function exportReport() {
+  playSound('win');
+  const name = localStorage.getItem('stm_v3_name') || '文嘉小星';
+  const count = unlockedIds.length;
+  speakText(`恭喜${name}！你已經收集咗${count}個好習慣印章喇，繼續加油呀！`);
+  alert(`👑【聖文嘉中英文幼稚園 (利東) 好習慣成績表】\n\n學生姓名：${name}\n已收集印章：${count} / 20 個\n\n（如集齊 20 個印章，可向老師展示此畫面換領小獎勵！）`);
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+}
+initGame();
+</script>
+</body>
+</html>
