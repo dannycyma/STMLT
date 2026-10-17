@@ -1,1 +1,1401 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>聖文嘉中英文幼稚園(利東) - 感恩・珍惜 積極樂觀 20個好習慣 3D立體遊戲</title>
+<style>
+  :root {
+    --stm-yellow: #FFD54F;
+    --stm-orange: #FF8A65;
+    --stm-pink: #F06292;
+    --stm-purple: #7E57C2;
+    --stm-blue: #4FC3F7;
+    --stm-green: #66BB6A;
+  }
+  * {
+    box-sizing: border-box;
+    font-family: "PingFang HK", "Heiti TC", "Microsoft JhengHei", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  body {
+    margin: 0;
+    background: radial-gradient(circle at top, #FFF9C4 0%, #FFE0B2 50%, #F8BBD0 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    perspective: 1200px;
+  }
 
+  /* 手機 9:16 3D 遊戲主機外框 */
+  #game-container {
+    width: 100%;
+    max-width: 440px;
+    height: 100vh;
+    max-height: 920px;
+    background: linear-gradient(180deg, #FFFDF9 0%, #FFF3E0 100%);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 20px 50px rgba(93, 64, 55, 0.35), inset 0 0 0 4px #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px;
+  }
+
+  /* ==========================================
+     頂部：3D 封面主題「感恩・珍惜 積極樂觀」與「好習慣火車」
+     ========================================== */
+  header {
+    background: linear-gradient(180deg, #E1F5FE 0%, #FFF9C4 100%);
+    padding: 10px 12px 12px;
+    text-align: center;
+    border-bottom: 6px solid #FFB74D;
+    border-bottom-left-radius: 28px;
+    border-bottom-right-radius: 28px;
+    box-shadow: 0 8px 0 #F57C00, 0 12px 20px rgba(0,0,0,0.12);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .school-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .school-logo-svg {
+    width: 36px;
+    height: 42px;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2));
+  }
+  .school-name-pill {
+    background: rgba(255,255,255,0.9);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 2px solid #CE93D8;
+    box-shadow: 0 3px 0 #AB47BC;
+    font-size: 0.78rem;
+    font-weight: 900;
+    color: #4A148C;
+  }
+
+  /* 還原封面立體泡泡字：感恩・珍惜 積極樂觀 */
+  .booklet-main-title {
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin: 2px 0;
+    line-height: 1.25;
+  }
+  .bubble-pink {
+    color: #FF5252;
+    text-shadow: -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF, 2px 2px 0 #FFF, 0 4px 0 #C62828;
+  }
+  .bubble-orange {
+    color: #FF9800;
+    text-shadow: -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF, 2px 2px 0 #FFF, 0 4px 0 #E65100;
+  }
+  .bubble-green {
+    color: #4CAF50;
+    text-shadow: -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF, 2px 2px 0 #FFF, 0 4px 0 #1B5E20;
+  }
+  .booklet-sub {
+    display: inline-block;
+    background: #8D6E63;
+    color: #FFF;
+    font-size: 0.76rem;
+    font-weight: 900;
+    padding: 2px 12px;
+    border-radius: 14px;
+    box-shadow: 0 3px 0 #4E342E;
+    margin-bottom: 6px;
+  }
+
+  /* 🚂 封面同款「好習慣火車」3D 滾動車廂軌道 */
+  .train-track-wrap {
+    background: rgba(255,255,255,0.85);
+    border-radius: 16px;
+    padding: 6px 8px;
+    border: 2px solid #81D4FA;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .train-track-wrap::-webkit-scrollbar { display: none; }
+  .train-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .train-engine {
+    font-size: 1.5rem;
+    display: inline-block;
+    animation: chug 0.8s infinite alternate;
+    margin-right: 2px;
+  }
+  @keyframes chug {
+    from { transform: translateY(0) rotate(-2deg); }
+    to { transform: translateY(-3px) rotate(2deg); }
+  }
+  .train-car {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #E0E0E0;
+    color: #757575;
+    font-size: 0.7rem;
+    font-weight: 900;
+    box-shadow: 0 3px 0 #9E9E9E;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .train-car.lit {
+    background: linear-gradient(180deg, #FFEE58, #FBC02D);
+    color: #B71C1C;
+    box-shadow: 0 3px 0 #F57F17;
+    transform: translateY(-2px);
+  }
+
+  /* 畫面切換 */
+  .screen { display: none; padding: 12px; flex: 1; flex-direction: column; }
+  .screen.active { display: flex; animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.94) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* ==========================================
+     3D 立體課室舞台 (還原封面：陽光窗戶、彩虹地毯、木書櫃、花朵)
+     ========================================== */
+  .room-3d-stage {
+    background: linear-gradient(180deg, #FFF8E1 0%, #FFE0B2 58%, #FFCC80 58%, #FFA726 100%);
+    border-radius: 24px;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 14px;
+    border: 4px solid #FFFFFF;
+    box-shadow: 0 8px 0 #FFB74D, 0 14px 24px rgba(0,0,0,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  /* 課室立體圓形彩虹地毯 */
+  .rainbow-rug {
+    width: 190px;
+    height: 44px;
+    margin: -26px auto 6px;
+    border-radius: 50%;
+    background: conic-gradient(#EF5350, #FFCA28, #66BB6A, #42A5F5, #AB47BC, #EF5350);
+    border: 4px solid #FFF;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15), inset 0 0 10px rgba(0,0,0,0.2);
+    transform: rotateX(55deg);
+    position: relative;
+    z-index: 1;
+  }
+  .character-3d-wrap {
+    height: 132px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  .svg-char {
+    width: 115px;
+    height: 128px;
+    filter: drop-shadow(0 8px 6px rgba(0,0,0,0.22));
+    animation: toyBounce 2.2s ease-in-out infinite;
+    transform-origin: bottom center;
+    cursor: pointer;
+  }
+  @keyframes toyBounce {
+    0%, 100% { transform: translateY(0) rotateY(-4deg) scale(1); }
+    50% { transform: translateY(-7px) rotateY(4deg) scale(1.03); }
+  }
+  .char-jump { animation: superJump 0.6s ease 2 !important; }
+  @keyframes superJump {
+    0%, 100% { transform: translateY(0) scale(1); }
+    45% { transform: translateY(-26px) scale(1.12) rotate(5deg); }
+  }
+
+  /* 3D 玩具按鈕樣式 (Claymorphism) */
+  .btn-3d {
+    border: none;
+    border-radius: 16px;
+    padding: 6px 10px;
+    font-size: 0.76rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-3d:active {
+    transform: translateY(4px) !important;
+  }
+  .btn-yellow {
+    background: linear-gradient(180deg, #FFEE58, #FDD835);
+    color: #B71C1C;
+    border: 2px solid #FFF;
+    box-shadow: 0 5px 0 #F57F17, 0 6px 10px rgba(0,0,0,0.15);
+  }
+  .btn-blue {
+    background: linear-gradient(180deg, #4FC3F7, #039BE5);
+    color: #FFF;
+    border: 2px solid #FFF;
+    box-shadow: 0 5px 0 #01579B, 0 6px 10px rgba(0,0,0,0.15);
+  }
+  .btn-pink {
+    background: linear-gradient(180deg, #F48FB1, #EC407A);
+    color: #FFF;
+    border: 2px solid #FFF;
+    box-shadow: 0 5px 0 #880E4F, 0 6px 10px rgba(0,0,0,0.15);
+  }
+  .btn-green {
+    background: linear-gradient(180deg, #81C784, #43A047);
+    color: #FFF;
+    border: 2px solid #FFF;
+    box-shadow: 0 5px 0 #1B5E20, 0 6px 10px rgba(0,0,0,0.15);
+  }
+
+  .wardrobe-bar {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .input-3d {
+    padding: 5px 8px;
+    border-radius: 12px;
+    border: 2px solid #FFB74D;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-align: center;
+    width: 115px;
+    outline: none;
+    color: #4E342E;
+  }
+
+  /* ==========================================
+     四大 3D 立體主題島嶼按鈕
+     ========================================== */
+  .zone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .zone-card-3d {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFF8E1 100%);
+    border: 3px solid #FFFFFF;
+    border-radius: 22px;
+    padding: 10px 8px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 7px 0 #FFB74D, 0 10px 16px rgba(0,0,0,0.12);
+    transition: transform 0.12s, box-shadow 0.12s;
+    position: relative;
+  }
+  .zone-card-3d:active {
+    transform: translateY(5px);
+    box-shadow: 0 2px 0 #FFB74D;
+  }
+  .zone-icon-3d {
+    font-size: 2.2rem;
+    display: block;
+    filter: drop-shadow(0 4px 3px rgba(0,0,0,0.18));
+    animation: floatIcon 2.6s ease-in-out infinite;
+  }
+  @keyframes floatIcon {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.08); }
+  }
+  .zone-title { font-size: 0.92rem; font-weight: 900; color: #4E342E; display: block; margin-top: 2px; }
+  .zone-badge {
+    font-size: 0.72rem; font-weight: 900; color: #FFF;
+    background: #AB47BC; padding: 2px 10px; border-radius: 12px;
+    display: inline-block; margin-top: 4px; box-shadow: 0 2px 0 #6A1B9A;
+  }
+
+  /* ==========================================
+     20個好習慣 3D 印章收集板 (嚴格對應記錄冊 1-20 排序)
+     ========================================== */
+  .stamp-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 6px;
+    padding-bottom: 8px;
+  }
+  .stamp-3d {
+    background: linear-gradient(180deg, #F5F5F5, #E0E0E0);
+    border-radius: 16px;
+    padding: 6px 2px;
+    text-align: center;
+    font-size: 0.74rem;
+    color: #757575;
+    border: 2px solid #FFF;
+    box-shadow: 0 5px 0 #BDBDBD, 0 6px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s;
+  }
+  .stamp-3d:active { transform: translateY(3px); }
+  .stamp-3d.unlocked {
+    background: linear-gradient(180deg, #FFF9C4, #FFD54F);
+    color: #B71C1C;
+    font-weight: 900;
+    box-shadow: 0 5px 0 #F57F17, 0 6px 12px rgba(245,127,23,0.3);
+  }
+  .stamp-num {
+    position: absolute; top: 3px; left: 5px;
+    font-size: 0.62rem; font-weight: 900; opacity: 0.75;
+  }
+  .stamp-emoji { font-size: 1.45rem; display: block; margin: 2px 0; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.15)); }
+
+  /* ==========================================
+     畫面 2：3D 翻轉故事卡 (正面：3D互動劇場 / 背面：記錄冊金句卡)
+     ========================================== */
+  .quiz-header-row {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+  }
+  .habit-pill-en {
+    background: #7E57C2; color: #FFF; padding: 3px 12px; border-radius: 20px;
+    font-size: 0.78rem; font-weight: 900; box-shadow: 0 3px 0 #4A148C;
+  }
+
+  .flip-scene {
+    width: 100%;
+    height: 225px;
+    perspective: 1000px;
+    margin-bottom: 10px;
+  }
+  .flip-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-style: preserve-3d;
+  }
+  .flip-card-inner.is-flipped {
+    transform: rotateY(180deg);
+  }
+  .flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 22px;
+    border: 4px solid #FFFFFF;
+    box-shadow: 0 8px 0 #FFB74D, 0 12px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  /* 正面：3D 互動劇場 */
+  .flip-front {
+    background: linear-gradient(180deg, #E1F5FE 0%, #FFF9C4 65%, #FFCC80 65%, #FFB74D 100%);
+  }
+  /* 背面：記錄冊官方「我會……」品德宣言卡 */
+  .flip-back {
+    background: linear-gradient(135deg, #FFFDE7 0%, #FFE082 100%);
+    transform: rotateY(180deg);
+    padding: 16px;
+    text-align: center;
+  }
+  .motto-box {
+    background: #FFF; border-radius: 16px; padding: 12px; border: 3px dashed #FF8A65;
+    font-size: 0.95rem; line-height: 1.55; color: #4E342E; font-weight: 900;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  }
+
+  .mini-task-bar {
+    position: absolute; top: 8px; left: 10px; right: 10px; z-index: 5;
+    background: rgba(255, 255, 255, 0.95); border: 2px solid #FF7043; border-radius: 14px;
+    padding: 4px 8px; font-size: 0.78rem; color: #D84315; font-weight: 900;
+    box-shadow: 0 3px 0 #E64A19; animation: floatIcon 1.5s infinite; cursor: pointer;
+  }
+  .theater-stage {
+    position: relative; z-index: 2; width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center; gap: 10px; padding-top: 14px;
+  }
+  .action-prop-3d {
+    font-size: 2.9rem;
+    filter: drop-shadow(0 8px 6px rgba(0,0,0,0.25));
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .action-prop-3d:active { transform: scale(1.35) rotate(8deg); }
+  .theater-caption {
+    position: absolute; bottom: 6px; left: 10px; right: 10px; z-index: 3;
+    background: rgba(255,255,255,0.92); border-radius: 10px; padding: 3px 8px;
+    font-size: 0.74rem; color: #4E342E; font-weight: 900;
+  }
+
+  /* 題目與 3D 選項按鈕 */
+  .scenario-box {
+    font-size: 0.95rem; line-height: 1.45; color: #3E2723;
+    background: #FFF; padding: 10px 12px; border-radius: 16px;
+    margin: 6px 0 10px; font-weight: 900;
+    border: 3px solid #81D4FA; box-shadow: 0 4px 0 #29B6F6; text-align: left;
+  }
+  .choice-btn-3d {
+    width: 100%; background: linear-gradient(180deg, #FFFFFF, #FFFDE7);
+    border: 3px solid #FFD54F; border-radius: 18px;
+    padding: 11px 12px; margin-bottom: 10px; font-size: 0.92rem; font-weight: 900; color: #3E2723;
+    cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 6px 0 #FBC02D, 0 8px 12px rgba(0,0,0,0.08);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .choice-btn-3d:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #FBC02D;
+  }
+  .choice-btn-3d.correct-anim {
+    background: linear-gradient(180deg, #E8F5E9, #A5D6A7);
+    border-color: #4CAF50; box-shadow: 0 6px 0 #2E7D32;
+  }
+  .choice-btn-3d.wrong-anim {
+    background: linear-gradient(180deg, #FFEBEE, #EF9A9A);
+    border-color: #E53935; box-shadow: 0 6px 0 #B71C1C;
+    animation: shake 0.4s;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .nav-bar {
+    display: flex; gap: 8px; padding: 10px 12px; background: rgba(255,255,255,0.95);
+    border-top: 3px solid #FFE082; position: sticky; bottom: 0; z-index: 25;
+  }
+  #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 150; }
+
+  /* 3D 彈出獎勵視窗 */
+  #modal {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+    z-index: 100; justify-content: center; align-items: center; padding: 18px;
+  }
+  .modal-content-3d {
+    background: linear-gradient(180deg, #FFFFFF, #FFFDE7);
+    border-radius: 28px; padding: 20px; max-width: 360px; width: 100%;
+    text-align: center; border: 5px solid #FFD54F;
+    box-shadow: 0 12px 0 #F57F17, 0 20px 40px rgba(0,0,0,0.4);
+    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+<!-- 隱藏的相片上傳器，方便老師/家長隨時更換主角圖片 -->
+<input type="file" id="custom-img-upload" accept="image/*" style="display:none" onchange="handleCustomImage(event)">
+
+<div id="game-container">
+  <!-- 頂部：還原《20個好習慣記錄冊》封面標題與「好習慣火車」 -->
+  <header>
+    <div class="school-top-bar">
+      <!-- 聖文嘉皇冠盾牌校徽 SVG -->
+      <svg viewBox="0 0 100 120" class="school-logo-svg">
+        <path d="M10,32 Q20,18 30,32 Z M30,32 L40,15 L48,32 Z M38,14 L50,2 L62,14 L50,32 Z M52,32 L60,15 L70,32 Z M70,32 Q80,18 90,32 Z" fill="#FFF" stroke="#6A1B9A" stroke-width="2.5"/>
+        <path d="M24,40 L76,40 L76,72 Q76,98 50,106 Q24,98 24,72 Z" fill="#FFF" stroke="#6A1B9A" stroke-width="3.5"/>
+        <text x="29" y="55" font-size="11" font-weight="900" fill="#2E7D32">ST</text>
+        <text x="42" y="55" font-size="9" font-weight="900" fill="#6A1B9A">MONICA</text>
+        <path d="M32,88 Q26,70 42,60 Q36,72 32,88 Z" fill="#2E7D32"/>
+        <circle cx="49" cy="66" r="6" fill="none" stroke="#D32F2F" stroke-width="2.5"/>
+        <path d="M40,94 L46,74 L52,74 L58,94" fill="none" stroke="#D32F2F" stroke-width="2.5"/>
+        <circle cx="62" cy="72" r="5" fill="none" stroke="#FBC02D" stroke-width="2.5"/>
+      </svg>
+      <div class="school-name-pill">聖文嘉中英文幼稚園 (利東)</div>
+    </div>
+
+    <div class="booklet-main-title">
+      <span class="bubble-pink">感恩</span><span class="bubble-orange">・珍惜</span>
+      <span class="bubble-green">積極樂觀</span>
+    </div>
+    <div class="booklet-sub">❤️ 20個好習慣記錄冊・3D互動列車 🚂</div>
+
+    <!-- 封面右上角「好習慣火車」1-20 號動態車廂 -->
+    <div class="train-track-wrap">
+      <div class="train-row" id="train-row">
+        <span class="train-engine">🚂</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 畫面 1：3D 立體課室主舞台 -->
+  <div id="screen-home" class="screen active">
+    <div class="room-3d-stage">
+      <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:900; color:#6A1B9A;">
+        <span>🌈 幸福人生的20個好習慣</span>
+        <span>👩🏻‍🏫 粵語女老師導賞</span>
+      </div>
+
+      <!-- 3D 主角展示區 (點擊主角會跳躍並說話) -->
+      <div class="character-3d-wrap" id="home-avatar-stage" onclick="greetStudent()"></div>
+      <!-- 封面同款立體圓形彩虹地毯 -->
+      <div class="rainbow-rug"></div>
+
+      <div style="font-weight:900; color:#4E342E; font-size:0.84rem; margin-top:2px;">
+        👆 點擊主角打招呼！好習慣小達人：<span id="display-name" style="color:#D81B60;">文嘉同學</span>
+      </div>
+
+      <!-- 3D 玩具按鈕控制列 (含更換自訂圖片功能) -->
+      <div class="wardrobe-bar">
+        <input type="text" id="student-name" class="input-3d" placeholder="輸入姓名/班別" onchange="saveStudentName()">
+        <button class="btn-3d btn-blue" onclick="toggleGender()">👦🏻👧🏻 男女主角</button>
+        <button class="btn-3d btn-yellow" onclick="toggleUniform()" id="btn-uniform">👔 夏季校服</button>
+        <button class="btn-3d btn-pink" onclick="document.getElementById('custom-img-upload').click()">📸 換主角相片</button>
+      </div>
+    </div>
+
+    <!-- 四大 3D 主題探索區 -->
+    <div class="zone-grid">
+      <div class="zone-card-3d" onclick="openZone('express')">
+        <span class="zone-icon-3d">📣</span>
+        <span class="zone-title">情緒與表達小舞台</span>
+        <span class="zone-badge" id="count-express">第 1 - 5 站</span>
+      </div>
+      <div class="zone-card-3d" onclick="openZone('challenge')">
+        <span class="zone-icon-3d">🚩</span>
+        <span class="zone-title">毅力山坡與自律角</span>
+        <span class="zone-badge" id="count-challenge">第 6 - 10 站</span>
+      </div>
+      <div class="zone-card-3d" onclick="openZone('friends')">
+        <span class="zone-icon-3d">🧱</span>
+        <span class="zone-title">彩虹地毯好朋友區</span>
+        <span class="zone-badge" id="count-friends">第 11 - 15 站</span>
+      </div>
+      <div class="zone-card-3d" onclick="openZone('love')">
+        <span class="zone-icon-3d">🔭</span>
+        <span class="zone-title">求知星空與感恩角</span>
+        <span class="zone-badge" id="count-love">第 16 - 20 站</span>
+      </div>
+    </div>
+
+    <div style="font-weight:900; color:#5D4037; font-size:0.84rem;">
+      🏅 點擊《20個好習慣記錄冊》立體印章直接挑戰：
+    </div>
+    <div class="stamp-grid" id="stamp-grid"></div>
+  </div>
+
+  <!-- 畫面 2：3D 立體翻牌小劇場與問答 -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header-row">
+      <span class="habit-pill-en" id="q-en-badge">No.1 Emotions</span>
+      <button class="btn-3d btn-yellow" onclick="flipCard()">🔄 3D翻轉看「我會…」宣言卡</button>
+    </div>
+
+    <h2 style="margin: 2px 0 6px; color:#D84315; font-size:1.35rem; text-align:center;" id="q-title">1. 情緒 Emotions</h2>
+
+    <!-- 3D 180度立體翻轉舞台 -->
+    <div class="flip-scene">
+      <div class="flip-card-inner" id="flip-card-inner">
+        <!-- 正面：3D 動畫小劇場 (點擊可互動) -->
+        <div class="flip-face flip-front" onclick="triggerTheaterAction()">
+          <div class="mini-task-bar" id="mini-task-bar">👆 點擊立體道具，幫小主角完成好習慣！</div>
+          <div class="theater-stage" id="theater-stage"></div>
+          <div class="rainbow-rug" style="width:160px; height:32px; margin-top:-20px;"></div>
+          <div class="theater-caption" id="theater-caption">情境演示中...</div>
+        </div>
+        <!-- 背面：記錄冊官方「我會……」第一人稱金句 -->
+        <div class="flip-face flip-back" onclick="flipCard()">
+          <div style="font-size:1rem; font-weight:900; color:#D81B60; margin-bottom:6px;" id="back-title">📖 聖文嘉好習慣宣言</div>
+          <div class="motto-box" id="q-motto">我會……</div>
+          <div style="font-size:0.75rem; color:#6D4C41; margin-top:8px; font-weight:bold;">
+            👆 點擊卡片翻回 3D 動畫劇場
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:6px; justify-content:center; margin-bottom:4px;">
+      <button class="btn-3d btn-pink" onclick="speakCurrentScenario()">🔊 聽女老師讀題目</button>
+      <button class="btn-3d btn-green" onclick="speakMotto()">📖 聽老師讀「我會…」金句</button>
+    </div>
+
+    <div class="scenario-box" id="q-scenario"></div>
+    <div id="q-choices"></div>
+
+    <button class="btn-3d btn-blue" style="width:100%; justify-content:center; padding:10px; margin-top:4px;" onclick="showHome()">
+      ⬅️ 返回 3D 課室主地圖
+    </button>
+  </div>
+
+  <div class="nav-bar">
+    <button class="btn-3d btn-blue" style="flex:1; justify-content:center; padding:10px;" onclick="resetProgress()">🔄 重新開始</button>
+    <button class="btn-3d btn-pink" style="flex:1; justify-content:center; padding:10px;" onclick="exportReport()">🏆 領取好習慣證書</button>
+  </div>
+</div>
+
+<!-- 3D 過關彈出獎勵視窗 -->
+<div id="modal">
+  <div class="modal-content-3d">
+    <div id="modal-char-box" style="height:120px; display:flex; justify-content:center;"></div>
+    <h2 id="modal-title" style="margin: 6px 0; color:#D81B60; font-size:1.25rem;">🎉 老師讚賞你！</h2>
+    <p id="modal-msg" style="color:#4E342E; line-height: 1.5; font-size: 0.9rem; font-weight:900; background:#FFF8E1; padding:10px; border-radius:14px; border:2px solid #FFE082;"></p>
+    <button class="btn-3d btn-green" style="width:100%; justify-content:center; padding:12px; font-size:1rem; margin-top:8px;" onclick="closeModal()">
+      🚂 登上好習慣火車下一站！
+    </button>
+  </div>
+</div>
+
+<script>
+// ==========================================
+// 🎵 Web Audio API 3D 立體卡通音效合成器
+// ==========================================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    if (type === 'pop') {
+      osc.frequency.setValueAtTime(540, now);
+      osc.frequency.exponentialRampToValueAtTime(920, now + 0.08);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
+      osc.start(now); osc.stop(now + 0.09);
+    } else if (type === 'win') {
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.setValueAtTime(freq, now + i * 0.08);
+        g.gain.setValueAtTime(0.16, now + i * 0.08);
+        g.gain.linearRampToValueAtTime(0.01, now + i * 0.08 + 0.22);
+        o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.22);
+      });
+    } else if (type === 'oops') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(280, now);
+      osc.frequency.linearRampToValueAtTime(160, now + 0.25);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now); osc.stop(now + 0.25);
+    }
+  } catch(e) {}
+}
+
+// ==========================================
+// 👕 聖文嘉 3D 校服主角產生器 (支援上傳自訂相片 + 雙校服切換)
+// ==========================================
+let customAvatarDataUrl = localStorage.getItem('stm_v4_custom_img') || '';
+
+function handleCustomImage(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    customAvatarDataUrl = e.target.result;
+    try { localStorage.setItem('stm_v4_custom_img', customAvatarDataUrl); } catch(err) {}
+    renderHomeAvatar();
+    speakText('哇！已經換咗你揀選嘅主角相片喇，好得意呀！');
+  };
+  reader.readAsDataURL(file);
+}
+
+function getRedCrestSVG(x, y, scale = 1) {
+  return `
+  <g transform="translate(${x}, ${y}) scale(${scale})">
+    <path d="M0,4 L3,0 L6,4 L9,0 L12,4 L15,0 L18,4 Z" fill="none" stroke="#D32F2F" stroke-width="1.3"/>
+    <path d="M1,5.5 L17,5.5 L17,15 Q17,22 9,24 Q1,22 1,15 Z" fill="#FFF" stroke="#D32F2F" stroke-width="1.5"/>
+    <circle cx="8" cy="12" r="2.2" fill="none" stroke="#D32F2F" stroke-width="1.2"/>
+    <circle cx="13" cy="14" r="1.8" fill="none" stroke="#D32F2F" stroke-width="1.2"/>
+  </g>`;
+}
+
+function getStudentSVG(gender = 'girl', pose = 'wave', uniform = 'summer', useCustomIfAvailable = true) {
+  if (useCustomIfAvailable && customAvatarDataUrl) {
+    return `<img src="${customAvatarDataUrl}" class="svg-char" style="object-fit:contain; border-radius:16px;" alt="聖文嘉主角">`;
+  }
+  const uid = Math.random().toString(36).substr(2, 5);
+  const hairBack = gender === 'girl' ? `
+    <path d="M22,32 Q9,44 14,62 Q20,56 25,44 Z" fill="#212121"/>
+    <path d="M78,32 Q91,44 86,62 Q80,56 75,44 Z" fill="#212121"/>
+    <path d="M17,36 L25,32 L25,40 Z M25,36 L17,32 L17,40 Z" fill="#D32F2F"/>
+    <path d="M75,36 L83,32 L83,40 Z M83,36 L75,32 L75,40 Z" fill="#D32F2F"/>
+  ` : '';
+
+  const sleeveColor = uniform === 'pe' ? '#64B5F6' : (gender === 'boy' ? '#E3F2FD' : '#FCE4EC');
+  const leftArm = pose === 'wave'
+    ? `<path d="M30,62 L14,40" stroke="#FFCCBC" stroke-width="8.5" stroke-linecap="round"/>
+       <path d="M34,61 L22,49" stroke="${sleeveColor}" stroke-width="11.5" stroke-linecap="round"/>`
+    : `<path d="M32,62 L22,80" stroke="#FFCCBC" stroke-width="8.5" stroke-linecap="round"/>
+       <path d="M34,61 L26,72" stroke="${sleeveColor}" stroke-width="11.5" stroke-linecap="round"/>`;
+
+  const rightArm = `<path d="M68,62 L86,50" stroke="#FFCCBC" stroke-width="8.5" stroke-linecap="round"/>
+                    <path d="M66,61 L78,55" stroke="${sleeveColor}" stroke-width="11.5" stroke-linecap="round"/>`;
+
+  let outfitSVG = '';
+  if (uniform === 'pe') {
+    outfitSVG = `
+      <path d="M33,84 L67,84 L69,100 L52,100 L50,92 L48,100 L31,100 Z" fill="#FFD600" stroke="#FBC02D" stroke-width="1"/>
+      <line x1="33" y1="85" x2="32" y2="99" stroke="#D32F2F" stroke-width="2.5"/>
+      <line x1="67" y1="85" x2="68" y2="99" stroke="#D32F2F" stroke-width="2.5"/>
+      ${leftArm} ${rightArm}
+      <rect x="32" y="55" width="36" height="31" rx="6" fill="#FFD600"/>
+      <path d="M32,56 L41,56 L32,68 Z" fill="#64B5F6"/>
+      <path d="M68,56 L59,56 L68,68 Z" fill="#64B5F6"/>
+      <polygon points="41,55 50,63 35,61" fill="#FFFFFF" stroke="#64B5F6" stroke-width="1.2"/>
+      <polygon points="59,55 50,63 65,61" fill="#FFFFFF" stroke="#64B5F6" stroke-width="1.2"/>
+      ${getRedCrestSVG(54, 64, 0.55)}
+    `;
+  } else if (gender === 'boy') {
+    // 記錄冊男童藍白直間夏季校服
+    outfitSVG = `
+      <defs>
+        <pattern id="bStripe_${uid}" width="5" height="10" patternUnits="userSpaceOnUse">
+          <rect width="2.5" height="10" fill="#FFFFFF"/><rect x="2.5" width="2.5" height="10" fill="#90CAF9"/>
+        </pattern>
+      </defs>
+      <path d="M33,84 L67,84 L69,100 L52,100 L50,92 L48,100 L31,100 Z" fill="#0D47A1"/>
+      ${leftArm} ${rightArm}
+      <rect x="32" y="55" width="36" height="30" rx="5" fill="url(#bStripe_${uid})" stroke="#64B5F6" stroke-width="1"/>
+      <path d="M40,55 Q45,62 50,58 Q55,62 60,55 Z" fill="#FFFFFF" stroke="#90CAF9" stroke-width="1.2"/>
+      <rect x="53" y="65" width="13" height="6" rx="1" fill="#FFFFFF" stroke="#0D47A1" stroke-width="0.8"/>
+      <text x="59.5" y="69.5" font-size="3.2" font-weight="900" fill="#0D47A1" text-anchor="middle">St.Monica</text>
+    `;
+  } else {
+    // 記錄冊女童粉紅白直間夏季連身裙
+    outfitSVG = `
+      <defs>
+        <pattern id="pStripe_${uid}" width="5" height="10" patternUnits="userSpaceOnUse">
+          <rect width="2.5" height="10" fill="#FFFFFF"/><rect x="2.5" width="2.5" height="10" fill="#F48FB1"/>
+        </pattern>
+      </defs>
+      ${leftArm} ${rightArm}
+      <polygon points="34,55 66,55 73,97 27,97" fill="url(#pStripe_${uid})" stroke="#F06292" stroke-width="1"/>
+      <polygon points="39,55 61,55 59,63 41,63" fill="#FFFFFF" stroke="#F06292" stroke-width="1.2"/>
+      <path d="M54,80 L65,80 L65,90 Q59.5,94 54,90 Z" fill="#FFFFFF" stroke="#80DEEA" stroke-width="1"/>
+      ${getRedCrestSVG(56, 81, 0.42)}
+    `;
+  }
+
+  return `
+  <svg viewBox="0 0 100 130" class="svg-char">
+    ${hairBack}
+    <rect x="38" y="95" width="8" height="22" rx="4" fill="#FFCCBC"/>
+    <rect x="54" y="95" width="8" height="22" rx="4" fill="#FFCCBC"/>
+    <rect x="34" y="114" width="15" height="9" rx="4.5" fill="#FFFFFF" stroke="#90A4AE" stroke-width="1.5"/>
+    <rect x="51" y="114" width="15" height="9" rx="4.5" fill="#FFFFFF" stroke="#90A4AE" stroke-width="1.5"/>
+    ${outfitSVG}
+    <!-- 3D 大眼睛可愛頭像 -->
+    <circle cx="50" cy="35" r="22" fill="#FFE0B2"/>
+    <path d="M27,33 Q28,10 50,10 Q72,10 73,33 Q64,22 50,24 Q36,22 27,33 Z" fill="#212121"/>
+    <circle cx="40" cy="37" r="4.2" fill="#212121"/>
+    <circle cx="60" cy="37" r="4.2" fill="#212121"/>
+    <circle cx="41.5" cy="35.5" r="1.6" fill="#FFF"/>
+    <circle cx="61.5" cy="35.5" r="1.6" fill="#FFF"/>
+    <ellipse cx="33" cy="42" rx="4" ry="2.2" fill="#FF8A80" opacity="0.7"/>
+    <ellipse cx="67" cy="42" rx="4" ry="2.2" fill="#FF8A80" opacity="0.7"/>
+    <path d="M44,44 Q50,51 56,44" fill="#EF5350" stroke="#B71C1C" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// 封面同款：穿粉紅拼紫色制服的溫柔女老師 SVG
+function getTeacherSVG() {
+  return `
+  <svg viewBox="0 0 100 130" class="svg-char">
+    <path d="M70,26 Q88,30 84,54 Q76,48 70,38 Z" fill="#4E342E"/>
+    <rect x="37" y="86" width="11" height="30" rx="4" fill="#311B92"/>
+    <rect x="52" y="86" width="11" height="30" rx="4" fill="#311B92"/>
+    <rect x="35" y="114" width="14" height="7" rx="3" fill="#FFFFFF"/>
+    <rect x="51" y="114" width="14" height="7" rx="3" fill="#FFFFFF"/>
+    <path d="M30,56 L18,68" stroke="#FFE0B2" stroke-width="7" stroke-linecap="round"/>
+    <path d="M70,56 L84,48" stroke="#FFE0B2" stroke-width="7" stroke-linecap="round"/>
+    <!-- 封面老師粉紫拼色制服 -->
+    <rect x="31" y="52" width="38" height="36" rx="6" fill="#F8BBD0"/>
+    <path d="M31,52 L69,52 L69,64 L31,64 Z" fill="#6A1B9A"/>
+    <polygon points="41,52 50,61 35,58" fill="#CE93D8" stroke="#FFFFFF" stroke-width="1"/>
+    <polygon points="59,52 50,61 65,58" fill="#CE93D8" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="50" cy="32" r="20" fill="#FFE0B2"/>
+    <path d="M29,30 Q30,10 50,10 Q70,10 71,30 Q60,20 50,23 Q40,20 29,30 Z" fill="#4E342E"/>
+    <circle cx="42" cy="34" r="3" fill="#212121"/>
+    <circle cx="58" cy="34" r="3" fill="#212121"/>
+    <path d="M44,41 Q50,46 56,41" fill="none" stroke="#C62828" stroke-width="2" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// ==========================================
+// 📚 嚴格按照《20個好習慣記錄冊》1-20 官方次序、英文名稱、插畫與「我會…」宣言建立題庫
+// ==========================================
+const HABITS_DATA = [
+  // 【第 1 - 5 站：express 情緒與表達小舞台】
+  { id: 1, zone: 'express', name: '情緒', en: 'Emotions', icon: '😊',
+    motto: '當我遇到不如意的事或者生氣時，我會先深呼吸冷靜下來，好好向爸媽或者老師說出心裏的感受，不隨便發脾氣。',
+    taskHint: '👆 點擊畫面中的表情氣球，做個深呼吸把生氣變成開心笑臉！',
+    caption: '🎬 記錄冊第1站【情緒 Emotions】：深呼吸冷靜下來，好好說出心裏的感受！',
+    props: '😤💨➡️😊💖',
+    q: '當你在學校或家裏遇到不如意的事、覺得生氣或者想哭時，應該怎樣做？',
+    options: [
+      { text: '先深呼吸冷靜下來，好好向爸媽或老師說出心裏的感受，不隨便發脾氣。', correct: true },
+      { text: '馬上大哭大鬧、亂丟玩具向人發脾氣。', correct: false }
+    ]
+  },
+  { id: 2, zone: 'express', name: '聆聽', en: 'Listening', icon: '👂',
+    motto: '當老師上課、爸媽交代事情或者其他幼兒說話時，我會專心用耳朵聽，眼睛看着對方，有禮貌地不隨便插嘴。',
+    taskHint: '👆 點擊故事書與音符，張開小耳朵專心聽老師講故事！',
+    caption: '🎬 記錄冊第2站【聆聽 Listening】：專心用耳朵聽，眼睛看着對方，不隨便插嘴！',
+    props: '📖🎶👀👂',
+    q: '當老師上課講故事、爸媽交代事情或者其他小朋友說話時，我們應該怎樣做？',
+    options: [
+      { text: '專心用耳朵聽，眼睛看着對方，有禮貌地不隨便插嘴。', correct: true },
+      { text: '一邊聽一邊跟別人聊天，還大聲插嘴打斷別人。', correct: false }
+    ]
+  },
+  { id: 3, zone: 'express', name: '表達', en: 'Self-Expression', icon: '📢',
+    motto: '我會用溫和有禮貌的聲音，清楚說出自己的想法與需要，並且開心地和大家分享生活中的高興事。',
+    taskHint: '👆 點擊紅色小喇叭（大聲公），站在小木台上開心有禮貌地分享！',
+    caption: '🎬 記錄冊第3站【表達 Expression】：女同學站在小木台上用溫和有禮貌的聲音分享喜悅！',
+    props: '📣💬❤️🌟',
+    q: '像記錄冊插圖裏站在小木台上的同學一樣，當你想說出自己的想法或分享高興事時，應該怎樣做？',
+    options: [
+      { text: '用溫和有禮貌的聲音，清楚說出自己的想法與需要，開心地和大家分享。', correct: true },
+      { text: '用尖叫發脾氣或者搶東西的方式來表示。', correct: false }
+    ]
+  },
+  { id: 4, zone: 'express', name: '積極', en: 'Positivity', icon: '☀️',
+    motto: '遇到新的學習或者嘗試時，我不會拖延或者找藉口，會充滿活力地說：「我可以試試做！」樂觀地面對新挑戰。',
+    taskHint: '👆 點擊頭頂上的微笑大太陽，充滿活力跳起來說「我可以試試做！」',
+    caption: '🎬 記錄冊第4站【積極 Positivity】：在微笑太陽下高舉雙手跳躍，樂觀面對新挑戰！',
+    props: '🌞🙌✨🌈',
+    q: '遇到新的學習或者從未試過的挑戰時，怎樣做才是「積極樂觀」的好孩子？',
+    options: [
+      { text: '不拖延、不找藉口，充滿活力地說：「我可以試試做！」', correct: true },
+      { text: '拖拖拉拉找藉口說：「太難喇，我唔想試！」', correct: false }
+    ]
+  },
+  { id: 5, zone: 'express', name: '勇敢', en: 'Courage', icon: '🦁',
+    motto: '我不害怕面對困難與挫折。如果不小心做錯了事，我會勇敢承認並努力改正，做個堅強又有勇氣的好孩子。',
+    taskHint: '👆 點擊勇氣小勳章，做個不怕困難、勇於承認與改正的好孩子！',
+    caption: '🎬 記錄冊第5站【勇敢 Courage】：不害怕困難與挫折，做錯事勇敢承認並努力改正！',
+    props: '🦁🛡️💪🌟',
+    q: '當遇到困難與挫折，或者不小心做錯了事（例如打破了東西），怎樣做才是「勇敢」？',
+    options: [
+      { text: '不害怕面對困難；做錯事時勇敢承認並努力改正。', correct: true },
+      { text: '因為害怕就躲起來逃避，或者推卸給別人。', correct: false }
+    ]
+  },
+
+  // 【第 6 - 10 站：challenge 毅力山坡與自律角】
+  { id: 6, zone: 'challenge', name: '毅力', en: 'Perseverance', icon: '🚩',
+    motto: '做手工、搭積木或者學新技能時，遇到困難我不會輕易放棄，會保持耐性，一步一步堅持完成任務。',
+    taskHint: '👆 點擊山坡上的「YOU CAN DO IT!」紅旗，一步一步堅持爬上山頂！',
+    caption: '🎬 記錄冊第6站【毅力 Perseverance】：向着「YOU CAN DO IT!」紅旗一步一步爬上山坡！',
+    props: '⛰️🚩💪🏆',
+    q: '做手工、搭積木或者像插圖一樣爬上小山坡時，遇到困難應該怎樣做？',
+    options: [
+      { text: '不會輕易放棄，保持耐性，一步一步堅持完成任務！', correct: true },
+      { text: '做了一半覺得累就馬上放棄不做。', correct: false }
+    ]
+  },
+  { id: 7, zone: 'challenge', name: '自律', en: 'Self-Discipline', icon: '⏰',
+    motto: '即使大人不在身邊提醒，我也會自動自發收拾好玩具與用品，並且跟隨作息時間，自律地做好每一件事。',
+    taskHint: '👆 點擊玩具箱與小鬧鐘，不用大人提醒也自動自發收拾好玩具！',
+    caption: '🎬 記錄冊第7站【自律 Self-Discipline】：自動自發收拾玩具與用品，跟隨作息時間！',
+    props: '⏰🧸📦✨',
+    q: '玩完玩具或者到了作息時間，即使爸媽和老師不在身邊提醒，怎樣做才是「自律」？',
+    options: [
+      { text: '自動自發收拾好玩具與用品，跟隨作息時間做好每一件事。', correct: true },
+      { text: '一定要大人不停催促才肯收玩具。', correct: false }
+    ]
+  },
+  { id: 8, zone: 'challenge', name: '負責任', en: 'Responsibility', icon: '🎒',
+    motto: '我會學習照顧自己，自動自發穿好鞋子、整理小書包，並且用心做好課室裏的小幫手工作，不推卸責任。',
+    taskHint: '👆 點擊封面同款的藍色小書包與水壺，自己動手整理好！',
+    caption: '🎬 記錄冊第8站【負責任 Responsibility】：自己穿好白波鞋、整理藍色小書包與水壺！',
+    props: '🎒🍼👟👍',
+    q: '像封面中間的男同學一樣，每天整理藍色小書包、放水壺和穿白波鞋，應該怎樣做？',
+    options: [
+      { text: '學習照顧自己，自動自發穿好鞋子、整理小書包，用心做好課室小幫手！', correct: true },
+      { text: '把書包和鞋子亂丟，全部推給爸媽或老師幫自己做。', correct: false }
+    ]
+  },
+  { id: 9, zone: 'challenge', name: '珍惜', en: 'Cherishing', icon: '🌱',
+    motto: '我會用心愛護身邊的圖書、玩具與日常用品，也會感恩食物的來之不易，用餐時把飯菜吃光，一點也不浪費。',
+    taskHint: '👆 點擊繪本圖書與美味茶點，用心愛護書本、把食物吃光光！',
+    caption: '🎬 記錄冊第9站【珍惜 Cherishing】：愛護課室木書架的圖書，把碗裏的飯菜吃光不浪費！',
+    props: '📗🍱🍎💖',
+    q: '面對課室書架上的圖書、玩具，還有每天吃的茶點和飯菜，怎樣做才是「珍惜」？',
+    options: [
+      { text: '用心愛護圖書與玩具，感恩食物來之不易，把飯菜吃光一點也不浪費。', correct: true },
+      { text: '隨便撕毀圖書，吃飯時把不喜歡的食物倒掉浪費。', correct: false }
+    ]
+  },
+  { id: 10, zone: 'challenge', name: '謙讓', en: 'Sharing & Courtesy', icon: '🚙',
+    motto: '玩遊戲或者使用公共設施時，我會守秩序排隊輪候，不爭先推撞，並樂意把好玩的玩具與美食分享給朋友。',
+    taskHint: '👆 點擊好玩的玩具與美食，守秩序排隊並開心地分享給好朋友！',
+    caption: '🎬 記錄冊第10站【謙讓 Sharing & Courtesy】：守秩序排隊輪候，樂意把玩具與美食分享給朋友！',
+    props: '🚙🍪🤝😊',
+    q: '玩遊戲、使用公共設施，或者有好玩的玩具和美食時，怎樣做才是「謙讓」？',
+    options: [
+      { text: '守秩序排隊輪候，不爭先推撞，並樂意把玩具與美食分享給朋友。', correct: true },
+      { text: '插隊推撞別人，把所有玩具都霸佔起來不跟人分享。', correct: false }
+    ]
+  },
+
+  // 【第 11 - 15 站：friends 彩虹地毯好朋友區】
+  { id: 11, zone: 'friends', name: '信任', en: 'Trust', icon: '💞',
+    motto: '我相信爸媽與老師對我的愛護，也會真心真意對待每一位朋友，建立互相信任的好關係。',
+    taskHint: '👆 點擊愛心，像記錄冊插圖一樣穩穩接住向後倒的好朋友！',
+    caption: '🎬 記錄冊第11站【信任 Trust】：女同學安心閉眼向後傾，男同學伸出雙手穩穩接住她！',
+    props: '🤗💕🛡️✨',
+    q: '像記錄冊《Trust 信任》插畫裏一樣，和好朋友一起玩遊戲或相處時，怎樣建立互相信任的好關係？',
+    options: [
+      { text: '相信爸媽與老師的愛護，真心真意對待並支持每一位朋友！', correct: true },
+      { text: '經常猜疑朋友，或者故意放手讓同伴跌倒。', correct: false }
+    ]
+  },
+  { id: 12, zone: 'friends', name: '關愛', en: 'Care & Kindness', icon: '🩹',
+    motto: '我會主動關心身邊的人。當看到朋友不開心或者需要幫忙時，我會主動幫忙和安慰他人。',
+    taskHint: '👆 點擊愛心膠布，蹲下來幫擦傷膝蓋的女同學貼上膠布安慰她！',
+    caption: '🎬 記錄冊第12站【關愛 Care & Kindness】：男同學溫柔蹲下，幫受傷的女同學膝蓋貼膠布！',
+    props: '🩹❤️🤗🌟',
+    q: '看到好朋友不小心跌倒擦傷了膝蓋，或者不開心需要幫忙時，你會怎樣做？',
+    options: [
+      { text: '主動關心身邊的人，走過去溫柔安慰她、幫她貼膠布或請老師幫忙。', correct: true },
+      { text: '裝作看不見，自己跑去玩不理會受傷的朋友。', correct: false }
+    ]
+  },
+  { id: 13, zone: 'friends', name: '包容', en: 'Acceptance', icon: '🤗',
+    motto: '我會接納其他幼兒和我不一樣的地方，學會用寬容與理解的心原諒同伴的小過錯，和大家友好相處。',
+    taskHint: '👆 點擊友誼愛心，用寬容與理解的心原諒同伴的小過錯！',
+    caption: '🎬 記錄冊第13站【包容 Acceptance】：接納別人和自己不一樣的地方，寬容原諒同伴的小過錯！',
+    props: '🤝💛🌈😊',
+    q: '當其他小朋友和你有不一樣的想法，或者不小心犯了小過錯向你道歉時，應該怎樣做？',
+    options: [
+      { text: '接納別人和自己不一樣的地方，用寬容與理解的心原諒同伴，友好相處。', correct: true },
+      { text: '計較生氣，不肯原諒別人的小過錯。', correct: false }
+    ]
+  },
+  { id: 14, zone: 'friends', name: '誠實', en: 'Honesty', icon: '💎',
+    motto: '我會說真話、不撒謊，真誠坦白地表達自己的所作所為，做個誠實和值得讓大家信任與尊重的好孩子。',
+    taskHint: '👆 點擊閃亮誠實寶石，真誠坦白說真話，贏得大家的信任！',
+    caption: '🎬 記錄冊第14站【誠實 Honesty】：說真話、不撒謊，做個值得大家信任與尊重的好孩子！',
+    props: '💎💬✨👍',
+    q: '當老師或爸媽詢問事情經過，或者自己不小心弄壞了物品時，怎樣做才是「誠實」？',
+    options: [
+      { text: '說真話、不撒謊，真誠坦白地表達自己的所作所為。', correct: true },
+      { text: '為了逃避責罰而編造謊話欺騙大人。', correct: false }
+    ]
+  },
+  { id: 15, zone: 'friends', name: '團隊合作', en: 'Teamwork', icon: '🧱',
+    motto: '我喜歡和其他幼兒一起進行不同的遊戲與收拾課室，大家互相配合與幫忙，發揮團結合作的力量。',
+    taskHint: '👆 點擊七彩立體積木，和好朋友在彩虹地毯上同心協力砌出高塔！',
+    caption: '🎬 記錄冊第15站【團隊合作 Teamwork】：男女同學跪坐一起互相配合，合作把七彩積木疊高！',
+    props: '🧱🟥🟨🟦🙌',
+    q: '像封面和記錄冊插圖一樣，大家在彩虹地毯上一起搭積木或收拾課室時，怎樣做才是「團隊合作」？',
+    options: [
+      { text: '大家互相配合與幫忙，同心協力發揮團結合作的力量！', correct: true },
+      { text: '自己一個人搶晒所有積木，不肯和同學合作。', correct: false }
+    ]
+  },
+
+  // 【第 16 - 20 站：love 求知星空與感恩角】
+  { id: 16, zone: 'love', name: '承諾', en: 'Keeping Promises', icon: '🤙',
+    motto: '我答應過別人的事情一定會努力做到，學會守時間、講信用，做個說到做到、讓人信賴的好孩子。',
+    taskHint: '👆 點擊勾手指拉勾勾圖示，做個守時間、講信用、說到做到的好孩子！',
+    caption: '🎬 記錄冊第16站【承諾 Keeping Promises】：男女同學開心勾手指拉勾勾，答應過的事努力做到！',
+    props: '🤙💕⏰✨',
+    q: '像記錄冊插圖裏兩位同學勾手指拉勾勾一樣，當你答應過老師、爸媽或朋友的事情，應該怎樣做？',
+    options: [
+      { text: '答應過別人的事情一定努力做到，守時間、講信用，說到做到！', correct: true },
+      { text: '隨口答應別人，轉過頭就忘記或者不做。', correct: false }
+    ]
+  },
+  { id: 17, zone: 'love', name: '尊重', en: 'Respect', icon: '🐦',
+    motto: '我會尊敬長輩，有禮貌地對待老師與同學，並且愛護小動物，小心愛護學校與社區的公共設施。',
+    taskHint: '👆 點擊可愛的小雀鳥與粉紅小花，溫柔呵護小動物、尊敬長輩與老師！',
+    caption: '🎬 記錄冊第17站【尊重 Respect】：男女同學蹲在草地上溫柔呵護小雀鳥與花朵，愛護生命與公物！',
+    props: '🐦🌸🙇‍♂️💖',
+    q: '根據記錄冊《Respect 尊重》的教導，我們對待長輩、老師、同學，還有小動物與公共設施時應該怎樣做？',
+    options: [
+      { text: '尊敬長輩、有禮貌對待師長同學，並溫柔愛護小動物與公共設施。', correct: true },
+      { text: '對長輩無禮貌，還去驚嚇小雀鳥或破壞公物。', correct: false }
+    ]
+  },
+  { id: 18, zone: 'love', name: '求知', en: 'Curiosity', icon: '🔭',
+    motto: '我對周圍的世界充滿好奇心，喜歡主動發問、閱讀圖書，樂於探索新事物，懷著快樂的心情學習新知識。',
+    taskHint: '👆 點擊天文望遠鏡與放大鏡，一起探索美麗星空與大自然植物！',
+    caption: '🎬 記錄冊第18站【求知 Thirst for Knowledge】：男同學用望遠鏡看星空，女同學用放大鏡觀察小植物！',
+    props: '🔭🌌🔍🌱',
+    q: '像記錄冊插畫裏用望遠鏡看星星、用放大鏡觀察葉子一樣，怎樣做才是「求知 Curiosity」的好習慣？',
+    options: [
+      { text: '對世界充滿好奇心，喜歡主動發問、閱讀圖書，快樂地探索新知識！', correct: true },
+      { text: '對身邊事物漠不關心，不看書也不動腦筋思考。', correct: false }
+    ]
+  },
+  { id: 19, zone: 'love', name: '感恩', en: 'Gratitude', icon: '💐',
+    motto: '我常懷感謝的心，感謝爸媽無微不至的照顧、老師辛勤的教導為我們付出，並常常主動說聲「多謝」。',
+    taskHint: '👆 點擊美麗花束與 Thank You 心意卡，送給老師和爸媽並大聲說「多謝」！',
+    caption: '🎬 記錄冊第19站【感恩 Gratitude】：送花束與 Thank You 卡給老師和同伴，常說「多謝」！',
+    props: '💐💌🙏💖',
+    q: '像封面送花給老師的女同學一樣，面對爸媽無微不至的照顧和老師辛勤的教導，我們應該怎樣做？',
+    options: [
+      { text: '常懷感謝的心，雙手送上心意並常常主動說聲「多謝！」', correct: true },
+      { text: '覺得爸媽和老師照顧自己是理所當然的，從不道謝。', correct: false }
+    ]
+  },
+  { id: 20, zone: 'love', name: '付出', en: 'Giving', icon: '🎁',
+    motto: '我樂意伸出小雙手，主動幫助有需要的人，體會幫助別人的快樂與喜悅。',
+    taskHint: '👆 點擊「❤️ DONATION 愛心捐贈箱」，把小熊玩具、故事書與物資送給有需要的人！',
+    caption: '🎬 記錄冊第20站【付出 Giving】：男女同學把小熊公仔和書本放進 DONATION 愛心箱助人！',
+    props: '🧸📦💝✨',
+    q: '像記錄冊《Giving 付出》插畫裏把玩具和書本放進「DONATION 愛心箱」一樣，怎樣做才能體會助人的快樂？',
+    options: [
+      { text: '樂意伸出小雙手，主動分享與幫助有需要的人，不求回報！', correct: true },
+      { text: '只顧自己享樂，從來不願意幫助有需要的人。', correct: false }
+    ]
+  }
+];
+
+let unlockedIds = JSON.parse(localStorage.getItem('stm_v4_unlocked') || '[]');
+let currentHabit = null;
+let gender = localStorage.getItem('stm_v4_gender') || 'girl';
+let uniform = localStorage.getItem('stm_v4_uniform') || 'summer'; // 預設使用記錄冊同款夏季直間校服
+
+function initGame() {
+  const savedName = localStorage.getItem('stm_v4_name') || '';
+  if (savedName) {
+    document.getElementById('student-name').value = savedName;
+    document.getElementById('display-name').innerText = savedName;
+  }
+  updateUniformBtnText();
+  renderHomeAvatar();
+  updateUI();
+}
+
+function renderHomeAvatar() {
+  document.getElementById('home-avatar-stage').innerHTML = getStudentSVG(gender, 'wave', uniform, true);
+}
+
+function toggleGender() {
+  playSound('pop');
+  gender = gender === 'girl' ? 'boy' : 'girl';
+  localStorage.setItem('stm_v4_gender', gender);
+  renderHomeAvatar();
+  speakText(gender === 'boy' ? '換咗聖文嘉男同學造型喇！' : '換咗聖文嘉女同學造型喇！');
+}
+
+function toggleUniform() {
+  playSound('pop');
+  uniform = uniform === 'summer' ? 'pe' : 'summer';
+  localStorage.setItem('stm_v4_uniform', uniform);
+  updateUniformBtnText();
+  renderHomeAvatar();
+  speakText(uniform === 'summer' ? '換咗記錄冊封面同款嘅夏季直間校服喇！' : '換咗聖文嘉黃色藍色運動服喇！');
+}
+
+function updateUniformBtnText() {
+  const btn = document.getElementById('btn-uniform');
+  btn.innerText = uniform === 'summer' ? '👔 夏季校服' : '👕 運動服';
+}
+
+function greetStudent() {
+  playSound('pop');
+  const stage = document.getElementById('home-avatar-stage').querySelector('.svg-char');
+  if (stage) {
+    stage.classList.remove('char-jump');
+    void stage.offsetWidth;
+    stage.classList.add('char-jump');
+  }
+  const name = localStorage.getItem('stm_v4_name') || '文嘉同學';
+  speakText(`親愛嘅${name}早晨！歡迎登上聖文嘉好習慣火車，同老師一齊收集二十個好習慣印章啦！`);
+}
+
+function saveStudentName() {
+  const val = document.getElementById('student-name').value.trim() || '文嘉同學';
+  localStorage.setItem('stm_v4_name', val);
+  document.getElementById('display-name').innerText = val;
+}
+
+function updateUI() {
+  // 1. 渲染頂部「好習慣火車」1-20號車廂
+  const trainRow = document.getElementById('train-row');
+  trainRow.innerHTML = `<span class="train-engine" onclick="greetStudent()">🚂</span>`;
+  HABITS_DATA.forEach(h => {
+    const isLit = unlockedIds.includes(h.id);
+    const car = document.createElement('div');
+    car.className = 'train-car ' + (isLit ? 'lit' : '');
+    car.innerText = isLit ? '⭐' : h.id;
+    car.title = `${h.id}. ${h.name}`;
+    car.onclick = () => { playSound('pop'); startQuiz(h); };
+    trainRow.appendChild(car);
+  });
+
+  // 2. 更新四大島嶼完成進度
+  const zones = [
+    { key: 'express', range: '第 1-5 站' },
+    { key: 'challenge', range: '第 6-10 站' },
+    { key: 'friends', range: '第 11-15 站' },
+    { key: 'love', range: '第 16-20 站' }
+  ];
+  zones.forEach(z => {
+    const total = HABITS_DATA.filter(h => h.zone === z.key).length;
+    const done = HABITS_DATA.filter(h => h.zone === z.key && unlockedIds.includes(h.id)).length;
+    document.getElementById('count-' + z.key).innerText = `${z.range} (${done}/${total})`;
+  });
+
+  // 3. 渲染 1-20 號 3D 印章收集板
+  const grid = document.getElementById('stamp-grid');
+  grid.innerHTML = '';
+  HABITS_DATA.forEach(h => {
+    const isDone = unlockedIds.includes(h.id);
+    const div = document.createElement('div');
+    div.className = 'stamp-3d ' + (isDone ? 'unlocked' : '');
+    div.innerHTML = `
+      <span class="stamp-num">${h.id}</span>
+      <span class="stamp-emoji">${isDone ? h.icon : '🔒'}</span>
+      <div>${h.name}</div>
+    `;
+    div.onclick = () => { playSound('pop'); startQuiz(h); };
+    grid.appendChild(div);
+  });
+}
+
+function openZone(zoneName) {
+  playSound('pop');
+  const zoneHabits = HABITS_DATA.filter(h => h.zone === zoneName);
+  const nextHabit = zoneHabits.find(h => !unlockedIds.includes(h.id)) || zoneHabits[0];
+  startQuiz(nextHabit);
+}
+
+// ==========================================
+// 🎬 3D 翻轉卡片與互動劇場
+// ==========================================
+function flipCard() {
+  playSound('pop');
+  const card = document.getElementById('flip-card-inner');
+  card.classList.toggle('is-flipped');
+  if (card.classList.contains('is-flipped')) {
+    speakMotto();
+  }
+}
+
+function renderTheaterAnimation(habit) {
+  const card = document.getElementById('flip-card-inner');
+  card.classList.remove('is-flipped');
+
+  const stage = document.getElementById('theater-stage');
+  const hintBar = document.getElementById('mini-task-bar');
+  hintBar.innerText = habit.taskHint;
+  hintBar.style.background = 'rgba(255,255,255,0.95)';
+  hintBar.style.color = '#D84315';
+
+  document.getElementById('theater-caption').innerText = habit.caption;
+  document.getElementById('back-title').innerText = `📖 第 ${habit.id} 站：${habit.name} (${habit.en}) 宣言`;
+  document.getElementById('q-motto').innerText = `「${habit.motto}」`;
+
+  // 左側男/女同學 + 中間 3D 立體互動道具 + 右側同伴或粉紫衫女老師
+  const rightChar = [1, 2, 5, 14, 19].includes(habit.id)
+    ? getTeacherSVG()
+    : getStudentSVG(gender === 'girl' ? 'boy' : 'girl', 'wave', uniform, false);
+
+  stage.innerHTML = `
+    ${getStudentSVG(gender, 'wave', uniform, true)}
+    <div class="action-prop-3d" id="interactive-prop">${habit.props}</div>
+    ${rightChar}
+  `;
+}
+
+function triggerTheaterAction() {
+  playSound('win');
+  const hintBar = document.getElementById('mini-task-bar');
+  const prop = document.getElementById('interactive-prop');
+  hintBar.innerText = `🌟 太棒了！你完成了【${currentHabit.name}】3D互動！請選擇下方正確答案：`;
+  hintBar.style.background = '#E8F5E9';
+  hintBar.style.color = '#1B5E20';
+  if (prop) {
+    prop.style.transform = 'scale(1.32) rotate(6deg)';
+    setTimeout(() => { if (prop) prop.style.transform = 'scale(1)'; }, 500);
+  }
+  speakText(`做得好！跟住老師一齊唸：${currentHabit.motto}`);
+}
+
+function startQuiz(habit) {
+  currentHabit = habit;
+  document.getElementById('screen-home').classList.remove('active');
+  document.getElementById('screen-quiz').classList.add('active');
+
+  document.getElementById('q-en-badge').innerText = `🚂 第 ${habit.id} 站・${habit.en}`;
+  document.getElementById('q-title').innerText = `${habit.icon} ${habit.id}. ${habit.name} (${habit.en})`;
+  document.getElementById('q-scenario').innerText = habit.q;
+
+  renderTheaterAnimation(habit);
+
+  const choicesBox = document.getElementById('q-choices');
+  choicesBox.innerHTML = '';
+  const shuffled = [...habit.options].sort(() => Math.random() - 0.5);
+  shuffled.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn-3d';
+    btn.innerHTML = `<span style="font-size:1.35rem;">${idx === 0 ? '🅰️' : '🅱️'}</span> <span>${opt.text}</span>`;
+    btn.onclick = () => checkAnswer(opt, btn);
+    choicesBox.appendChild(btn);
+  });
+}
+
+function checkAnswer(option, btnEl) {
+  const modal = document.getElementById('modal');
+  const charBox = document.getElementById('modal-char-box');
+  const title = document.getElementById('modal-title');
+  const msg = document.getElementById('modal-msg');
+
+  if (option.correct) {
+    playSound('win');
+    btnEl.classList.add('correct-anim');
+    fireConfetti();
+    charBox.innerHTML = getStudentSVG(gender, 'wave', uniform, true).replace('svg-char', 'svg-char char-jump');
+    title.innerText = `🎉 點亮第 ${currentHabit.id} 節火車【${currentHabit.name}】！`;
+    msg.innerText = `📖 聖文嘉好習慣金句：\n「${currentHabit.motto}」`;
+
+    if (!unlockedIds.includes(currentHabit.id)) {
+      unlockedIds.push(currentHabit.id);
+      localStorage.setItem('stm_v4_unlocked', JSON.stringify(unlockedIds));
+      syncProgressToServer();
+    }
+    speakText(`答啱喇，老師好欣賞你！${currentHabit.motto}`);
+    setTimeout(() => { modal.style.display = 'flex'; updateUI(); }, 420);
+  } else {
+    playSound('oops');
+    btnEl.classList.add('wrong-anim');
+    setTimeout(() => btnEl.classList.remove('wrong-anim'), 500);
+    charBox.innerHTML = getTeacherSVG();
+    title.innerText = '💡 老師溫馨提示：再想一想喔！';
+    msg.innerText = `記住我哋嘅好習慣宣言：\n「${currentHabit.motto}」`;
+    speakText(`老師提提你，再諗一諗喔！${currentHabit.motto}`);
+    modal.style.display = 'flex';
+  }
+}
+
+function closeModal() {
+  playSound('pop');
+  document.getElementById('modal').style.display = 'none';
+  if (unlockedIds.includes(currentHabit.id)) {
+    showHome();
+  }
+}
+
+function showHome() {
+  playSound('pop');
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-home').classList.add('active');
+}
+
+// ==========================================
+// 👩🏻‍🏫 女老師溫柔粵語配音引擎
+// ==========================================
+function speakText(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'zh-HK';
+
+  const voices = window.speechSynthesis.getVoices();
+  const hkFemaleVoice = voices.find(v =>
+    (v.lang.includes('HK') || v.lang.includes('yue')) &&
+    (v.name.includes('Sin-ji') || v.name.includes('Tracy') || v.name.includes('Hiu') || v.name.includes('Google'))
+  ) || voices.find(v => v.lang.includes('HK') || v.lang.includes('yue'));
+
+  if (hkFemaleVoice) utter.voice = hkFemaleVoice;
+  utter.pitch = 1.05;
+  utter.rate = 0.92;
+  window.speechSynthesis.speak(utter);
+}
+
+function speakCurrentScenario() {
+  playSound('pop');
+  if (!currentHabit) return;
+  speakText(`第${currentHabit.id}個好習慣：${currentHabit.name}。${currentHabit.q}`);
+}
+
+function speakMotto() {
+  playSound('pop');
+  if (!currentHabit) return;
+  speakText(`${currentHabit.name}。${currentHabit.motto}`);
+}
+
+// 🎊 過關漫天彩紙特效
+function fireConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({ length: 65 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    r: Math.random() * 6 + 4,
+    color: ['#FFD600', '#29B6F6', '#E91E63', '#69F0AE', '#AB47BC'][Math.floor(Math.random() * 5)],
+    vy: Math.random() * 4.5 + 3,
+    vx: Math.random() * 2 - 1
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      p.y += p.vy;
+      p.x += p.vx;
+    });
+    if (frame++ < 75) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+function resetProgress() {
+  if (confirm('確定要清除目前的火車印章紀錄，重新開始挑戰嗎？')) {
+    unlockedIds = [];
+    localStorage.removeItem('stm_v4_unlocked');
+    updateUI();
+  }
+}
+
+function syncProgressToServer() {
+  const payload = {
+    school: '聖文嘉中英文幼稚園(利東)',
+    booklet: '感恩・珍惜 積極樂觀 20個好習慣記錄冊',
+    studentName: localStorage.getItem('stm_v4_name') || '未命名',
+    completedCount: unlockedIds.length,
+    unlockedHabits: unlockedIds.map(id => HABITS_DATA.find(h => h.id === id).name),
+    timestamp: new Date().toISOString()
+  };
+  console.log('已更新《20個好習慣記錄冊》雲端同步數據：', payload);
+}
+
+function exportReport() {
+  playSound('win');
+  const name = localStorage.getItem('stm_v4_name') || '文嘉同學';
+  const count = unlockedIds.length;
+  speakText(`老師恭喜${name}！你嘅好習慣火車已經點亮咗${count}節車廂喇，真係太棒了！`);
+  alert(`🚂【聖文嘉中英文幼稚園(利東) 20個好習慣記錄冊】\n\n學生姓名：${name}\n好習慣火車進度：已點亮 ${count} / 20 節車廂 🌟\n\n「感恩・珍惜・積極樂觀，邁向幸福人生！」`);
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+}
+initGame();
+</script>
+</body>
+</html>
