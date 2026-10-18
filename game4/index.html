@@ -1,1 +1,1622 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>好習慣小達人：3D 橫向卷軸大冒險 (Q版大頭公仔+暫停版)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #87CEEB;
+            font-family: "PingFang HK", "Microsoft JhengHei", "Heiti TC", sans-serif;
+            touch-action: none;
+        }
+        #game-canvas {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
 
+        /* 頂部 HUD 狀態列 */
+        #hud {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .hud-card {
+            background: rgba(255, 255, 255, 0.94);
+            border: 3px solid #FFB142;
+            border-radius: 16px;
+            padding: 8px 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            pointer-events: auto;
+        }
+        .hud-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            color: #2C3E50;
+            font-size: 16px;
+            flex-wrap: wrap;
+        }
+        .score-val {
+            color: #E67E22;
+            font-size: 22px;
+        }
+        .hearts {
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+        /* 能量條 */
+        .fever-bar-bg {
+            width: 135px;
+            height: 14px;
+            background: #E0E0E0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #BDC3C7;
+        }
+        #fever-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #F1C40F, #FF5252, #9B59B6);
+            transition: width 0.25s ease;
+        }
+        .stage-badge {
+            background: #27AE60;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        /* 頂部功能按鈕 (暫停鍵、HOME 鍵、語音鍵) */
+        .top-btn {
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            transition: transform 0.1s;
+        }
+        .top-btn:active {
+            transform: scale(0.92);
+        }
+        .pause-btn {
+            background: linear-gradient(135deg, #F39C12, #E67E22);
+        }
+        .home-btn {
+            background: linear-gradient(135deg, #FF6B6B, #EE5253);
+        }
+        .voice-btn {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+        }
+
+        /* 畫面中央即時解說與品德提示橫幅 */
+        #toast-banner {
+            position: absolute;
+            top: 105px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            background: rgba(255, 255, 255, 0.97);
+            border: 4px solid #2ECC71;
+            border-radius: 20px;
+            padding: 12px 24px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            z-index: 15;
+            max-width: 92vw;
+        }
+        #toast-banner.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+        #toast-title {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+        #toast-desc {
+            font-size: 15px;
+            color: #34495E;
+            font-weight: bold;
+        }
+
+        /* 手機與桌面虛擬觸控按鍵 */
+        #controls {
+            position: absolute;
+            bottom: 22px;
+            left: 22px;
+            right: 22px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .ctrl-btn {
+            pointer-events: auto;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 4px solid #FFFFFF;
+            font-size: 18px;
+            font-weight: 900;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .ctrl-btn:active {
+            transform: scale(0.9);
+        }
+        #btn-slide {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+        }
+        #btn-jump {
+            background: linear-gradient(135deg, #FF9F43, #EE5A24);
+        }
+        .ctrl-sub {
+            font-size: 11px;
+            opacity: 0.95;
+            margin-top: 2px;
+        }
+
+        /* 彈窗面板 */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            padding: 15px;
+        }
+        .modal-box {
+            background: #FFFDF9;
+            border: 5px solid #FF9F43;
+            border-radius: 24px;
+            padding: 22px;
+            width: 100%;
+            max-width: 620px;
+            max-height: 92vh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        .school-header {
+            font-size: 14px;
+            color: #7F8C8D;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .game-title {
+            font-size: 27px;
+            font-weight: 900;
+            color: #D35400;
+            margin: 6px 0 10px;
+            text-shadow: 1px 1px 0px #FDEBD0;
+        }
+        .char-select, .speed-select {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        .char-card {
+            border: 3px solid #E0E0E0;
+            border-radius: 16px;
+            padding: 10px 18px;
+            cursor: pointer;
+            background: #FFFFFF;
+            transition: all 0.2s;
+            width: 155px;
+        }
+        .char-card.active {
+            border-color: #FF9F43;
+            background: #FFF8E7;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255,159,67,0.3);
+        }
+        .speed-pill {
+            border: 2px solid #BDC3C7;
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 7px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #34495E;
+            cursor: pointer;
+        }
+        .speed-pill.active {
+            border-color: #27AE60;
+            background: #EAFAF1;
+            color: #1E8449;
+        }
+        .guide-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            text-align: left;
+            background: #F4F6F7;
+            padding: 12px;
+            border-radius: 14px;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        .guide-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            color: #34495E;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2ECC71, #27AE60);
+            color: white;
+            border: none;
+            padding: 13px 28px;
+            font-size: 19px;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+            margin: 6px;
+            transition: transform 0.15s;
+        }
+        .btn-primary:hover { transform: scale(1.04); }
+        .btn-secondary {
+            background: linear-gradient(135deg, #F39C12, #D68910);
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 6px;
+        }
+        .btn-home-modal {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            color: white;
+            border: none;
+            padding: 11px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 6px;
+        }
+
+        /* 20個好習慣圖鑑網格 */
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin: 12px 0;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 6px;
+        }
+        .habit-badge {
+            border: 2px solid #BDC3C7;
+            border-radius: 12px;
+            padding: 8px 6px;
+            font-size: 13px;
+            background: #ECEFF1;
+            color: #7F8C8D;
+            opacity: 0.65;
+            cursor: pointer;
+        }
+        .habit-badge.unlocked {
+            border-color: #2ECC71;
+            background: #EAFAF1;
+            color: #1E8449;
+            opacity: 1;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(46,204,113,0.2);
+        }
+        @media (max-width: 600px) {
+            .guide-grid { grid-template-columns: 1fr; }
+            .game-title { font-size: 22px; }
+            .ctrl-btn { width: 82px; height: 82px; font-size: 15px; }
+            .top-btn { padding: 5px 9px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部 HUD -->
+    <div id="hud">
+        <div class="hud-card">
+            <div class="hud-row">
+                <span>🏆 分數: <span id="score-text" class="score-val">0</span></span>
+                <span id="stage-text" class="stage-badge">Stage 1 暖身慢行</span>
+            </div>
+            <div class="hud-row">
+                <span>❤️ 關愛心: <span id="hearts-text" class="hearts">❤️❤️❤️</span></span>
+                <span>🌟 好習慣: <span id="collected-count" style="color:#27AE60;">0</span>/20</span>
+            </div>
+        </div>
+
+        <div class="hud-card" style="align-items: flex-end;">
+            <div class="hud-row">
+                <button class="top-btn pause-btn" id="btn-pause" onclick="togglePause()" title="暫停遊戲 (P)">⏸️ 暫停</button>
+                <button class="top-btn home-btn" onclick="goHome()" title="返回主頁">🏠 主頁</button>
+                <button class="top-btn voice-btn" id="btn-voice" onclick="toggleVoice()">🔊 粵語: 開</button>
+            </div>
+            <div class="hud-row" style="font-size:13px;">
+                <span>🚂 火車能量 (<span id="combo-text" style="color:#E74C3C;">0 Combo</span>):</span>
+                <div class="fever-bar-bg">
+                    <div id="fever-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 中央即時品德解說與提示橫幅 -->
+    <div id="toast-banner">
+        <div id="toast-title">🌟 感恩 Gratitude (+30分)</div>
+        <div id="toast-desc">常懷感謝的心，主動對爸媽和老師說聲「多謝」！</div>
+    </div>
+
+    <!-- 手機與桌面觸控按鈕 -->
+    <div id="controls">
+        <div class="ctrl-btn" id="btn-slide">
+            <span>⬇️ 蹲下</span>
+            <span class="ctrl-sub">躲避空中烏雲</span>
+        </div>
+        <div class="ctrl-btn" id="btn-jump">
+            <span>⬆️ 跳躍</span>
+            <span class="ctrl-sub">可連跳兩次!</span>
+        </div>
+    </div>
+
+    <!-- 開始主頁 Modal (HOME) -->
+    <div class="modal-overlay" id="start-modal">
+        <div class="modal-box">
+            <div class="school-header">聖文嘉中英文幼稚園（利東）• 感恩・珍惜・積極樂觀</div>
+            <div class="game-title">🚂 幸福人生的 20 個好習慣大冒險</div>
+
+            <div class="char-select">
+                <div class="char-card active" id="char-boy" onclick="selectCharacter('boy')">
+                    <div style="font-size:38px;">👦🏻✨</div>
+                    <div style="font-weight:bold; color:#2C3E50;">Q版文嘉小男孩</div>
+                    <div style="font-size:12px; color:#7F8C8D;">閃亮大眼 • 藍白校服</div>
+                </div>
+                <div class="char-card" id="char-girl" onclick="selectCharacter('girl')">
+                    <div style="font-size:38px;">👧🏻🎀</div>
+                    <div style="font-weight:bold; color:#2C3E50;">Q版文嘉小女孩</div>
+                    <div style="font-size:12px; color:#7F8C8D;">雙馬尾蝴蝶結 • 粉紅裙</div>
+                </div>
+            </div>
+
+            <div style="font-size:14px; font-weight:bold; color:#2C3E50; margin-top:6px;">🐢 選擇起步速度模式：</div>
+            <div class="speed-select">
+                <div class="speed-pill active" id="spd-slow" onclick="selectSpeedMode('slow')">🐣 輕鬆慢速 (K1-K2 推薦)</div>
+                <div class="speed-pill" id="spd-normal" onclick="selectSpeedMode('normal')">🐰 標準漸進 (K3 推薦)</div>
+                <div class="speed-pill" id="spd-fast" onclick="selectSpeedMode('fast')">🦁 挑戰高速 (親子同樂)</div>
+            </div>
+
+            <div class="guide-grid">
+                <div class="guide-item">🟢 <b>穿過「好習慣光環」</b>：獲得分數、粵語朗讀解說與火車能量！</div>
+                <div class="guide-item">🔴 <b>跳過「地面壞習慣」</b>：按【空白鍵 / ⬆️跳躍】可連跳兩次（二段跳）！</div>
+                <div class="guide-item">🟣 <b>蹲下躲「空中壞習慣」</b>：按【⬇️方向鍵 / 蹲下鈕】低頭閃避烏雲！</div>
+                <div class="guide-item">⏸️ <b>隨時暫停講解</b>：遊戲期間可按右上角【⏸️ 暫停】或 P 鍵休息！</div>
+            </div>
+
+            <div>
+                <button class="btn-primary" onclick="startGame()">🚀 開始校園冒險</button>
+                <button class="btn-secondary" onclick="toggleDexModal(true)">📖 20個好習慣圖鑑 (<span id="home-dex-count">0</span>/20)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遊戲暫停 Modal (PAUSE) -->
+    <div class="modal-overlay" id="pause-modal" style="display: none;">
+        <div class="modal-box" style="max-width: 460px;">
+            <div class="school-header">休息一下 • 聽老師講解好習慣</div>
+            <div class="game-title">⏸️ 遊戲暫停中</div>
+            <p style="font-size: 16px; color: #34495E; font-weight: bold; margin: 10px 0 18px;">
+                目前得分：<span id="pause-score" style="color:#E67E22;">0</span> 分 ｜ 已收集好習慣：<span id="pause-dex" style="color:#27AE60;">0</span> / 20 個
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+                <button class="btn-primary" style="width: 85%;" onclick="resumeGame()">▶️ 繼續遊戲</button>
+                <button class="btn-secondary" style="width: 85%;" onclick="toggleDexModal(true)">📖 查看 20 個好習慣圖鑑</button>
+                <button class="btn-secondary" style="width: 85%; background: linear-gradient(135deg, #2ECC71, #16A085);" onclick="startGame()">🔄 重新開始本局</button>
+                <button class="btn-home-modal" style="width: 85%;" onclick="goHome()">🏠 回到主頁 (HOME)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遊戲結束/通關結算 Modal -->
+    <div class="modal-overlay" id="gameover-modal" style="display: none;">
+        <div class="modal-box">
+            <div class="school-header">冒險結算報告</div>
+            <div class="game-title" id="end-title">🌟 表現超棒！繼續保持好習慣！</div>
+            <p id="end-summary" style="font-size: 18px; font-weight: bold; color: #2C3E50;"></p>
+            <div id="end-encourage" style="background:#FFF8E7; border:2px dashed #F39C12; padding:12px; border-radius:12px; margin:12px 0; color:#D35400; font-weight:bold;"></div>
+            <div>
+                <button class="btn-primary" onclick="startGame()">🔄 再玩一次</button>
+                <button class="btn-home-modal" onclick="goHome()">🏠 回到主頁 (HOME)</button>
+                <button class="btn-secondary" onclick="toggleDexModal(true)">📖 查看好習慣圖鑑</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 20個好習慣圖鑑 Modal -->
+    <div class="modal-overlay" id="dex-modal" style="display: none;">
+        <div class="modal-box">
+            <div class="school-header">聖文嘉中英文幼稚園（利東）</div>
+            <div class="game-title">📖 幸福人生的 20 個好習慣記錄冊</div>
+            <p style="font-size:14px; color:#555;">點擊下方任一好習慣徽章，即可聆聽粵語朗讀並閱讀小叮嚀！</p>
+            <div class="habit-grid" id="habit-dex-grid"></div>
+            <div id="dex-detail-box" style="background:#EAFAF1; padding:12px; border-radius:12px; font-size:15px; color:#1E8449; font-weight:bold; min-height:54px;">
+                點擊上方任一好習慣徽章查看詳細解說！
+            </div>
+            <div style="margin-top:14px;">
+                <button class="btn-primary" style="padding:10px 28px; font-size:16px;" onclick="toggleDexModal(false)">返回</button>
+                <button class="btn-home-modal" style="padding:10px 24px; font-size:16px;" onclick="goHome()">🏠 回到主頁 (HOME)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-canvas"></div>
+
+<script>
+/**
+ * ============================================================================
+ * 1. 聖文嘉《20個好習慣記錄冊》完整資料庫與對應壞習慣
+ * ============================================================================
+ */
+const GOOD_HABITS = [
+    { id: 1, zh: "情緒", en: "Emotions", icon: "😊", desc: "遇到生氣的事先深呼吸冷靜，好好說出心裏感受，不隨便發脾氣。" },
+    { id: 2, zh: "聆聽", en: "Listening", icon: "👂", desc: "老師上課或別人說話時，專心用耳朵聽、眼睛看着對方，不插嘴。" },
+    { id: 3, zh: "表達", en: "Expression", icon: "🗣️", desc: "用溫和有禮貌的聲音清楚說出想法，開心地和大家分享高興事。" },
+    { id: 4, zh: "積極", en: "Positivity", icon: "☀️", desc: "遇到新嘗試不拖延，充滿活力地說：「我可以試試做！」" },
+    { id: 5, zh: "勇敢", en: "Courage", icon: "🦁", desc: "不害怕困難；做錯事時勇敢承認並努力改正！" },
+    { id: 6, zh: "毅力", en: "Perseverance", icon: "🚩", desc: "搭積木或學新技能遇到困難不放棄，一步一步堅持完成任務。" },
+    { id: 7, zh: "自律", en: "Self-Discipline", icon: "⏰", desc: "大人不在身邊提醒，也會自動自發收拾好玩具與跟隨作息。" },
+    { id: 8, zh: "負責任", en: "Responsibility", icon: "🎒", desc: "自己穿好鞋子、整理小書包，用心做好課室小幫手工作。" },
+    { id: 9, zh: "珍惜", en: "Cherishing", icon: "🍱", desc: "愛護圖書與玩具，感恩食物來之不易，把飯菜吃光不浪費。" },
+    { id: 10, zh: "謙讓", en: "Courtesy", icon: "🤝", desc: "守秩序排隊輪候、不爭先推撞，樂意把玩具與美食分享給朋友。" },
+    { id: 11, zh: "信任", en: "Trust", icon: "💖", desc: "相信爸媽與老師對我的愛護，真心真意對待每一位朋友。" },
+    { id: 12, zh: "關愛", en: "Care & Kindness", icon: "🩹", desc: "主動關心身邊的人，看到朋友不開心或需要幫忙時主動安慰。" },
+    { id: 13, zh: "包容", en: "Acceptance", icon: "🌈", desc: "接納別人和我不一樣的地方，用寬容的心原諒同伴的小過錯。" },
+    { id: 14, zh: "誠實", en: "Honesty", icon: "✨", desc: "說真話、不撒謊，做個誠實和值得大家信任的好孩子。" },
+    { id: 15, zh: "團隊合作", en: "Teamwork", icon: "🧱", desc: "和同伴一起遊戲與收拾課室，互相配合與幫忙，發揮團結力量。" },
+    { id: 16, zh: "承諾", en: "Keeping Promises", icon: "🤙", desc: "答應過別人的事情一定努力做到，學會守時間、講信用。" },
+    { id: 17, zh: "尊重", en: "Respect", icon: "🙇", desc: "尊敬長輩、禮貌對待師長同學，愛護小動物與公共設施。" },
+    { id: 18, zh: "求知", en: "Curiosity", icon: "🔭", desc: "對世界充滿好奇心，喜歡主動發問、閱讀圖書，快樂學習新知識。" },
+    { id: 19, zh: "感恩", en: "Gratitude", icon: "💐", desc: "常懷感謝的心，感謝爸媽照顧與老師教導，常主動說「多謝」。" },
+    { id: 20, zh: "付出", en: "Giving", icon: "🎁", desc: "樂意伸出小雙手主動幫助有需要的人，體會助人的快樂。" }
+];
+
+const BAD_HABITS = [
+    { zh: "亂發脾氣", en: "Temper Tantrum", icon: "💢", pos: "ground", tip: "記住【情緒】：生氣時先深呼吸冷靜下來喔！" },
+    { zh: "隨便插嘴", en: "Interrupting", icon: "🗯️", pos: "air", tip: "記住【聆聽】：別人說話時要專心聽，不隨便插嘴！" },
+    { zh: "拖延找藉口", en: "Procrastinating", icon: "🐌", pos: "ground", tip: "記住【積極】：大聲說「我可以試試做！」" },
+    { zh: "亂丟玩具", en: "Messy Toys", icon: "🧸", pos: "ground", tip: "記住【自律】：玩完玩具要自動自發收拾好！" },
+    { zh: "浪費食物", en: "Wasting Food", icon: "🗑️", pos: "ground", tip: "記住【珍惜】：感恩食物來之不易，把飯菜吃光光！" },
+    { zh: "爭先推撞", en: "Pushing in Line", icon: "⚠️", pos: "ground", tip: "記住【謙讓】：玩遊戲要守秩序排隊輪候喔！" },
+    { zh: "撒謊隱瞞", en: "Telling Lies", icon: "🌩️", pos: "air", tip: "記住【誠實】：做個說真話、值得信賴的好孩子！" },
+    { zh: "輕易放棄", en: "Giving Up", icon: "🌧️", pos: "air", tip: "記住【毅力】：遇到困難保持耐性，一步一步完成！" }
+];
+
+/**
+ * ============================================================================
+ * 2. 粵語語音合成朗讀 (Web Speech API) + 輕量音效合成器
+ * ============================================================================
+ */
+let voiceEnabled = true;
+function speakCantonese(text) {
+    if (!voiceEnabled || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'zh-HK';
+    utter.rate = 0.95;
+    utter.pitch = 1.12;
+    window.speechSynthesis.speak(utter);
+}
+
+function toggleVoice() {
+    voiceEnabled = !voiceEnabled;
+    document.getElementById('btn-voice').innerText = voiceEnabled ? "🔊 粵語: 開" : "🔇 粵語: 關";
+}
+
+class SoundFX {
+    constructor() { this.ctx = null; }
+    init() {
+        if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (AudioCtx) this.ctx = new AudioCtx();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    }
+    playTone(freq, type, duration, vol = 0.14) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+    }
+    jump(isDouble) {
+        this.init();
+        this.playTone(isDouble ? 587 : 440, 'sine', 0.18, 0.14);
+        setTimeout(() => this.playTone(isDouble ? 880 : 659, 'sine', 0.15, 0.11), 50);
+    }
+    slide() {
+        this.init();
+        this.playTone(300, 'triangle', 0.15, 0.11);
+    }
+    collect() {
+        this.init();
+        this.playTone(523.25, 'sine', 0.12, 0.14);
+        setTimeout(() => this.playTone(659.25, 'sine', 0.12, 0.14), 70);
+        setTimeout(() => this.playTone(783.99, 'sine', 0.25, 0.16), 140);
+    }
+    fever() {
+        this.init();
+        [523, 659, 784, 1046].forEach((f, i) => {
+            setTimeout(() => this.playTone(f, 'triangle', 0.25, 0.18), i * 80);
+        });
+    }
+    hit() {
+        this.init();
+        this.playTone(160, 'sawtooth', 0.28, 0.18);
+        setTimeout(() => this.playTone(120, 'sawtooth', 0.32, 0.18), 100);
+    }
+}
+const sfx = new SoundFX();
+
+/**
+ * ============================================================================
+ * 3. 全域遊戲狀態與速度配置 (慢速暖身起步 + 隨時暫停)
+ * ============================================================================
+ */
+let scene, camera, renderer;
+let playerGroup, headGroup, bodyGroup, leftArm, rightArm, leftLeg, rightLeg, rainbowAura;
+let pigtailLeft, pigtailRight;
+let selectedChar = 'boy';
+let speedMode = 'slow';
+
+const SPEED_MULTIPLIER = {
+    slow: 0.65,
+    normal: 0.85,
+    fast: 1.10
+};
+
+let isPlaying = false;
+let isPaused = false;
+let score = 0;
+let hearts = 3;
+let combo = 0;
+let feverTimer = 0;
+let gameSpeed = 0.075;
+let spawnCooldown = 0;
+let unlockedHabits = new Set();
+
+let playerY = 0;
+let velocityY = 0;
+let jumpCount = 0;
+let isSliding = false;
+let slideTimer = 0;
+let invincibleTimer = 0;
+const GRAVITY = 0.011;
+
+let activeItems = [];
+let bgClouds = [];
+let bgTrees = [];
+let particles = [];
+const labelTextureCache = {};
+
+function initThreeJS() {
+    const container = document.getElementById('game-canvas');
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x9be7ff);
+    scene.fog = new THREE.FogExp2(0x9be7ff, 0.015);
+
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 120);
+    updateCameraPosition();
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    container.appendChild(renderer.domElement);
+
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffeaa7, 0.88);
+    scene.add(hemiLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.72);
+    dirLight.position.set(8, 18, 12);
+    scene.add(dirLight);
+
+    createEnvironment();
+    buildPlayerModel(selectedChar);
+    renderDexGrid();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        updateCameraPosition();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    setupInputs();
+    animateLoop();
+}
+
+function updateCameraPosition() {
+    const isPortrait = window.innerWidth < window.innerHeight;
+    if (isPortrait) {
+        camera.position.set(0, 3.8, 17.5);
+        camera.lookAt(1.2, 2.0, 0);
+    } else {
+        camera.position.set(0, 3.3, 12.5);
+        camera.lookAt(1.8, 1.8, 0);
+    }
+}
+
+/**
+ * ============================================================================
+ * 4. 建立 3D 幼稚園溫馨校園場景
+ * ============================================================================
+ */
+function createEnvironment() {
+    const trackGeo = new THREE.BoxGeometry(60, 1, 3.4);
+    const trackMat = new THREE.MeshLambertMaterial({ color: 0xf7d794 });
+    const track = new THREE.Mesh(trackGeo, trackMat);
+    track.position.set(0, -0.5, 0);
+    scene.add(track);
+
+    const borderGeo = new THREE.BoxGeometry(60, 1.05, 0.3);
+    const borderMat = new THREE.MeshLambertMaterial({ color: 0xeb4d4b });
+    const border = new THREE.Mesh(borderGeo, borderMat);
+    border.position.set(0, -0.5, 1.75);
+    scene.add(border);
+
+    const grassGeo = new THREE.BoxGeometry(80, 1, 20);
+    const grassMat = new THREE.MeshLambertMaterial({ color: 0x78e08f });
+    const grass = new THREE.Mesh(grassGeo, grassMat);
+    grass.position.set(0, -0.6, -11.5);
+    scene.add(grass);
+
+    const rainbowColors = [0xff5252, 0xffb142, 0xffda79, 0x33d9b2, 0x34ace0, 0x706fd3];
+    rainbowColors.forEach((col, idx) => {
+        const arcGeo = new THREE.TorusGeometry(14 - idx * 0.45, 0.22, 8, 40, Math.PI);
+        const arcMat = new THREE.MeshBasicMaterial({ color: col });
+        const arc = new THREE.Mesh(arcGeo, arcMat);
+        arc.position.set(2, -1, -18);
+        scene.add(arc);
+    });
+
+    const treeColors = [0x2ecc71, 0x26de81, 0xbadc58];
+    for (let i = 0; i < 14; i++) {
+        const treeGroup = new THREE.Group();
+        const trunk = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.18, 0.24, 1.2, 8),
+            new THREE.MeshLambertMaterial({ color: 0xcd6133 })
+        );
+        trunk.position.y = 0.6;
+        treeGroup.add(trunk);
+
+        const crown = new THREE.Mesh(
+            new THREE.SphereGeometry(0.95, 10, 10),
+            new THREE.MeshLambertMaterial({ color: treeColors[i % treeColors.length] })
+        );
+        crown.position.y = 1.7;
+        treeGroup.add(crown);
+
+        treeGroup.position.set(-25 + i * 4.2, 0, -3.2 - (i % 3) * 1.8);
+        scene.add(treeGroup);
+        bgTrees.push(treeGroup);
+    }
+
+    for (let i = 0; i < 8; i++) {
+        const cloud = new THREE.Group();
+        const cloudMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        for (let j = 0; j < 3; j++) {
+            const puff = new THREE.Mesh(new THREE.SphereGeometry(0.7 - j * 0.1, 8, 8), cloudMat);
+            puff.position.set(j * 0.6 - 0.6, (j % 2) * 0.2, 0);
+            cloud.add(puff);
+        }
+        cloud.position.set(-20 + i * 6, 5.5 + (i % 3) * 1.2, -8 - (i % 2) * 4);
+        scene.add(cloud);
+        bgClouds.push(cloud);
+    }
+}
+
+/**
+ * ============================================================================
+ * 5. 建立超可愛「大頭 Q 版公仔 (Chibi 3D)」角色模型
+ *    - 圓潤身形、閃亮星光大眼、彎彎笑嘴、粉紅面頰
+ *    - 女孩雙馬尾配紅色立體蝴蝶結
+ *    - 獨立 headGroup 支援跑步時頭部輕輕擺動
+ * ============================================================================
+ */
+function createRedBowMesh() {
+    const bowGroup = new THREE.Group();
+    const redMat = new THREE.MeshLambertMaterial({ color: 0xe84118 });
+    // 蝴蝶結中心結
+    const knot = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), redMat);
+    bowGroup.add(knot);
+    // 左右蝴蝶結翅膀
+    const wingGeo = new THREE.ConeGeometry(0.14, 0.22, 8);
+    const leftWing = new THREE.Mesh(wingGeo, redMat);
+    leftWing.rotation.z = Math.PI / 2;
+    leftWing.position.x = -0.11;
+    const rightWing = new THREE.Mesh(wingGeo, redMat);
+    rightWing.rotation.z = -Math.PI / 2;
+    rightWing.position.x = 0.11;
+    bowGroup.add(leftWing, rightWing);
+    return bowGroup;
+}
+
+function buildPlayerModel(type) {
+    if (playerGroup) scene.remove(playerGroup);
+    playerGroup = new THREE.Group();
+    bodyGroup = new THREE.Group();
+    headGroup = new THREE.Group();
+    pigtailLeft = null;
+    pigtailRight = null;
+
+    const isBoy = (type === 'boy');
+    const skinMat = new THREE.MeshLambertMaterial({ color: 0xffe2c6 });
+    const hairMat = new THREE.MeshLambertMaterial({ color: 0x2c221e });
+    const uniformColor = isBoy ? 0x82ccdd : 0xf8a5c2; // 男孩藍白校服 / 女孩粉紅校服裙
+
+    // -------------------------------------------------------------------------
+    // A. 圓潤 Q 版身形 (Chibi Rounded Body)
+    // -------------------------------------------------------------------------
+    const belly = new THREE.Mesh(
+        new THREE.SphereGeometry(0.52, 18, 18),
+        new THREE.MeshLambertMaterial({ color: uniformColor })
+    );
+    belly.scale.set(0.88, 1.08, 0.85);
+    belly.position.y = 0.85;
+    bodyGroup.add(belly);
+
+    // 白色小圓衣領
+    const collar = new THREE.Mesh(
+        new THREE.TorusGeometry(0.28, 0.06, 8, 18),
+        new THREE.MeshLambertMaterial({ color: 0xffffff })
+    );
+    collar.rotation.x = Math.PI / 2;
+    collar.position.y = 1.28;
+    bodyGroup.add(collar);
+
+    if (isBoy) {
+        // 男孩深藍色圓潤短褲與口袋名牌
+        const shorts = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.42, 0.44, 0.32, 16),
+            new THREE.MeshLambertMaterial({ color: 0x1e3799 })
+        );
+        shorts.position.y = 0.56;
+        bodyGroup.add(shorts);
+    } else {
+        // 女孩可愛蓬蓬百褶裙擺
+        const skirt = new THREE.Mesh(
+            new THREE.ConeGeometry(0.56, 0.45, 18),
+            new THREE.MeshLambertMaterial({ color: 0xf78fb3 })
+        );
+        skirt.position.y = 0.62;
+        bodyGroup.add(skirt);
+    }
+
+    // 可愛幼兒小書包
+    const bag = new THREE.Mesh(
+        new THREE.BoxGeometry(0.32, 0.52, 0.46),
+        new THREE.MeshLambertMaterial({ color: 0xffb142 })
+    );
+    bag.position.set(-0.42, 0.90, 0);
+    bodyGroup.add(bag);
+
+    playerGroup.add(bodyGroup);
+
+    // -------------------------------------------------------------------------
+    // B. 圓滾滾 Q 版大頭 (Oversized Chibi Head - 獨立 Group 供擺動動畫)
+    // -------------------------------------------------------------------------
+    headGroup.position.set(0, 1.82, 0); // 頸部樞紐點
+
+    const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.66, 24, 24), skinMat);
+    headMesh.scale.set(0.96, 0.94, 0.98);
+    headGroup.add(headMesh);
+
+    // 圓潤小耳朵
+    const earGeo = new THREE.SphereGeometry(0.14, 10, 10);
+    const earL = new THREE.Mesh(earGeo, skinMat);
+    earL.position.set(0, -0.04, 0.62);
+    const earR = earL.clone();
+    earR.position.set(0, -0.04, -0.62);
+    headGroup.add(earL, earR);
+
+    // 頭髮基底與飽滿前額劉海
+    const hairDome = new THREE.Mesh(
+        new THREE.SphereGeometry(0.69, 20, 20, 0, Math.PI * 2, 0, Math.PI * 0.58),
+        hairMat
+    );
+    hairDome.position.y = 0.04;
+    hairDome.rotation.z = 0.12; // 讓後腦勺頭髮包覆更完整
+    headGroup.add(hairDome);
+
+    // 前額可愛圓劉海
+    for (let b = -1; b <= 1; b++) {
+        const bang = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 12), hairMat);
+        bang.scale.set(0.7, 1.1, 0.9);
+        bang.position.set(0.52, 0.24, b * 0.22);
+        headGroup.add(bang);
+    }
+
+    // 女孩專屬：雙馬尾辮子 + 紅色蝴蝶結
+    if (!isBoy) {
+        pigtailLeft = new THREE.Group();
+        pigtailLeft.position.set(-0.15, -0.08, 0.62);
+        const tailBallL = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 12), hairMat);
+        tailBallL.scale.set(0.9, 1.25, 0.9);
+        tailBallL.position.set(-0.08, -0.15, 0.12);
+        const bowL = createRedBowMesh();
+        bowL.position.set(0.05, 0.06, 0.12);
+        bowL.rotation.y = 0.4;
+        pigtailLeft.add(tailBallL, bowL);
+
+        pigtailRight = new THREE.Group();
+        pigtailRight.position.set(-0.15, -0.08, -0.62);
+        const tailBallR = tailBallL.clone();
+        tailBallR.position.set(-0.08, -0.15, -0.12);
+        const bowR = createRedBowMesh();
+        bowR.position.set(0.05, 0.06, -0.12);
+        bowR.rotation.y = -0.4;
+        pigtailRight.add(tailBallR, bowR);
+
+        headGroup.add(pigtailLeft, pigtailRight);
+    }
+
+    // -------------------------------------------------------------------------
+    // C. 閃亮大眼 (Sparkling Eyes) + 粉紅面頰 (Rosy Cheeks) + 彎彎笑嘴 (Smile)
+    // -------------------------------------------------------------------------
+    const eyeBlackMat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
+    const shineWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const blushPinkMat = new THREE.MeshBasicMaterial({ color: 0xff7675, transparent: true, opacity: 0.78 });
+    const smileRedMat = new THREE.MeshBasicMaterial({ color: 0xd63031 });
+
+    [-1, 1].forEach(side => {
+        // 大黑眼珠
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.115, 14, 14), eyeBlackMat);
+        eye.scale.set(0.55, 1.18, 1.0);
+        eye.position.set(0.58, 0.02, side * 0.23);
+        headGroup.add(eye);
+
+        // 閃亮大眼神光 (主星光 + 副星光)
+        const bigShine = new THREE.Mesh(new THREE.SphereGeometry(0.042, 8, 8), shineWhiteMat);
+        bigShine.position.set(0.635, 0.065, side * 0.21);
+        headGroup.add(bigShine);
+
+        const smallShine = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), shineWhiteMat);
+        smallShine.position.set(0.635, -0.03, side * 0.255);
+        headGroup.add(smallShine);
+
+        // 彎彎小眉毛
+        const brow = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.14), hairMat);
+        brow.position.set(0.58, 0.21, side * 0.23);
+        brow.rotation.x = side * -0.15;
+        headGroup.add(brow);
+
+        // 粉嫩紅面頰 (椭圓腮紅)
+        const cheek = new THREE.Mesh(new THREE.SphereGeometry(0.095, 12, 12), blushPinkMat);
+        cheek.scale.set(0.45, 0.68, 1.15);
+        cheek.position.set(0.55, -0.13, side * 0.36);
+        headGroup.add(cheek);
+    });
+
+    // 開心笑嘴 (彎彎微笑弧線)
+    const smileMouth = new THREE.Mesh(
+        new THREE.TorusGeometry(0.10, 0.026, 8, 16, Math.PI),
+        smileRedMat
+    );
+    smileMouth.rotation.y = Math.PI / 2;
+    smileMouth.rotation.x = Math.PI; // 開口朝上微笑
+    smileMouth.position.set(0.60, -0.14, 0);
+    headGroup.add(smileMouth);
+
+    playerGroup.add(headGroup);
+
+    // -------------------------------------------------------------------------
+    // D. 圓潤小手與小短腿 (穿白襪與小皮鞋)
+    // -------------------------------------------------------------------------
+    function createChibiArm(zPos) {
+        const armGrp = new THREE.Group();
+        armGrp.position.set(0, 1.12, zPos);
+        const armCylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.10, 0.34, 10), skinMat);
+        armCylinder.position.y = -0.15;
+        const handBall = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10), skinMat);
+        handBall.position.y = -0.32;
+        armGrp.add(armCylinder, handBall);
+        return armGrp;
+    }
+
+    function createChibiLeg(zPos) {
+        const legGrp = new THREE.Group();
+        legGrp.position.set(0, 0.45, zPos);
+        const legCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.11, 0.28, 10), skinMat);
+        legCyl.position.y = -0.14;
+        // 白色學生襪與圓頭小鞋
+        const sock = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.115, 0.115, 0.14, 10),
+            new THREE.MeshLambertMaterial({ color: 0xffffff })
+        );
+        sock.position.y = -0.26;
+        const shoe = new THREE.Mesh(
+            new THREE.SphereGeometry(0.14, 12, 12),
+            new THREE.MeshLambertMaterial({ color: isBoy ? 0xffffff : 0x2f3640 })
+        );
+        shoe.scale.set(1.35, 0.75, 0.95);
+        shoe.position.set(0.04, -0.36, 0);
+        legGrp.add(legCyl, sock, shoe);
+        return legGrp;
+    }
+
+    leftArm = createChibiArm(0.45);
+    rightArm = createChibiArm(-0.45);
+    leftLeg = createChibiLeg(0.20);
+    rightLeg = createChibiLeg(-0.20);
+
+    playerGroup.add(leftArm, rightArm, leftLeg, rightLeg);
+
+    // 「好習慣火車」無敵彩虹光環
+    const auraGeo = new THREE.TorusGeometry(1.35, 0.08, 8, 24);
+    const auraMat = new THREE.MeshBasicMaterial({ color: 0xf1c40f });
+    rainbowAura = new THREE.Mesh(auraGeo, auraMat);
+    rainbowAura.position.y = 1.25;
+    rainbowAura.visible = false;
+    playerGroup.add(rainbowAura);
+
+    playerGroup.position.set(-3.2, 0, 0);
+    scene.add(playerGroup);
+}
+
+/**
+ * ============================================================================
+ * 6. 動態生成 3D 懸浮解說標牌
+ * ============================================================================
+ */
+function getLabelSprite(key, titleText, subText, isGood) {
+    if (!labelTextureCache[key]) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 380;
+        canvas.height = 145;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = isGood ? 'rgba(234, 250, 241, 0.96)' : 'rgba(253, 237, 236, 0.96)';
+        ctx.strokeStyle = isGood ? '#2ECC71' : '#E74C3C';
+        ctx.lineWidth = 8;
+        roundRect(ctx, 10, 10, 360, 125, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = isGood ? '#1E8449' : '#C0392B';
+        ctx.font = 'bold 40px "PingFang HK", "Microsoft JhengHei", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(titleText, 190, 68);
+
+        ctx.fillStyle = '#34495E';
+        ctx.font = 'bold 22px sans-serif';
+        ctx.fillText(subText, 190, 108);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        labelTextureCache[key] = new THREE.SpriteMaterial({ map: texture, transparent: true });
+    }
+    const sprite = new THREE.Sprite(labelTextureCache[key]);
+    sprite.scale.set(3.1, 1.2, 1);
+    return sprite;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+/**
+ * ============================================================================
+ * 7. 生成「好習慣光環」與「壞習慣障礙」
+ * ============================================================================
+ */
+function spawnInteractiveObject() {
+    const stage = getStageInfo().stage;
+    const isGood = Math.random() < 0.62;
+
+    const itemGroup = new THREE.Group();
+
+    if (isGood) {
+        const lockedPool = GOOD_HABITS.filter(h => !unlockedHabits.has(h.id));
+        const habit = (lockedPool.length > 0 && Math.random() < 0.75)
+            ? lockedPool[Math.floor(Math.random() * lockedPool.length)]
+            : GOOD_HABITS[Math.floor(Math.random() * GOOD_HABITS.length)];
+
+        const gem = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.58, 0),
+            new THREE.MeshLambertMaterial({ color: 0xf1c40f, emissive: 0xd35400, emissiveIntensity: 0.4 })
+        );
+        const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(0.78, 0.09, 8, 24),
+            new THREE.MeshBasicMaterial({ color: 0x2ecc71 })
+        );
+        itemGroup.add(gem, ring);
+
+        const label = getLabelSprite(
+            `good_${habit.id}`,
+            `${habit.icon} ${habit.zh}`,
+            `✨ 穿過收集 (${habit.en})`,
+            true
+        );
+        label.position.y = 1.5;
+        itemGroup.add(label);
+
+        let spawnY = 1.0;
+        if (stage >= 2 && Math.random() < 0.4) spawnY = 2.3;
+        if (stage >= 3 && Math.random() < 0.25) spawnY = 3.3;
+
+        itemGroup.position.set(15, spawnY, 0);
+        itemGroup.userData = { type: 'good', data: habit, baseY: spawnY, floatPhase: Math.random() * Math.PI * 2 };
+    } else {
+        const pool = stage === 1 ? BAD_HABITS.filter(b => b.pos === 'ground') : BAD_HABITS;
+        const bad = pool[Math.floor(Math.random() * pool.length)];
+
+        const isAir = (bad.pos === 'air');
+        if (isAir) {
+            const cloudMat = new THREE.MeshLambertMaterial({ color: 0x6c5ce7 });
+            const core = new THREE.Mesh(new THREE.DodecahedronGeometry(0.7, 1), cloudMat);
+            itemGroup.add(core);
+        } else {
+            const box = new THREE.Mesh(
+                new THREE.BoxGeometry(1.05, 1.05, 1.05),
+                new THREE.MeshLambertMaterial({ color: 0xe74c3c })
+            );
+            const cone = new THREE.Mesh(
+                new THREE.ConeGeometry(0.38, 0.45, 4),
+                new THREE.MeshLambertMaterial({ color: 0xc0392b })
+            );
+            cone.position.y = 0.75;
+            itemGroup.add(box, cone);
+        }
+
+        const actionHint = isAir ? "⬇️ 蹲下閃避！" : "⬆️ 跳躍避開！";
+        const label = getLabelSprite(
+            `bad_${bad.zh}`,
+            `${bad.icon} ${bad.zh}`,
+            actionHint,
+            false
+        );
+        label.position.y = 1.55;
+        itemGroup.add(label);
+
+        const spawnY = isAir ? 2.15 : 0.60;
+        itemGroup.position.set(15, spawnY, 0);
+        itemGroup.userData = {
+            type: 'bad',
+            data: bad,
+            isAir: isAir,
+            baseY: spawnY,
+            oscillate: (stage >= 3 && !isAir && Math.random() < 0.3)
+        };
+    }
+
+    scene.add(itemGroup);
+    activeItems.push(itemGroup);
+}
+
+/**
+ * ============================================================================
+ * 8. 特效粒子與解說橫幅
+ * ============================================================================
+ */
+function spawnBurstParticles(x, y, colorHex) {
+    for (let i = 0; i < 10; i++) {
+        const p = new THREE.Mesh(
+            new THREE.BoxGeometry(0.18, 0.18, 0.18),
+            new THREE.MeshBasicMaterial({ color: colorHex })
+        );
+        p.position.set(x, y, (Math.random() - 0.5));
+        p.userData = {
+            vx: (Math.random() - 0.5) * 0.22,
+            vy: Math.random() * 0.22 + 0.05,
+            life: 25
+        };
+        scene.add(p);
+        particles.push(p);
+    }
+}
+
+let toastTimeout = null;
+function showToast(title, desc, borderColor = '#2ECC71') {
+    const banner = document.getElementById('toast-banner');
+    document.getElementById('toast-title').innerText = title;
+    document.getElementById('toast-title').style.color = borderColor;
+    document.getElementById('toast-desc').innerText = desc;
+    banner.style.borderColor = borderColor;
+    banner.classList.add('show');
+
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+        banner.classList.remove('show');
+    }, 3600);
+}
+
+/**
+ * ============================================================================
+ * 9. 玩家操作控制與暫停快捷鍵
+ * ============================================================================
+ */
+function doJump() {
+    if (!isPlaying || isPaused) return;
+    if (jumpCount < 2) {
+        isSliding = false;
+        playerGroup.scale.set(1, 1, 1);
+        velocityY = (jumpCount === 0) ? 0.28 : 0.25;
+        jumpCount++;
+        sfx.jump(jumpCount === 2);
+        spawnBurstParticles(playerGroup.position.x, playerGroup.position.y + 0.3, 0xffffff);
+    }
+}
+
+function doSlide() {
+    if (!isPlaying || isPaused) return;
+    sfx.slide();
+    if (playerY > 0.2) {
+        velocityY = -0.28;
+    }
+    isSliding = true;
+    slideTimer = 45;
+    playerGroup.scale.set(1.15, 0.55, 1.15);
+}
+
+function setupInputs() {
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'KeyP' || e.code === 'Escape') {
+            e.preventDefault();
+            togglePause();
+            return;
+        }
+        if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+            e.preventDefault();
+            doJump();
+        } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+            e.preventDefault();
+            doSlide();
+        }
+    });
+
+    document.getElementById('btn-jump').addEventListener('pointerdown', (e) => { e.stopPropagation(); doJump(); });
+    document.getElementById('btn-slide').addEventListener('pointerdown', (e) => { e.stopPropagation(); doSlide(); });
+}
+
+/**
+ * ============================================================================
+ * 10. 難度階段計算與主遊戲迴圈 (包含 Q版大頭輕輕擺動動畫與暫停邏輯)
+ * ============================================================================
+ */
+function getStageInfo() {
+    const mult = SPEED_MULTIPLIER[speedMode];
+    if (score < 120) {
+        return { stage: 1, name: "Stage 1 暖身慢行", baseSpeed: 0.085 * mult, spawnGap: Math.round(135 / mult) };
+    }
+    if (score < 300) {
+        return { stage: 2, name: "Stage 2 晨光校園", baseSpeed: 0.105 * mult, spawnGap: Math.round(115 / mult) };
+    }
+    if (score < 550) {
+        return { stage: 3, name: "Stage 3 活力課室", baseSpeed: 0.130 * mult, spawnGap: Math.round(95 / mult) };
+    }
+    return { stage: 4, name: "Stage 4 幸福人生號", baseSpeed: 0.155 * mult, spawnGap: Math.round(80 / mult) };
+}
+
+let clockTick = 0;
+function animateLoop() {
+    requestAnimationFrame(animateLoop);
+
+    // 若處於暫停狀態，僅渲染畫面不推進物理與計時
+    if (isPaused) {
+        renderer.render(scene, camera);
+        return;
+    }
+
+    clockTick += 0.06;
+
+    bgClouds.forEach(c => {
+        c.position.x -= 0.01;
+        if (c.position.x < -24) c.position.x = 24;
+    });
+
+    // 在主選單待機時，讓大頭公仔也有溫柔的呼吸與輕微晃頭動畫
+    if (!isPlaying && headGroup) {
+        headGroup.rotation.x = Math.sin(clockTick * 1.2) * 0.06;
+        headGroup.rotation.z = Math.cos(clockTick * 1.0) * 0.04;
+    }
+
+    if (isPlaying) {
+        const stageInfo = getStageInfo();
+        document.getElementById('stage-text').innerText = stageInfo.name;
+
+        const isFever = feverTimer > 0;
+        if (isFever) {
+            feverTimer--;
+            rainbowAura.visible = true;
+            rainbowAura.rotation.z += 0.12;
+            document.getElementById('fever-bar-fill').style.width = `${(feverTimer / 360) * 100}%`;
+        } else {
+            rainbowAura.visible = false;
+        }
+
+        gameSpeed = stageInfo.baseSpeed + (isFever ? 0.045 : 0);
+
+        bgTrees.forEach(t => {
+            t.position.x -= gameSpeed * 0.65;
+            if (t.position.x < -28) t.position.x = 28;
+        });
+
+        playerY += velocityY;
+        velocityY -= GRAVITY;
+        if (playerY <= 0) {
+            playerY = 0;
+            velocityY = 0;
+            jumpCount = 0;
+        }
+        playerGroup.position.y = playerY;
+
+        if (isSliding) {
+            slideTimer--;
+            if (slideTimer <= 0) {
+                isSliding = false;
+                playerGroup.scale.set(1, 1, 1);
+            }
+        }
+
+        if (invincibleTimer > 0) {
+            invincibleTimer--;
+            playerGroup.visible = (Math.floor(invincibleTimer / 4) % 2 === 0);
+        } else {
+            playerGroup.visible = true;
+        }
+
+        // 跑步時四肢擺動 + 大頭輕輕擺動與雙馬尾彈跳動畫
+        const runCycle = clockTick * 2.3;
+        if (playerY === 0 && !isSliding) {
+            leftLeg.rotation.z = Math.sin(runCycle) * 0.6;
+            rightLeg.rotation.z = -Math.sin(runCycle) * 0.6;
+            leftArm.rotation.z = -Math.sin(runCycle) * 0.5;
+            rightArm.rotation.z = Math.sin(runCycle) * 0.5;
+
+            // 大頭隨步伐輕輕左右搖擺、上下微幅律動
+            headGroup.position.y = 1.82 + Math.abs(Math.sin(runCycle)) * 0.06;
+            headGroup.rotation.x = Math.sin(runCycle * 0.5) * 0.09; // 左右輕微歪頭
+            headGroup.rotation.z = Math.cos(runCycle) * 0.06;       // 前後輕微點頭
+            headGroup.rotation.y = Math.sin(runCycle * 0.5) * 0.08;
+
+            // 女孩雙馬尾與蝴蝶結跟隨跳動
+            if (pigtailLeft && pigtailRight) {
+                const bounce = Math.abs(Math.sin(runCycle)) * 0.18;
+                pigtailLeft.rotation.z = -0.15 - bounce;
+                pigtailRight.rotation.z = -0.15 - bounce;
+            }
+        } else if (playerY > 0) {
+            // 跳躍在空中時開心地抬頭、雙手舉高
+            headGroup.rotation.z = 0.12;
+            leftArm.rotation.z = 0.65;
+            rightArm.rotation.z = 0.65;
+        }
+
+        spawnCooldown--;
+        if (spawnCooldown <= 0) {
+            spawnInteractiveObject();
+            spawnCooldown = stageInfo.spawnGap + Math.floor(Math.random() * 30);
+        }
+
+        const playerCenterY = playerY + (isSliding ? 0.65 : 1.15);
+        const playerHalfHeight = isSliding ? 0.50 : 0.95;
+
+        for (let i = activeItems.length - 1; i >= 0; i--) {
+            const item = activeItems[i];
+            item.position.x -= gameSpeed;
+
+            if (item.userData.type === 'good') {
+                item.children[0].rotation.y += 0.05;
+                item.position.y = item.userData.baseY + Math.sin(clockTick + item.userData.floatPhase) * 0.15;
+            } else if (item.userData.oscillate) {
+                item.position.y = item.userData.baseY + Math.abs(Math.sin(clockTick * 0.6)) * 0.9;
+            }
+
+            const dx = Math.abs(item.position.x - playerGroup.position.x);
+            const dy = Math.abs(item.position.y - playerCenterY);
+
+            if (dx < 0.85 && dy < (playerHalfHeight + 0.42)) {
+                if (item.userData.type === 'good') {
+                    const h = item.userData.data;
+                    sfx.collect();
+                    unlockedHabits.add(h.id);
+                    score += isFever ? 50 : 30;
+                    combo++;
+
+                    speakCantonese(`好習慣：${h.zh}`);
+
+                    if (!isFever) {
+                        const feverPct = Math.min(100, (combo % 5) * 20);
+                        document.getElementById('fever-bar-fill').style.width = `${feverPct}%`;
+                        if (combo > 0 && combo % 5 === 0) {
+                            feverTimer = 360;
+                            sfx.fever();
+                            showToast("🚂 好習慣火車衝刺啟動！", "積極樂觀能量滿載！無敵加速中，直接撞飛壞習慣！", "#9B59B6");
+                        } else {
+                            showToast(`${h.icon} 實踐好習慣：【${h.zh} ${h.en}】`, h.desc, "#2ECC71");
+                        }
+                    }
+
+                    spawnBurstParticles(item.position.x, item.position.y, 0xf1c40f);
+                    scene.remove(item);
+                    activeItems.splice(i, 1);
+                    updateHUD();
+
+                    if (unlockedHabits.size === 20) {
+                        victoryGame();
+                        return;
+                    }
+                    continue;
+                } else {
+                    const b = item.userData.data;
+                    if (isFever) {
+                        sfx.collect();
+                        score += 25;
+                        showToast(`💥 火車衝破壞習慣：【${b.zh}】`, b.tip, "#F39C12");
+                        spawnBurstParticles(item.position.x, item.position.y, 0x9b59b6);
+                        scene.remove(item);
+                        activeItems.splice(i, 1);
+                        updateHUD();
+                        continue;
+                    } else if (invincibleTimer <= 0) {
+                        sfx.hit();
+                        hearts--;
+                        combo = 0;
+                        invincibleTimer = 80;
+                        document.getElementById('fever-bar-fill').style.width = '0%';
+                        speakCantonese(`小心，唔好${b.zh}呀`);
+                        showToast(`⚠️ 小心壞習慣：【${b.zh}】`, b.tip, "#E74C3C");
+                        spawnBurstParticles(playerGroup.position.x, playerCenterY, 0xe74c3c);
+                        scene.remove(item);
+                        activeItems.splice(i, 1);
+                        updateHUD();
+
+                        if (hearts <= 0) {
+                            endGame();
+                        }
+                        continue;
+                    }
+                }
+            }
+
+            if (item.position.x < -12) {
+                if (item.userData.type === 'bad') {
+                    score += 10;
+                    updateHUD();
+                }
+                scene.remove(item);
+                activeItems.splice(i, 1);
+            }
+        }
+    }
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.position.x += p.userData.vx;
+        p.position.y += p.userData.vy;
+        p.userData.life--;
+        p.scale.multiplyScalar(0.92);
+        if (p.userData.life <= 0) {
+            scene.remove(p);
+            particles.splice(i, 1);
+        }
+    }
+
+    renderer.render(scene, camera);
+}
+
+/**
+ * ============================================================================
+ * 11. 暫停 (Pause)、HOME 鍵返回主頁、介面控制與圖鑑互動
+ * ============================================================================
+ */
+function togglePause() {
+    if (!isPlaying) return;
+    if (!isPaused) {
+        isPaused = true;
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        document.getElementById('btn-pause').innerText = "▶️ 繼續";
+        document.getElementById('pause-score').innerText = score;
+        document.getElementById('pause-dex').innerText = unlockedHabits.size;
+        document.getElementById('pause-modal').style.display = 'flex';
+    } else {
+        resumeGame();
+    }
+}
+
+function resumeGame() {
+    if (!isPlaying) return;
+    isPaused = false;
+    document.getElementById('btn-pause').innerText = "⏸️ 暫停";
+    document.getElementById('pause-modal').style.display = 'none';
+    document.getElementById('dex-modal').style.display = 'none';
+}
+
+function goHome() {
+    isPlaying = false;
+    isPaused = false;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+    activeItems.forEach(item => scene.remove(item));
+    activeItems = [];
+
+    playerY = 0;
+    velocityY = 0;
+    isSliding = false;
+    invincibleTimer = 0;
+    feverTimer = 0;
+    if (playerGroup) {
+        playerGroup.position.y = 0;
+        playerGroup.scale.set(1, 1, 1);
+        playerGroup.visible = true;
+    }
+    if (rainbowAura) rainbowAura.visible = false;
+
+    document.getElementById('btn-pause').innerText = "⏸️ 暫停";
+    document.getElementById('toast-banner').classList.remove('show');
+    document.getElementById('pause-modal').style.display = 'none';
+    document.getElementById('gameover-modal').style.display = 'none';
+    document.getElementById('dex-modal').style.display = 'none';
+    document.getElementById('home-dex-count').innerText = unlockedHabits.size;
+    document.getElementById('start-modal').style.display = 'flex';
+}
+
+function selectCharacter(type) {
+    selectedChar = type;
+    document.getElementById('char-boy').classList.toggle('active', type === 'boy');
+    document.getElementById('char-girl').classList.toggle('active', type === 'girl');
+    buildPlayerModel(type);
+}
+
+function selectSpeedMode(mode) {
+    speedMode = mode;
+    document.getElementById('spd-slow').classList.toggle('active', mode === 'slow');
+    document.getElementById('spd-normal').classList.toggle('active', mode === 'normal');
+    document.getElementById('spd-fast').classList.toggle('active', mode === 'fast');
+}
+
+function updateHUD() {
+    document.getElementById('score-text').innerText = score;
+    document.getElementById('hearts-text').innerText = '❤️'.repeat(Math.max(0, hearts)) + '🤍'.repeat(Math.max(0, 3 - hearts));
+    document.getElementById('collected-count').innerText = unlockedHabits.size;
+    document.getElementById('home-dex-count').innerText = unlockedHabits.size;
+    document.getElementById('combo-text').innerText = `${combo} Combo`;
+}
+
+function startGame() {
+    sfx.init();
+    activeItems.forEach(item => scene.remove(item));
+    activeItems = [];
+
+    score = 0;
+    hearts = 3;
+    combo = 0;
+    feverTimer = 0;
+    playerY = 0;
+    velocityY = 0;
+    jumpCount = 0;
+    isSliding = false;
+    invincibleTimer = 0;
+    spawnCooldown = 40;
+    isPaused = false;
+
+    document.getElementById('btn-pause').innerText = "⏸️ 暫停";
+    document.getElementById('fever-bar-fill').style.width = '0%';
+    document.getElementById('start-modal').style.display = 'none';
+    document.getElementById('pause-modal').style.display = 'none';
+    document.getElementById('gameover-modal').style.display = 'none';
+    document.getElementById('dex-modal').style.display = 'none';
+
+    updateHUD();
+    isPlaying = true;
+    speakCantonese("好習慣大冒險，開始啦！");
+    showToast("🎒 冒險開始（慢速暖身中）！", "跳過紅色壞習慣，穿過金色好習慣光環！", "#2ECC71");
+}
+
+function endGame() {
+    isPlaying = false;
+    isPaused = false;
+    renderDexGrid();
+    document.getElementById('end-title').innerText = "🌟 表現超棒！繼續保持好習慣！";
+    document.getElementById('end-summary').innerText =
+        `🏆 總得分：${score} 分 ｜ 🌟 已收集好習慣：${unlockedHabits.size} / 20 個`;
+
+    const sampleHabit = GOOD_HABITS[Math.floor(Math.random() * GOOD_HABITS.length)];
+    document.getElementById('end-encourage').innerText =
+        `💡 老師溫馨小叮嚀【${sampleHabit.zh} ${sampleHabit.en}】：\n「${sampleHabit.desc}」`;
+
+    document.getElementById('gameover-modal').style.display = 'flex';
+}
+
+function victoryGame() {
+    isPlaying = false;
+    isPaused = false;
+    sfx.fever();
+    speakCantonese("恭喜你！成功收集晒二十個好習慣，你係好習慣小達人！");
+    renderDexGrid();
+    document.getElementById('end-title').innerText = "🎉 恭喜通關！集齊全部 20 個好習慣！";
+    document.getElementById('end-summary').innerText =
+        `🏆 榮譽總分：${score} 分 ｜ 🌟 圖鑑達成率：20 / 20 (100% 完美達成！)`;
+    document.getElementById('end-encourage').innerText =
+        `🎓 聖文嘉「好習慣小達人」榮譽證書：\n恭喜你完成幸福人生號挑戰，記得每天在生活中實踐這 20 個好習慣喔！`;
+    document.getElementById('gameover-modal').style.display = 'flex';
+}
+
+function renderDexGrid() {
+    const grid = document.getElementById('habit-dex-grid');
+    grid.innerHTML = '';
+    GOOD_HABITS.forEach(h => {
+        const isUnlocked = unlockedHabits.has(h.id);
+        const div = document.createElement('div');
+        div.className = `habit-badge ${isUnlocked ? 'unlocked' : ''}`;
+        div.innerHTML = `<div>${h.id}. ${h.icon} ${h.zh}</div><div style="font-size:11px;">${h.en}</div>`;
+        div.onclick = () => {
+            speakCantonese(`${h.zh}。${h.desc}`);
+            document.getElementById('dex-detail-box').innerText =
+                `【第 ${h.id} 個好習慣：${h.zh} (${h.en})】\n${h.desc}`;
+        };
+        grid.appendChild(div);
+    });
+}
+
+function toggleDexModal(show) {
+    if (show) renderDexGrid();
+    document.getElementById('dex-modal').style.display = show ? 'flex' : 'none';
+}
+
+window.onload = initThreeJS;
+</script>
+</body>
+</html>
