@@ -1,1 +1,904 @@
+<!doctype html><html lang="zh-HK"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#e9f6f2"><title>好習慣跳跳島 · 聖文嘉</title><style>*{box-sizing:border-box}body{margin:0;background:#eef6ee;color:#294f53;font-family:'PingFang HK','Microsoft JhengHei',system-ui,sans-serif}button{font:inherit;cursor:pointer;border:0;touch-action:none;color:inherit;-webkit-tap-highlight-color:transparent}button:focus-visible{outline:3px solid #266e8b;outline-offset:3px}button:active{transform:translateY(3px)}.hidden{display:none!important}.shell{max-width:1240px;min-height:100dvh;margin:auto;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:50px;padding:26px 50px}.intro{padding:15px 0}.school{font-weight:800;line-height:1.7;font-size:14px;letter-spacing:1px}.eyebrow{font-size:11px;letter-spacing:3px;color:#739b8b;margin-top:42px}.intro h1{font-size:clamp(32px,3.5vw,49px);line-height:1.35;letter-spacing:-2px;margin:15px 0}.intro h1 span{color:#eb996b}.intro p{color:#6c8582;line-height:1.9;font-size:15px}.island-art{position:relative;max-width:340px;margin:0 auto;height:255px}.island-art svg{position:relative;width:100%;height:100%}.sun{position:absolute;right:20px;top:0;color:#efbf68;font-size:60px}.cloud{position:absolute;color:white;font-size:70px}.c1{left:0;top:0}.c2{right:-25px;top:60px}.mini-features{display:flex;flex-wrap:wrap;gap:8px}.mini-features span{font-size:12px;background:#fff9ed;border-radius:12px;padding:10px}.intro>small{display:block;font-size:12px;color:#83968b;margin-top:25px}#app-container{position:relative;width:100%;max-width:520px;height:min(900px,94dvh);min-height:600px;margin:auto;border:8px solid white;border-radius:30px;background:#f7fbf5;overflow:hidden;box-shadow:0 24px 75px #3b705321,0 2px 5px #456a4811;display:flex;flex-direction:column}.game-top{display:flex;align-items:center;justify-content:space-between;padding:14px 15px 10px;background:#fffdfa}.tiny{font-size:8px;letter-spacing:2px;color:#99a9a0}h2{font-size:18px;line-height:1.3;margin:3px 0}h2 span{font-size:10px;display:inline-block;background:#e6f3e9;border-radius:6px;padding:4px;vertical-align:middle;color:#518e7b}.top-actions{display:flex;gap:5px}.top-actions button{border-radius:10px;background:#edf2e9;width:33px;height:33px;font-size:17px}#hud{display:grid;grid-template-columns:repeat(4,1fr);background:#fffdfa;border-bottom:1px solid #dde7dd;padding:0 8px 11px;gap:3px}.hud-box{display:flex;flex-direction:column;align-items:center;gap:4px}.hud-label{color:#87978d;font-size:10px}.hud-box b{font-size:14px;white-space:nowrap}#score-val{color:#e3a54e}#height-val{color:#4f9c8a}#star-val{color:#d89c41}#lives-val{font-size:12px}#canvas-wrapper{position:relative;flex:1;min-height:200px;overflow:hidden}canvas{width:100%;height:100%;display:block;touch-action:none}.world-label{position:absolute;top:13px;left:13px;font-size:10px;letter-spacing:1px;border-radius:20px;background:#ffffffb0;padding:7px 11px;color:#5a8c84;pointer-events:none}#habit-banner{position:absolute;top:48px;left:5%;width:90%;background:#fffaf0f2;border:2px solid white;box-shadow:0 5px 15px #3d7a6522;border-radius:16px;padding:12px;font-weight:700;font-size:13px;text-align:center;display:flex;gap:8px;justify-content:center}#touch-controls{background:#fffdfa;padding:12px 15px 9px;padding-bottom:max(9px,env(safe-area-inset-bottom));border-top:1px solid #dde7dd}.controls-main-row{display:flex;justify-content:space-between;align-items:center}.lr-buttons{display:flex;gap:13px}.move-btn{width:64px;height:58px;border-radius:18px;background:#e6efec;box-shadow:0 5px 0 #c7d9d2;color:#5b8d7f;font-size:23px}.jump-btn{width:114px;height:64px;border-radius:20px;background:#f8c779;box-shadow:0 5px 0 #dca65b;font-size:15px;font-weight:800}.jump-btn span{font-size:24px;margin-right:5px}.jump-btn small{display:block;font-size:9px;font-weight:500}.active{transform:translateY(4px)!important;filter:brightness(.95)}.control-mode-bar{display:flex;justify-content:space-between;margin-top:15px;gap:4px}.control-mode-bar button{background:none;font-size:10px;padding:5px 1px;white-space:nowrap;color:#7a8c83}.ctrl-hint{text-align:center;font-size:9px;color:#9aa99e;margin-top:3px}#joystick-base{position:relative;width:100px;height:65px;border-radius:40px;background:#e1ede7;touch-action:none}#joystick-stick{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:#88bcaa;box-shadow:0 4px 0 #649582}.overlay{position:absolute;inset:0;background:#dcefe8bb;backdrop-filter:blur(9px);z-index:30;display:flex;align-items:center;justify-content:center;padding:20px}.modal-card{width:100%;max-width:390px;background:#fffdf7;border:3px solid #fff;border-radius:27px;padding:25px 20px;text-align:center;box-shadow:0 15px 40px #38645221;max-height:100%;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}.modal-badge{display:inline-block;font-size:11px;font-weight:700;color:#5a947f;background:#e8f3e6;border-radius:20px;padding:7px 14px}.hero-icon{font-size:60px;margin:15px 0 6px;filter:drop-shadow(0 6px 0 #f1e9d7)}.modal-card h1{font-size:25px;margin:12px 0;color:#315c58}.modal-card p{font-size:14px;line-height:1.9;color:#6b837a;margin:12px 0}.primary-btn{background:#66aaa0;color:white;border-radius:14px;padding:15px 20px;font-weight:800;font-size:15px;width:100%;box-shadow:0 4px 0 #48897f}.difficulty{display:flex;gap:8px;margin:20px 0}.difficulty button{flex:1;border:2px solid #e3ece4;border-radius:12px;background:white;font-size:12px;padding:10px 5px}.difficulty .selected{border-color:#75b5a4;background:#eaf4e9}.voice-note{font-size:10px!important;line-height:1.6!important;margin:15px 0 0!important}.lesson-actions{display:grid;gap:12px;margin-top:20px}#btn-repeat{padding:10px;background:#f4efdd;border-radius:12px}#lesson-title{font-size:32px}#quiz-answers{display:grid;gap:12px;margin-top:20px}#quiz-answers button{background:#edf4e9;padding:15px;border-radius:14px;font-size:15px;border:2px solid #dce9d7}#quiz-answers .correct{background:#d7ecd9;border-color:#70ad83}#quiz-answers .incorrect{background:#fff0dc;border-color:#edbd81}#quiz-feedback{min-height:28px;font-weight:700}.album-card{max-width:420px;padding:20px 14px}.album-card h1{font-size:22px}.album-card h1 small{font-size:14px;color:#79a28c}#album-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:15px 0}#album-grid button{display:flex;flex-direction:column;align-items:center;padding:9px 2px;background:#eaf3df;border-radius:13px;gap:4px;font-size:11px}#album-grid button span{font-size:25px}#album-grid button.locked{background:#f0eee8;color:#aaa99e;filter:grayscale(1)}.text-button{background:none;font-size:10px;margin-top:13px;color:#8c9b8c}.album-card p{font-size:12px}
+@media(max-width:800px){.shell{display:block;padding:0;min-height:100dvh}.intro{display:none}#app-container{max-width:520px;height:100dvh;min-height:0;border:0;border-radius:0}.game-top{padding-top:max(12px,env(safe-area-inset-top))}}@media(max-height:650px){.game-top{padding:6px 10px}#hud{padding-bottom:6px}#touch-controls{padding-top:8px}.move-btn{height:42px;width:55px}.jump-btn{height:47px;width:105px}.control-mode-bar{margin-top:8px}.modal-card{padding:15px}.hero-icon{font-size:38px;margin:8px 0}.modal-card h1{font-size:22px}.modal-card p{font-size:12px;margin:8px 0}.difficulty{margin:12px 0}.ctrl-hint{display:none}}
+</style></head><body>
+<div class="shell"><aside class="intro"><div class="school">ST. MONICA’S<br>聖文嘉中英文幼稚園</div><div class="eyebrow">PLAY • LEARN • GROW</div><h1>小小一步，<br>好習慣<span>大冒險。</span></h1><p>跳進雲朵小島，帶着關愛出發！<br>每一顆星章，都是成長的小魔法。</p><div class="island-art" aria-hidden="true"><div class="sun">☀</div><div class="cloud c1">☁</div><div class="cloud c2">☁</div><svg viewBox="0 0 320 245"><ellipse cx="160" cy="220" rx="114" ry="16" fill="#cbded0"/><path d="M40 168Q160 118 280 168L253 212Q160 241 67 212Z" fill="#c8956f"/><ellipse cx="160" cy="165" rx="120" ry="35" fill="#89c9a2"/><ellipse cx="160" cy="155" rx="116" ry="29" fill="#b7df9c"/><g stroke="#28585c" stroke-width="3" stroke-linecap="round"><path d="M123 154l-9 13m75-13 11 13"/><rect x="123" y="115" width="66" height="50" rx="21" fill="#65bdba"/><path d="M124 128l-20 18m84-18 20 14" stroke="#f6cbb1" stroke-width="14"/><circle cx="156" cy="86" r="43" fill="#f8d5bd"/><path d="M114 77q0-48 42-46 44-2 44 47l-26-18-20 8-17-8Z" fill="#5f4944"/><path d="M111 59q45-59 90 0l-15 9q-32-24-60 0Z" fill="#76c6bf"/><circle cx="140" cy="90" r="6" fill="#314e50"/><circle cx="174" cy="90" r="6" fill="#314e50"/><path d="M147 105q9 9 18 0" fill="none"/><circle cx="127" cy="102" r="7" fill="#efa5a4" stroke="none"/><circle cx="185" cy="102" r="7" fill="#efa5a4" stroke="none"/><path d="M156 127l4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1Z" fill="#ffe092" stroke="none"/></g><text x="56" y="115" font-size="30">🌷</text><text x="228" y="111" font-size="32">⭐</text></svg></div><div class="mini-features"><span>🎧 廣東話小提示</span><span>🌈 20 個好習慣</span><span>🧩 每站情境挑戰</span></div><small>一起練習，將好習慣帶返生活。</small></aside>
+<main id="app-container"><div class="game-top"><div><span class="tiny">HABIT HOP ADVENTURE</span><h2>好習慣跳跳島 <span id="stage-name">友愛花園</span></h2></div><div class="top-actions"><button id="btn-album" title="好習慣圖鑑">📖</button><button id="btn-pause" title="暫停">Ⅱ</button></div></div>
+<header id="hud"><div class="hud-box"><span class="hud-label">星星分數</span><b id="score-val">0</b></div><div class="hud-box"><span class="hud-label">本站星章</span><b id="height-val">0 / 6</b></div><div class="hud-box"><span class="hud-label">彩虹能量</span><b id="star-val">☆☆☆</b></div><div class="hud-box"><span class="hud-label">愛心</span><b id="lives-val">❤️❤️❤️</b></div></header>
+<div id="canvas-wrapper"><canvas id="gameCanvas" aria-label="好習慣跳躍遊戲"></canvas><div class="world-label" id="world-label">01 / 04　友愛花園</div><div id="habit-banner" class="hidden"><span id="habit-banner-icon"></span><span id="habit-banner-text"></span></div></div>
+<footer id="touch-controls"><div class="controls-main-row"><div class="move-side"><div id="dpad-zone"><div class="lr-buttons"><button class="move-btn" id="btn-left" aria-label="向左">◀</button><button class="move-btn" id="btn-right" aria-label="向右">▶</button></div></div><div id="joystick-zone" class="hidden"><div id="joystick-base"><div id="joystick-stick"></div></div></div></div><div class="action-side"><button id="btn-jump" class="jump-btn"><span>↑</span>跳躍<small>可連跳兩次</small></button></div></div><div class="control-mode-bar"><button id="btn-toggle-ctrl">🕹 按鍵 / 搖桿</button><button id="btn-music">♫ 音樂開</button><button id="btn-voice">🗣 解說開</button><button id="btn-mute" title="切換音效">♪ 音效開</button></div><div class="ctrl-hint">← → 移動 · 空白鍵跳躍 · 頂星章磚，收集好習慣</div></footer>
+<div id="overlay" class="overlay"><div class="modal-card"><div class="modal-badge">🌿 第一站・友愛花園</div><div class="hero-icon">🌈</div><h1 id="modal-title">準備好跳一跳？</h1><p id="modal-desc">頂起星章磚，聽聽好習慣！<br>跳到小怪頭上，把壞習慣變走。<br>每站集齊 <strong>6 個不同星章</strong>，再挑戰生活小任務。</p><div class="difficulty"><button data-mode="easy" class="selected">🌱 輕鬆探索</button><button data-mode="normal">⭐ 小小挑戰</button></div><button id="btn-start" class="primary-btn">出發去冒險 →</button><p id="voice-note" class="voice-note"></p></div></div>
+<div id="lesson" class="overlay hidden"><div class="modal-card lesson-card"><div class="modal-badge" id="lesson-kicker">星章入袋！</div><div class="hero-icon" id="lesson-icon"></div><h1 id="lesson-title"></h1><p id="lesson-text"></p><div class="lesson-actions"><button id="btn-repeat">🔊 再聽一次</button><button id="btn-continue" class="primary-btn">繼續冒險 →</button></div></div></div>
+<div id="quiz" class="overlay hidden"><div class="modal-card"><div class="modal-badge">🧩 生活小任務</div><div class="hero-icon" id="quiz-icon"></div><h1 id="quiz-title"></h1><p id="quiz-text"></p><div id="quiz-answers"></div><p id="quiz-feedback" role="status"></p><button id="btn-next" class="primary-btn hidden">下一站 →</button></div></div>
+<div id="album" class="overlay hidden"><div class="modal-card album-card"><div class="modal-badge">我的成長足跡</div><h1>好習慣圖鑑 <small id="album-count">0/20</small></h1><p>亮起的星章，點一下再聽小提示。</p><div id="album-grid"></div><button id="btn-album-close" class="primary-btn">返回 →</button><button id="btn-clear" class="text-button">清除圖鑑紀錄</button></div></div>
+</main></div><script>const GAME_CONFIG={WORLD_COLS:10, GRAVITY:-24,JUMP_VELOCITY:12.8,DOUBLE_JUMP_VEL:11.2,MOVE_SPEED:4.5,BOUNCE_VELOCITY:9.5,STAR_POWER_DURATION:7,GOOD_HABITS:[{"name": "包容", "icon": "🤝", "say": "朋友同你諗法唔同，試下聽佢講，大家都可以做好朋友。"}, {"name": "關愛", "icon": "💗", "say": "見到朋友唔開心，行前一步，問佢需唔需要幫手。"}, {"name": "聆聽", "icon": "👂", "say": "朋友講嘢嗰陣，望住佢，聽完先到自己講。"}, {"name": "謙讓", "icon": "🛝", "say": "玩滑梯要排隊，輪流玩，大家都開心。"}, {"name": "感恩", "icon": "🌷", "say": "有人幫過你，記得望住佢，講聲多謝。"}, {"name": "團隊合作", "icon": "🧩", "say": "一齊砌積木，分工合作，大家互相幫手。"}, {"name": "情緒", "icon": "🌬️", "say": "唔開心嗰陣，先深呼吸，再講出自己嘅感受。"}, {"name": "表達", "icon": "💬", "say": "用溫柔嘅聲音，清楚講出自己嘅想法同需要。"}, {"name": "勇敢", "icon": "🦁", "say": "做錯事唔使怕，勇敢承認，再試下改正。"}, {"name": "毅力", "icon": "🌱", "say": "未做到唔緊要，一步一步，再試一次。"}, {"name": "積極", "icon": "☀️", "say": "見到新挑戰，主動講，我可以試下做。"}, {"name": "求知", "icon": "🔍", "say": "有嘢唔明，可以問老師，一齊搵答案。"}, {"name": "誠實", "icon": "💎", "say": "唔小心打爛咗嘢，要講真話，唔好收埋。"}, {"name": "負責任", "icon": "🎒", "say": "自己嘅書包自己執，做好自己嘅小任務。"}, {"name": "自律", "icon": "⏰", "say": "冇人提醒，都記得玩完玩具要收拾。"}, {"name": "珍惜", "icon": "📚", "say": "輕輕揭書，愛惜玩具，食物都唔好浪費。"}, {"name": "承諾", "icon": "🎀", "say": "答應咗嘅事，要努力做到，做個守信用嘅小朋友。"}, {"name": "尊重", "icon": "🌼", "say": "有禮貌對待每一個人，亦要愛護小動物。"}, {"name": "付出", "icon": "👐", "say": "伸出你嘅小手，主動幫助有需要嘅人。"}, {"name": "信任", "icon": "🌈", "say": "相信爸爸媽媽同老師關心你，有心事可以同佢哋講。"}],BAD_HABITS:[
+{name:'推撞怪',colorTop:'#b1a4f8',colorSide:'#7f72c2',say:'推撞會令朋友受傷。排好隊，慢慢等，就人人都有得玩。'},
+{name:'發脾氣怪',colorTop:'#ffa3b6',colorSide:'#cf728c',say:'嬲嗰陣，先深呼吸，再用說話講出感受。'},
+{name:'浪費怪',colorTop:'#f9c57b',colorSide:'#d5a25c',say:'食幾多，攞幾多，珍惜食物，唔好浪費。'},
+{name:'亂放怪',colorTop:'#95cce1',colorSide:'#609caf',say:'玩完玩具，放返原位，下次就容易搵到啦。'},
+{name:'插嘴怪',colorTop:'#c2d99e',colorSide:'#8faa6f',say:'朋友未講完，耐心等一等，聽完先到你講。'}]};
+class SoundFX{
+ constructor(){this.ctx=null;this.muted=false;this.musicOn=true;this.duck=false;this.step=0;this.timer=null;}
+ init(){if(!this.ctx){const A=window.AudioContext||window.webkitAudioContext;if(A)this.ctx=new A();}if(this.ctx)this.ctx.resume().catch(()=>{});}
+ playTone(a,b,type,d,v=.08,isMusic=false){if((this.muted&&!isMusic)||!this.ctx)return;const c=this.ctx,t=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(a,t);o.frequency.exponentialRampToValueAtTime(Math.max(1,b),t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.008);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start();o.stop(t+d+.01);}
+ jump(){this.playTone(290,690,'sine',.15,.045)} coin(){this.playTone(940,1200,'sine',.12,.05)} bumpBlock(){this.playTone(200,340,'triangle',.12)} stompEnemy(){this.playTone(450,240,'sine',.13)} eatGoodHabit(){[660,880,990].forEach((n,i)=>setTimeout(()=>this.playTone(n,n,'sine',.16),i*85))}hurt(){this.playTone(280,180,'triangle',.2)}
+ startMusic(){this.init();if(this.timer)return;
+ // Original composition “跳跳島散步”: 8-bar melody, bass and soft percussion.
+ const melody=[72,0,76,79,77,76,0,74, 69,72,0,76,74,0,72,67, 65,69,72,0,74,72,69,0, 67,71,74,77,76,0,74,0, 72,76,79,81,79,0,76,72, 69,0,72,74,76,74,0,69, 65,69,72,74,72,69,67,0, 67,72,76,0,74,71,72,0];
+ const bass=[48,45,41,43,48,45,41,43],hz=n=>440*Math.pow(2,(n-69)/12);
+ this.timer=setInterval(()=>{if(!this.musicOn||document.hidden||!this.ctx||this.ctx.state!=='running')return;const s=this.step++%64,v=this.duck?.009:.032;if(melody[s])this.playTone(hz(melody[s]),hz(melody[s]),'triangle',.16,v,true);if(s%2===0)this.playTone(hz(bass[Math.floor(s/8)]+(s%4===2?12:0)),hz(bass[Math.floor(s/8)]),'sine',.18,v*.9,true);if(s%4===0)this.playTone(95,40,'sine',.07,v*.65,true);},175);
+ }
+}
+const sfx=new SoundFX();
+const guide={enabled:true,last:'',voice:null,
+ refresh(){const vs=window.speechSynthesis?.getVoices()||[];this.voice=vs.find(v=>/zh[-_]HK|yue/i.test(v.lang));document.getElementById('voice-note').textContent=this.voice?'廣東話語音已準備好':'語音需要裝置提供「廣東話／香港中文」聲音；所有解說同時顯示字幕。';},
+ say(t){this.last=t;if(!this.enabled||!window.speechSynthesis)return;this.refresh();if(!this.voice)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.voice=this.voice;u.lang=this.voice.lang;u.rate=.88;u.pitch=1.12;sfx.duck=true;u.onend=u.onerror=()=>sfx.duck=false;speechSynthesis.speak(u);},stop(){window.speechSynthesis?.cancel();sfx.duck=false;}
+};
+window.speechSynthesis?.addEventListener('voiceschanged',()=>guide.refresh());
+</script><script>(() => {
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d", { alpha: false });
 
+  // UI 元素
+  const scoreEl = document.getElementById("score-val");
+  const heightEl = document.getElementById("height-val");
+  const starEl = document.getElementById("star-val");
+  const livesEl = document.getElementById("lives-val");
+  const bannerEl = document.getElementById("habit-banner");
+  const bannerIconEl = document.getElementById("habit-banner-icon");
+  const bannerTextEl = document.getElementById("habit-banner-text");
+  const overlayEl = document.getElementById("overlay");
+  const modalTitleEl = document.getElementById("modal-title");
+  const modalDescEl = document.getElementById("modal-desc");
+  const btnStart = document.getElementById("btn-start");
+
+  // 遊戲狀態
+  let state = "MENU";
+  let difficulty = 'easy', stage = 0, habitCursor = 0, stageCollected = new Set(), album = new Set();
+  try { const saved=JSON.parse(localStorage.getItem('stm-habit-album-v2')||'[]'); if(Array.isArray(saved))album=new Set(saved.filter(n=>GAME_CONFIG.GOOD_HABITS.some(h=>h.name===n))); } catch(e){}
+  const stages = [
+    {name:'友愛花園',ids:[0,1,2,3,4,5],icon:'🤝',q:'朋友想砌另一款城堡，你會點做？',a:['聽聽佢嘅想法，一齊試！','只准跟我嗰款砌！'],why:'包容唔同想法，一齊合作更開心。',correct:0},
+    {name:'勇氣雲谷',ids:[6,7,8,9,10,11],icon:'🧩',q:'拼圖仲未砌好，可以點做？',a:['掉低唔再玩！','慢慢試，或者請人幫手。'],why:'遇到困難唔放棄，呢個就係毅力！',correct:1},
+    {name:'自律星丘',ids:[12,13,14,15,16,17],icon:'🎒',q:'玩完玩具，冇人提醒你，你會？',a:['自己收拾，放返原位。','等老師幫我收。'],why:'自己記得做好應做嘅事，呢個就係自律！',correct:0},
+    {name:'彩虹小鎮',ids:[18,19,0,3,13,15],icon:'🌈',q:'同學唔小心碰跌你嘅積木，佢道歉，你會？',a:['大聲鬧佢，唔再同佢玩！','原諒佢，邀請佢一齊砌返。'],why:'包容朋友嘅小過錯，一齊合作，友誼就更好！',correct:1}
+  ];
+  const $ = id=>document.getElementById(id);
+  function clearInput(){input.left=input.right=false;document.querySelectorAll('.active').forEach(b=>b.classList.remove('active'));}
+  function lesson(h,kind='good'){
+    state='LESSON';clearInput();
+    $('lesson-kicker').textContent=kind==='good'?'⭐ 好習慣星章入袋！':'✨ 把壞習慣變走！';
+    $('lesson-icon').textContent=h.icon||'☁️';$('lesson-title').textContent=h.name;
+    $('lesson-text').textContent=h.say;$('lesson').classList.remove('hidden');
+    guide.say(h.name+'。'+h.say);
+  }
+  function openQuiz(){state='QUIZ';clearInput();const q=stages[stage];$('quiz-icon').textContent=q.icon;$('quiz-title').textContent='帶返生活，你識唔識？';$('quiz-text').textContent=q.q;$('quiz-feedback').textContent='';$('btn-next').classList.add('hidden');$('quiz-answers').replaceChildren();q.a.forEach((txt,i)=>{const b=document.createElement('button');b.textContent=txt;b.onclick=()=>{if(i===q.correct){b.classList.add('correct');$('quiz-feedback').textContent=q.why;guide.say(q.why);$('btn-next').classList.remove('hidden');$('btn-next').textContent=stage===3?'完成冒險！ 🌈':'前往下一站 →';$('quiz-answers').querySelectorAll('button').forEach(x=>x.disabled=true);}else{b.classList.add('incorrect');$('quiz-feedback').textContent='試下諗，點做可以令大家都開心？';guide.say($('quiz-feedback').textContent);}};$('quiz-answers').append(b);});$('quiz').classList.remove('hidden');guide.say('集齊六個星章啦！'+q.q);}
+  function refreshStage(){const q=stages[stage];$('stage-name').textContent=q.name;$('world-label').textContent=`0${stage+1} / 04　${q.name}`;document.querySelector('.modal-badge').textContent=`🌿 第 ${stage+1} 站・${q.name}`;}
+  $('btn-continue').onclick=()=>{$('lesson').classList.add('hidden');guide.stop();if(stageCollected.size>=6)openQuiz();else state='PLAYING';};
+  $('btn-repeat').onclick=()=>guide.say(guide.last);
+  $('btn-next').onclick=()=>{guide.stop();$('quiz').classList.add('hidden');if(stage<3){stage++;initGame(true);}else{state='COMPLETE';sfx.duck=true;modalTitleEl.textContent='你係好習慣小達人！';modalDescEl.textContent=`四站任務完成！你已認識 ${album.size} 個好習慣。今日揀一個，喺生活入面試下做！`;$('overlay').classList.remove('hidden');document.querySelector('.difficulty').classList.add('hidden');btnStart.textContent='再出發 →';guide.say('叻叻！四站任務完成！將好習慣帶返生活啦！');}};
+  document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{difficulty=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('selected',x===b));});
+  let albumPrevious='MENU';
+  $('btn-album').onclick=()=>{if(!['PLAYING','MENU','GAMEOVER','COMPLETE'].includes(state))return;albumPrevious=state;state='ALBUM';clearInput();sfx.duck=true;$('album-count').textContent=album.size+'/20';$('album-grid').replaceChildren();GAME_CONFIG.GOOD_HABITS.forEach(h=>{const b=document.createElement('button');const unlocked=album.has(h.name);b.className=unlocked?'':'locked';const icon=document.createElement('span');icon.textContent=unlocked?h.icon:'☆';b.append(icon,document.createTextNode(h.name));b.onclick=()=>{if(unlocked){guide.say(h.name+'。'+h.say);$('album').querySelector('p').textContent=h.say;}};$('album-grid').append(b);});$('album').classList.remove('hidden');};
+  $('btn-album-close').onclick=()=>{$('album').classList.add('hidden');state=albumPrevious;guide.stop();};
+  $('btn-clear').onclick=()=>{if(confirm('清除已收集嘅圖鑑紀錄？')){album.clear();try{localStorage.removeItem('stm-habit-album-v2');}catch(e){}$('btn-album-close').click();$('btn-album').click();}};
+  $('btn-pause').onclick=()=>{if(state==='PLAYING'){state='PAUSED';clearInput();guide.stop();sfx.duck=true;$('btn-pause').textContent='▶';showHabitBanner('☁️','休息一下，按 ▶ 繼續');}else if(state==='PAUSED'){state='PLAYING';sfx.duck=false;$('btn-pause').textContent='Ⅱ';bannerEl.classList.add('hidden');}};
+  window.addEventListener('blur',()=>{clearInput();if(state==='PLAYING')$('btn-pause').click();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInput();guide.stop();if(state==='PLAYING')$('btn-pause').click();}});
+  $('btn-music').onclick=()=>{sfx.init();sfx.musicOn=!sfx.musicOn;$('btn-music').textContent=sfx.musicOn?'♫ 音樂開':'♫ 音樂關';};
+  $('btn-voice').onclick=()=>{guide.enabled=!guide.enabled;if(!guide.enabled)guide.stop();$('btn-voice').textContent=guide.enabled?'🗣 解說開':'🗣 解說關';};
+  guide.refresh(); // MENU, PLAYING, GAMEOVER
+  let score = 0;
+  let maxHeight = 0;
+  let lives = 3;
+  let habitStarsCount = 0; // 收集滿 3 顆觸發彩虹無敵
+  let rainbowTimer = 0;
+  let invulnTimer = 0;
+  let bannerTimeout = null;
+
+  // 縱向世界座標與物件池
+  let cameraY = 0;
+  let highestGenY = 0;
+  let player = null;
+  let platforms = [];  // 草地平台、紅磚塊、❓問號磚塊
+  let items = [];      // 金幣、從問號磚頂出的好習慣星章
+  let enemies = [];    // 壞習慣栗子怪
+  let clouds = [];     // 背景立體白雲
+  let particles = [];  // 踩怪/頂磚粒子與浮動文字
+
+  // 輸入狀態
+  const input = { left: false, right: false };
+
+  // 畫面尺寸與格線比例
+  let viewW = 360;
+  let viewH = 520;
+  let unit = 36;       // 每 1 格對應的螢幕像素
+  let depth3D = 12;    // 3D 立體側面擠出厚度
+
+  function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    viewW = rect.width;
+    viewH = rect.height;
+    canvas.width = viewW * dpr;
+    canvas.height = viewH * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    unit = viewW / GAME_CONFIG.WORLD_COLS;
+    depth3D = unit * 0.34;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+
+  // 初始化遊戲
+  function initGame(next = false) {
+    if(next!==true)stage=0;
+    stageCollected.clear();habitCursor=0;refreshStage();clearInput();guide.stop();
+    $('btn-pause').textContent='Ⅱ';document.querySelector('.difficulty').classList.add('hidden');
+    sfx.startMusic();
+    sfx.init();
+    if(next!==true)score = 0;
+    maxHeight = 0;
+    lives = difficulty==='easy'?5:3;
+    habitStarsCount = 0;
+    rainbowTimer = 0;
+    invulnTimer = 0;
+    cameraY = 0;
+    highestGenY = 0;
+
+    platforms = [];
+    items = [];
+    enemies = [];
+    particles = [];
+    clouds = [];
+
+    // 預先生成背景白雲
+    for (let i = 0; i < 8; i++) {
+      clouds.push({
+        x: Math.random() * 9,
+        y: i * 3 + Math.random() * 2,
+        w: 1.8 + Math.random() * 1.4
+      });
+    }
+
+    // 底部起始安全草地地面 (Y = 0.5, 寬度鋪滿 10 格)
+    platforms.push({
+      x: 0,
+      y: 0.5,
+      w: GAME_CONFIG.WORLD_COLS,
+      h: 0.8,
+      type: "GROUND"
+    });
+
+    // 第一組引導問號磚 (讓玩家一開場就能體驗「頂問號磚塊」)
+    platforms.push({
+      x: 3.5,
+      y: 3.5,
+      w: 3,
+      h: 0.75,
+      type: "BRICK_ROW",
+      blocks: [
+        { offset: 0, kind: "BRICK", bump: 0 },
+        { offset: 1, kind: "QUESTION", bump: 0, habit: getRandomGoodHabit() },
+        { offset: 2, kind: "BRICK", bump: 0 }
+      ]
+    });
+
+    highestGenY = 4.5;
+    generateWorldUpTo(26);
+
+    player = {
+      x: 4.5,
+      y: 1.3,
+      w: 0.76,
+      h: 0.88,
+      vx: 0,
+      vy: 0,
+      facing: 1,
+      onGround: true,
+      jumpsLeft: 2,
+      walkCycle: 0
+    };
+
+    updateHUD();
+    overlayEl.classList.add("hidden");
+    state = "PLAYING";
+  }
+
+  function getRandomGoodHabit() {
+    const ids=stages[stage].ids;return GAME_CONFIG.GOOD_HABITS[ids[(habitCursor++)%ids.length]];
+  }
+
+  // 動態向上生成平台、❓問號磚、金幣與壞習慣栗子怪
+  function generateWorldUpTo(targetY) {
+    while (highestGenY < targetY) {
+      const stepY = 2.2 + Math.random() * 0.75; // 確保一段跳絕對構得到
+      const py = highestGenY + stepY;
+
+      // 隨機決定這層是「草地平台」還是「瑪利歐磚塊組 (含❓問號磚)」
+      const isBrickGroup = Math.random() < 0.5;
+
+      if (isBrickGroup) {
+        const numBlocks = 3;
+        const px = 1 + Math.floor(Math.random() * (GAME_CONFIG.WORLD_COLS - numBlocks - 2));
+        const qIndex = Math.floor(Math.random() * numBlocks);
+        const blocks = [];
+        for (let b = 0; b < numBlocks; b++) {
+          blocks.push({
+            offset: b,
+            kind: b === qIndex ? "QUESTION" : "BRICK",
+            bump: 0,
+            habit: b === qIndex ? getRandomGoodHabit() : null
+          });
+        }
+        platforms.push({
+          x: px,
+          y: py,
+          w: numBlocks,
+          h: 0.75,
+          type: "BRICK_ROW",
+          blocks
+        });
+
+        // 在磚塊上方放一排金幣
+        for (let b = 0; b < numBlocks; b++) {
+          items.push({
+            x: px + b + 0.5,
+            y: py + 1.35,
+            type: "COIN",
+            vy: 0
+          });
+        }
+      } else {
+        // 草地長平台
+        const pw = 3.2 + Math.random() * 1.8;
+        const px = 0.4 + Math.random() * (GAME_CONFIG.WORLD_COLS - pw - 0.8);
+        platforms.push({
+          x: px,
+          y: py,
+          w: pw,
+          h: 0.65,
+          type: "GRASS"
+        });
+
+        // 55% 機率在草地平台上生成一隻「壞習慣栗子怪」
+        if (Math.random() < (difficulty==='easy'?.25:.45) && py > 6) {
+          const badInfo = GAME_CONFIG.BAD_HABITS[Math.floor(Math.random() * GAME_CONFIG.BAD_HABITS.length)];
+          enemies.push({
+            x: px + pw * 0.5,
+            y: py + 0.65,
+            w: 0.75,
+            h: 0.75,
+            minX: px + 0.1,
+            maxX: px + pw - 0.85,
+            vx: (Math.random() < 0.5 ? 1 : -1) * (difficulty==='easy'?.75:1.2),
+            info: badInfo,
+            squishTimer: 0
+          });
+        } else {
+          // 否則放置金幣或直接放置一顆好習慣星章
+          if (true) {
+            items.push({
+              x: px + pw * 0.5,
+              y: py + 1.25,
+              type: "HABIT_STAR",
+              habit: getRandomGoodHabit(),
+              vy: 0
+            });
+          } else {
+            items.push({ x: px + pw * 0.35, y: py + 1.15, type: "COIN", vy: 0 });
+            items.push({ x: px + pw * 0.65, y: py + 1.15, type: "COIN", vy: 0 });
+          }
+        }
+      }
+
+      // 補充背景雲朵
+      if (Math.random() < 0.6) {
+        clouds.push({
+          x: Math.random() * 8.5,
+          y: py + Math.random() * 2,
+          w: 1.8 + Math.random() * 1.5
+        });
+      }
+
+      highestGenY = py;
+    }
+
+    // 回收畫面底部以外的舊物件，保持低端機記憶體乾淨
+    const cullY = cameraY - 3;
+    platforms = platforms.filter(p => p.y > cullY);
+    items = items.filter(it => it.y > cullY);
+    enemies = enemies.filter(en => en.y > cullY);
+    clouds = clouds.filter(cl => cl.y > cullY - 2);
+  }
+
+  function showHabitBanner(icon, text) {
+    bannerIconEl.textContent = icon;
+    bannerTextEl.textContent = text;
+    bannerEl.classList.remove("hidden");
+    if (bannerTimeout) clearTimeout(bannerTimeout);
+    bannerTimeout = setTimeout(() => {
+      bannerEl.classList.add("hidden");
+    }, 3200);
+  }
+
+  function addFloatingText(x, y, text, color = "#ffbe0b") {
+    particles.push({ x, y, text, color, life: 1.0 });
+  }
+
+  function updateHUD() {
+    scoreEl.textContent = score;
+    heightEl.textContent = `${stageCollected.size} / 6`;
+    if (rainbowTimer > 0) {
+      starEl.textContent = "🌈無敵中!";
+    } else {
+      starEl.textContent = "⭐".repeat(habitStarsCount) + "☆".repeat(Math.max(0, 3 - habitStarsCount));
+    }
+    livesEl.textContent = "❤️".repeat(Math.max(0, lives));
+  }
+
+  // 觸發跳躍 (支援二段跳)
+  function triggerJump() {
+    if (state !== "PLAYING" || !player) return;
+    if (player.onGround) {
+      player.vy = GAME_CONFIG.JUMP_VELOCITY;
+      player.onGround = false;
+      player.jumpsLeft = 1;
+      sfx.jump();
+    } else if (player.jumpsLeft > 0) {
+      player.vy = GAME_CONFIG.DOUBLE_JUMP_VEL;
+      player.jumpsLeft--;
+      sfx.jump();
+      addFloatingText(player.x + player.w / 2, player.y, "二段跳!", "#ffffff");
+    }
+  }
+
+  // 主物理與邏輯更新
+  function update(dt) {
+    if (state !== "PLAYING") return;
+
+    if (rainbowTimer > 0) {
+      rainbowTimer = Math.max(0, rainbowTimer - dt);
+      if (rainbowTimer === 0) updateHUD();
+    }
+    if (invulnTimer > 0) invulnTimer = Math.max(0, invulnTimer - dt);
+
+    // 1. 玩家左右移動
+    let moveDir = 0;
+    if (input.left) moveDir -= 1;
+    if (input.right) moveDir += 1;
+
+    player.vx = moveDir * GAME_CONFIG.MOVE_SPEED;
+    if (moveDir !== 0) {
+      player.facing = moveDir;
+      player.walkCycle += dt * 14;
+    } else {
+      player.walkCycle = 0;
+    }
+
+    player.x += player.vx * dt;
+
+    // 左右邊界環繞或阻擋 (這裡採用防掉出邊界阻擋)
+    if (player.x < 0.1) player.x = 0.1;
+    if (player.x + player.w > GAME_CONFIG.WORLD_COLS - 0.1) {
+      player.x = GAME_CONFIG.WORLD_COLS - 0.1 - player.w;
+    }
+
+    // 2. 玩家垂直重力與平台碰撞
+    const prevY = player.y;
+    const prevTop = player.y + player.h;
+    player.vy += GAME_CONFIG.GRAVITY * dt;
+    player.y += player.vy * dt;
+    player.onGround = false;
+
+    for (const plat of platforms) {
+      // 更新磚塊被頂起的回彈動畫
+      if (plat.blocks) {
+        for (const b of plat.blocks) {
+          if (b.bump > 0) b.bump = Math.max(0, b.bump - dt * 3.5);
+        }
+      }
+
+      const horizOverlap = (player.x + player.w > plat.x + 0.08) && (player.x < plat.x + plat.w - 0.08);
+      if (!horizOverlap) continue;
+
+      const platTop = plat.y + plat.h;
+
+      // A. 下落時踩在平台頂部
+      if (player.vy <= 0 && prevY >= platTop - 0.18 && player.y <= platTop) {
+        player.y = platTop;
+        player.vy = 0;
+        player.onGround = true;
+        player.jumpsLeft = 2;
+      }
+      // B. 向上跳躍時，頭頂撞擊「磚塊組 / ❓問號磚」底部 (經典 Mario 頂磚機制！)
+      else if (plat.type === "BRICK_ROW" && player.vy > 0 && prevTop <= plat.y + 0.18 && (player.y + player.h) >= plat.y) {
+        player.y = plat.y - player.h;
+        player.vy = -1.5; // 頂磚後向下微彈
+        handleHeadBumpBrick(plat, player.x + player.w * 0.5);
+      }
+    }
+
+    // 3. 更新攀爬高度與縱向相機
+    const curHeight = Math.max(0, Math.floor(player.y * 2));
+    if (curHeight > maxHeight) {
+      score += (curHeight - maxHeight) * 2;
+      maxHeight = curHeight;
+      updateHUD();
+    }
+
+    const visibleUnitsY = viewH / unit;
+    const targetCamY = player.y - visibleUnitsY * 0.36;
+    if (targetCamY > cameraY) {
+      cameraY += (targetCamY - cameraY) * Math.min(1, dt * 8);
+    }
+
+    generateWorldUpTo(cameraY + visibleUnitsY + 8);
+
+    // 若玩家跌落相機底部，觸發安全網彈回並扣 1 顆心
+    if (player.y < cameraY - 0.8) {
+      handlePlayerHurt("小心腳下！安全彈床幫你彈上去！");
+      player.y = cameraY + 1.5;
+      player.vy = GAME_CONFIG.JUMP_VELOCITY * 1.15;
+    }
+
+    // 4. 更新金幣與頂出的好習慣星章
+    for (let i = items.length - 1; i >= 0; i--) {
+      const it = items[i];
+      if (it.vy && it.vy > 0) {
+        it.y += it.vy * dt;
+        it.vy = Math.max(0, it.vy - 12 * dt);
+      }
+
+      const dist = Math.hypot((player.x + player.w * 0.5) - it.x, (player.y + player.h * 0.5) - it.y);
+      if (dist < 0.78) {
+        if (it.type === "COIN") {
+          score += 20;
+          sfx.coin();
+          addFloatingText(it.x, it.y, "+20", "#ffbe0b");
+        } else if (it.type === "HABIT_STAR") {
+          collectGoodHabit(it.habit, it.x, it.y);
+        }
+        items.splice(i, 1);
+        updateHUD();
+        if(state!=="PLAYING")break;
+      }
+    }
+
+    if(state!=="PLAYING")return;
+    // 5. 更新壞習慣栗子怪 AI 與「從上方踩扁」判定
+    for (let i = enemies.length - 1; i >= 0; i--) {
+      const en = enemies[i];
+      if (en.squishTimer > 0) {
+        en.squishTimer -= dt;
+        if (en.squishTimer <= 0) enemies.splice(i, 1);
+        continue;
+      }
+
+      en.x += en.vx * dt;
+      if (en.x <= en.minX) {
+        en.x = en.minX;
+        en.vx = Math.abs(en.vx);
+      } else if (en.x >= en.maxX) {
+        en.x = en.maxX;
+        en.vx = -Math.abs(en.vx);
+      }
+
+      // 碰撞檢測
+      const overlapX = (player.x + player.w > en.x + 0.08) && (player.x < en.x + en.w - 0.08);
+      const overlapY = (player.y + player.h > en.y + 0.05) && (player.y < en.y + en.h - 0.05);
+
+      if (overlapX && overlapY) {
+        // 判定是否為「從上方踩下」或處於「🌈彩虹無敵狀態」
+        const isStomping = player.vy < 0 && (prevY >= en.y + en.h * 0.45);
+
+        if (isStomping || rainbowTimer > 0) {
+          en.squishTimer = 0.35; // 壓扁動畫
+          player.vy = GAME_CONFIG.BOUNCE_VELOCITY; // 踩怪後向上彈跳！
+          player.jumpsLeft = 2;
+          score += 150;
+          sfx.stompEnemy();
+          lesson(en.info, "bad");
+          addFloatingText(en.x + 0.4, en.y + 0.8, `踩扁 ${en.info.name} +150!`, "#4cc9f0");
+          updateHUD();
+        } else if (invulnTimer <= 0) {
+          handlePlayerHurt(`碰到${en.info.name}啦！`); if(state!=="GAMEOVER")lesson(en.info,"bad");
+        }
+      }
+    }
+
+    if(state!=="PLAYING")return;
+    // 6. 更新浮動文字
+    for (let i = particles.length - 1; i >= 0; i--) {
+      particles[i].y += dt * 1.4;
+      particles[i].life -= dt * 0.95;
+      if (particles[i].life <= 0) particles.splice(i, 1);
+    }
+  }
+
+  // 處理瑪利歐頭頂撞擊磚塊
+  function handleHeadBumpBrick(plat, hitCenterX) {
+    let closestBlock = plat.blocks[0];
+    let minDist = 999;
+
+    for (const b of plat.blocks) {
+      const bx = plat.x + b.offset + 0.5;
+      const d = Math.abs(hitCenterX - bx);
+      if (d < minDist) {
+        minDist = d;
+        closestBlock = b;
+      }
+    }
+
+    closestBlock.bump = 0.35; // 觸發磚塊向上彈跳視覺效果
+    sfx.bumpBlock();
+
+    const spawnX = plat.x + closestBlock.offset + 0.5;
+    const spawnY = plat.y + plat.h + 0.4;
+
+    if (closestBlock.kind === "QUESTION") {
+      closestBlock.kind = "EMPTY"; // 問號磚頂過後變成鐵灰磚
+      // 立即彈出好習慣星章並自動讓玩家獲得正面回饋
+      collectGoodHabit(closestBlock.habit,spawnX,spawnY);
+      addFloatingText(spawnX, spawnY + 0.4, `頂出好習慣！`, "#fff3b0");
+    } else if (closestBlock.kind === "BRICK") {
+      score += 10;
+      updateHUD();
+    }
+  }
+
+  function collectGoodHabit(habit,x,y){
+    if(stageCollected.has(habit.name)){
+      const missing=stages[stage].ids.map(i=>GAME_CONFIG.GOOD_HABITS[i]).filter(h=>!stageCollected.has(h.name));
+      if(missing.length)habit=missing[0];
+    }
+    score+=100;stageCollected.add(habit.name);album.add(habit.name);
+    try{localStorage.setItem('stm-habit-album-v2',JSON.stringify([...album]));}catch(e){}
+    habitStarsCount++;sfx.eatGoodHabit();
+    if(habitStarsCount>=3){habitStarsCount=0;rainbowTimer=GAME_CONFIG.STAR_POWER_DURATION;}
+    const remaining=stages[stage].ids.map(i=>GAME_CONFIG.GOOD_HABITS[i]).filter(h=>!stageCollected.has(h.name));let ri=0;
+    if(remaining.length){for(const p of platforms)for(const b of p.blocks||[])if(b.kind==='QUESTION'&&stageCollected.has(b.habit.name))b.habit=remaining[ri++%remaining.length];for(const it of items)if(it.type==='HABIT_STAR'&&stageCollected.has(it.habit.name))it.habit=remaining[ri++%remaining.length];}
+    addFloatingText(x,y+.5,'+100 '+habit.name,'#fff7cb');updateHUD();lesson(habit);
+  }
+
+  function handlePlayerHurt(msg) {
+    if(invulnTimer>0)return;
+    lives--;
+    sfx.hurt();
+    invulnTimer = 2.0;
+    showHabitBanner("⚠️", msg);
+    updateHUD();
+
+    if (lives <= 0) {
+      state = "GAMEOVER"; guide.say("休息一下，再試一次，你一定可以嘅！");
+      modalTitleEl.textContent = "冒險完成！";
+      modalDescEl.innerHTML = `
+        你成功向上攀爬了 <strong>${maxHeight}m</strong><br>
+        總共獲得 <strong>${score} 分</strong>！<br>已學習 ${album.size} 個好習慣，星章已記入圖鑑。<br>
+        再由第一站出發，一步一步試啦！
+      `;
+      btnStart.textContent = "再玩一次 🔄";
+      overlayEl.classList.remove("hidden");
+    }
+  }
+
+  // ==========================================
+  // 2.5D / 3D 立體投影繪圖引擎
+  // ==========================================
+  function worldToScreen(wx, wy) {
+    return {
+      x: wx * unit,
+      y: viewH - (wy - cameraY) * unit
+    };
+  }
+
+  // 繪製 3D 立體方塊 (含頂面厚度、正面光影與立體邊框)
+  function draw3DBox(sx, sy, w, h, topColor, frontColor, borderColor = null) {
+    // 1. 底部陰影
+    ctx.fillStyle = "rgba(0, 0, 0, 0.22)";
+    ctx.fillRect(sx + 3, sy + 5, w, h);
+
+    // 2. 3D 頂面厚度 (向上與向後延伸)
+    ctx.fillStyle = topColor;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx + depth3D * 0.45, sy - depth3D);
+    ctx.lineTo(sx + w + depth3D * 0.45, sy - depth3D);
+    ctx.lineTo(sx + w, sy);
+    ctx.closePath();
+    ctx.fill();
+
+    // 3. 3D 右側面厚度
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.beginPath();
+    ctx.moveTo(sx + w, sy);
+    ctx.lineTo(sx + w + depth3D * 0.45, sy - depth3D);
+    ctx.lineTo(sx + w + depth3D * 0.45, sy + h - depth3D);
+    ctx.lineTo(sx + w, sy + h);
+    ctx.closePath();
+    ctx.fill();
+
+    // 4. 正面主體
+    ctx.fillStyle = frontColor;
+    ctx.fillRect(sx, sy, w, h);
+
+    if (borderColor) {
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sx + 1, sy + 1, w - 2, h - 2);
+    }
+  }
+
+  // 繪製平台與 ❓ 問號磚塊
+  function drawPlatform(plat) {
+    const pos = worldToScreen(plat.x, plat.y + plat.h);
+    const w = plat.w * unit;
+    const h = plat.h * unit;
+
+    if (plat.type === "GROUND" || plat.type === "GRASS") {
+      // 3D 草地泥土平台 (翠綠頂面 + 格紋泥土正面)
+      draw3DBox(pos.x, pos.y, w, h, "#bce3aa", "#d2a583", "#8fbd90");
+      // 草地邊緣鋸齒裝飾
+      ctx.fillStyle = "#91c49c";
+      ctx.fillRect(pos.x, pos.y, w, h * 0.28);
+    } else if (plat.type === "BRICK_ROW") {
+      // 逐顆繪製瑪利歐磚塊與 ❓ 問號磚
+      for (const b of plat.blocks) {
+        const bx = pos.x + b.offset * unit;
+        const by = pos.y - b.bump * unit;
+        const bw = unit;
+
+        if (b.kind === "QUESTION") {
+          draw3DBox(bx, by, bw, h, "#fff1ad", "#f2c976", "#fff9dc");
+          // 繪製閃爍問號
+          ctx.fillStyle = "#a77a43";
+          ctx.font = `900 ${Math.floor(unit * 0.55)}px sans-serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(b.habit?.icon||"★", bx + bw * 0.5, by + h * 0.52);
+          ctx.font=`700 ${Math.max(11,unit*.25)}px sans-serif`;ctx.textBaseline='bottom';ctx.strokeStyle='#fffdf3';ctx.lineWidth=4;ctx.strokeText(b.habit.name,bx+bw*.5,by-depth3D-4);ctx.fillStyle='#5c7e69';ctx.fillText(b.habit.name,bx+bw*.5,by-depth3D-4);
+        } else if (b.kind === "BRICK") {
+          draw3DBox(bx, by, bw, h, "#f6cdb6", "#e2af95", "#cc977b");
+          // 磚縫線條
+          ctx.fillStyle = "#c69780";
+          ctx.fillRect(bx + 2, by + h * 0.48, bw - 4, 2);
+        } else {
+          // 頂過後的鐵灰色空磚
+          draw3DBox(bx, by, bw, h, "#adb5bd", "#6c757d", "#495057");
+        }
+      }
+    }
+  }
+
+  // 繪製壞習慣栗子怪 (Goomba 風格立體小怪獸)
+  function drawEnemy(en){
+    const pos=worldToScreen(en.x+en.w/2,en.y);const w=en.w*unit;ctx.save();ctx.translate(pos.x,pos.y);
+    const squash=en.squishTimer>0?.35:1;ctx.scale(1,squash);const bob=Math.sin(performance.now()*.004+en.x)*2;
+    ctx.fillStyle=en.info.colorSide;ctx.beginPath();ctx.ellipse(0,-w*.13,w*.47,w*.18,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=en.info.colorTop;ctx.beginPath();ctx.roundRect(-w*.5,-w*.95+bob,w,w*.86,w*.39);ctx.fill();
+    ctx.fillStyle='#fff8';ctx.beginPath();ctx.ellipse(-w*.2,-w*.78+bob,w*.12,w*.065,-.4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#455868';for(const x of [-.19,.19]){ctx.beginPath();ctx.ellipse(x*w,-w*.49+bob,w*.052,w*.075,0,0,Math.PI*2);ctx.fill();}
+    ctx.strokeStyle='#7d677d';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,-w*.21+bob,w*.095,Math.PI,2*Math.PI);ctx.stroke();
+    ctx.restore();if(!en.squishTimer){ctx.font=`700 ${Math.max(11,unit*.25)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='bottom';ctx.lineWidth=4;ctx.strokeStyle='#fffaf1';ctx.strokeText(en.info.name,pos.x,pos.y-w-7);ctx.fillStyle='#5d6873';ctx.fillText(en.info.name,pos.x,pos.y-w-7);}
+  }
+
+  // 繪製戴紅帽的孖寶小達人主角
+  function drawPlayer(p){
+    if(invulnTimer>0&&Math.floor(invulnTimer*10)%2===0)return;
+    const pos=worldToScreen(p.x+p.w/2,p.y);const u=unit;
+    ctx.save();ctx.translate(pos.x,pos.y);ctx.scale(p.facing,1);
+    const circle=(x,y,r,c)=>{ctx.fillStyle=c;ctx.beginPath();ctx.arc(x*u,y*u,r*u,0,Math.PI*2);ctx.fill();};
+    if(rainbowTimer>0){ctx.strokeStyle=`hsl(${performance.now()*.2%360} 70% 70%)`;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-.51*u,.66*u,0,Math.PI*2);ctx.stroke();}
+    ctx.fillStyle='#315d6030';ctx.beginPath();ctx.ellipse(0,3,.37*u,.075*u,0,0,Math.PI*2);ctx.fill();
+    const walk=Math.sin(p.walkCycle)*.055;
+    circle(-.18,-.06+walk,.14,'#567575');circle(.18,-.06-walk,.14,'#567575');
+    ctx.fillStyle='#78c1b2';ctx.beginPath();ctx.roundRect(-.28*u,-.55*u,.56*u,.45*u,.16*u);ctx.fill();
+    circle(-.31,-.34+walk,.095,'#f6cdb6');circle(.31,-.34-walk,.095,'#f6cdb6');
+    circle(-.32,-.70,.08,'#eab79d');circle(.32,-.70,.08,'#eab79d');circle(0,-.70,.36,'#f9d8bf');
+    ctx.fillStyle='#69514a';ctx.beginPath();ctx.arc(0,-.80*u,.36*u,Math.PI,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#69514a';ctx.beginPath();ctx.moveTo(-.34*u,-.83*u);ctx.lineTo(-.25*u,-.68*u);ctx.lineTo(-.13*u,-.86*u);ctx.lineTo(.02*u,-.74*u);ctx.lineTo(.17*u,-.9*u);ctx.fill();
+    ctx.fillStyle='#72bca9';ctx.beginPath();ctx.arc(0,-.87*u,.36*u,Math.PI,2*Math.PI);ctx.fill();
+    ctx.fillStyle='#e7f0c9';ctx.beginPath();ctx.roundRect(-.37*u,-.92*u,.77*u,.1*u,.04*u);ctx.fill();
+    circle(-.13,-.71,.054,'#304e50');circle(.14,-.71,.054,'#304e50');circle(-.145,-.73,.018,'white');circle(.125,-.73,.018,'white');
+    circle(-.24,-.61,.055,'#e9aaa5');circle(.24,-.61,.055,'#e9aaa5');
+    ctx.strokeStyle='#a76d66';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(.02*u,-.64*u,.07*u,0,Math.PI);ctx.stroke();
+    ctx.fillStyle='#fff1a0';ctx.font=`${u*.22}px sans-serif`;ctx.textAlign='center';ctx.fillText('★',0,-.27*u);ctx.restore();
+  }
+
+  // 主畫面渲染
+  function render() {
+    // 1. 陽光藍天漸層背景
+    const grad = ctx.createLinearGradient(0, 0, 0, viewH);
+    grad.addColorStop(0, ["#b5dedc","#c7c5e8","#f1ddbc","#b8d9ee"][stage]);
+    grad.addColorStop(1, "#edf3cf");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, viewW, viewH);
+
+    // Soft parallax hills and a cheerful sun.
+    ctx.fillStyle='#fff1b0';ctx.beginPath();ctx.arc(viewW*.84,55,28,0,Math.PI*2);ctx.fill();
+    for(let i=0;i<4;i++){ctx.fillStyle=['#afd9bf','#c3dfba','#b5d7bb','#d0e4bb'][i];ctx.beginPath();ctx.ellipse(viewW*(i*.38-.1),viewH+50-(cameraY*unit*.12)%60,viewW*.48,viewH*.30,0,Math.PI,0);ctx.fill();}
+    // 2. 繪製背景立體白雲
+    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+    for (const cl of clouds) {
+      const pos = worldToScreen(cl.x, cl.y);
+      ctx.beginPath();
+      ctx.roundRect(pos.x, pos.y, cl.w * unit, unit * 0.7, 16);
+      ctx.fill();
+    }
+
+    // 3. 繪製所有 3D 平台與 ❓ 問號磚
+    for (const plat of platforms) {
+      drawPlatform(plat);
+    }
+
+    // 4. 繪製金幣與好習慣星章
+    const t = performance.now() * 0.004;
+    for (const it of items) {
+      const pos = worldToScreen(it.x, it.y);
+      if (it.type === "COIN") {
+        const scaleX = Math.abs(Math.cos(t));
+        ctx.fillStyle = "#ffbe0b";
+        ctx.strokeStyle = "#fb5607";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(pos.x, pos.y, unit * 0.24 * Math.max(0.25, scaleX), unit * 0.28, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      } else if (it.type === "HABIT_STAR") {
+        const floatY = Math.sin(t * 1.2) * 4;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y + floatY, unit * 0.42, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = `${Math.floor(unit * 0.56)}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(it.habit.icon, pos.x, pos.y + floatY);
+        ctx.font=`bold ${Math.max(11,unit*.26)}px sans-serif`;ctx.textBaseline='bottom';ctx.lineWidth=4;ctx.strokeStyle='#fffdf6';ctx.strokeText(it.habit.name,pos.x,pos.y-unit*.5+floatY);ctx.fillStyle='#456e65';ctx.fillText(it.habit.name,pos.x,pos.y-unit*.5+floatY);
+      }
+    }
+
+    // 5. 繪製壞習慣栗子怪
+    for (const en of enemies) {
+      drawEnemy(en);
+    }
+
+    // 6. 繪製孖寶主角
+    if (player) drawPlayer(player);
+
+    // 7. 繪製浮動文字
+    for (const pt of particles) {
+      const pos = worldToScreen(pt.x, pt.y);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, pt.life);
+      ctx.font = "900 15px sans-serif";
+      ctx.textAlign = "center";
+      ctx.strokeStyle = "#1a1c2c";
+      ctx.lineWidth = 4;
+      ctx.strokeText(pt.text, pos.x, pos.y);
+      ctx.fillStyle = pt.color;
+      ctx.fillText(pt.text, pos.x, pos.y);
+      ctx.restore();
+    }
+  }
+
+  // ==========================================
+  // 操控綁定：鍵盤 + 街機按鍵 + 虛擬搖桿
+  // ==========================================
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowLeft","ArrowRight","ArrowUp"," "].includes(e.key))e.preventDefault();
+    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") input.left = true;
+    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") input.right = true;
+    if (e.key === "ArrowUp" || e.key === "w" || e.key === "W" || e.key === " ") {
+      if (!e.repeat) triggerJump();
+      e.preventDefault();
+    }
+  });
+
+  window.addEventListener("keyup", (e) => {
+    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") input.left = false;
+    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") input.right = false;
+  });
+
+  // 左右街機按鈕
+  const btnLeft = document.getElementById("btn-left");
+  const btnRight = document.getElementById("btn-right");
+  const btnJump = document.getElementById("btn-jump");
+
+  function bindHoldButton(btn, keyName) {
+    btn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      btn.setPointerCapture(e.pointerId);
+      input[keyName] = true;
+      btn.classList.add("active");
+    });
+    const release = () => {
+      input[keyName] = false;
+      btn.classList.remove("active");
+    };
+    btn.addEventListener("pointerup", release);
+    btn.addEventListener("lostpointercapture", release);
+    btn.addEventListener("pointercancel", release);
+  }
+  bindHoldButton(btnLeft, "left");
+  bindHoldButton(btnRight, "right");
+
+  btnJump.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    btnJump.classList.add("active");
+    triggerJump();
+  });
+  const releaseJump = () => btnJump.classList.remove("active");
+  btnJump.addEventListener("pointerup", releaseJump);
+  btnJump.addEventListener("pointerleave", releaseJump);
+  btnJump.addEventListener("pointercancel", releaseJump);
+
+  // 虛擬搖桿控制
+  const joyBase = document.getElementById("joystick-base");
+  const joyStick = document.getElementById("joystick-stick");
+  let joyActive = false;
+
+  function handleJoystick(clientX, clientY) {
+    const rect = joyBase.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    let dx = clientX - cx;
+    let dy = clientY - cy;
+    const dist = Math.hypot(dx, dy);
+    const maxR = rect.width * 0.35;
+
+    if (dist > maxR) {
+      dx = (dx / dist) * maxR;
+      dy = (dy / dist) * maxR;
+    }
+    joyStick.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+
+    input.left = dx < -10;
+    input.right = dx > 10;
+  }
+
+  function resetJoystick() {
+    joyActive = false;
+    input.left = false;
+    input.right = false;
+    joyStick.style.transform = "translate(-50%, -50%)";
+  }
+
+  joyBase.addEventListener("pointerdown", (e) => {
+    joyActive = true;
+    joyBase.setPointerCapture(e.pointerId);
+    handleJoystick(e.clientX, e.clientY);
+  });
+  joyBase.addEventListener("pointermove", (e) => {
+    if (joyActive) handleJoystick(e.clientX, e.clientY);
+  });
+  joyBase.addEventListener("pointerup", resetJoystick);
+  joyBase.addEventListener("pointercancel", resetJoystick);
+
+  // 切換面板與靜音
+  const btnToggleCtrl = document.getElementById("btn-toggle-ctrl");
+  const dpadZone = document.getElementById("dpad-zone");
+  const joyZone = document.getElementById("joystick-zone");
+  btnToggleCtrl.addEventListener("click", () => {
+    dpadZone.classList.toggle("hidden");
+    joyZone.classList.toggle("hidden");
+  });
+
+  const btnMute = document.getElementById("btn-mute");
+  btnMute.addEventListener("click", () => {
+    sfx.muted = !sfx.muted;
+    btnMute.textContent = sfx.muted ? "♪ 音效關" : "♪ 音效開";
+  });
+
+  btnStart.addEventListener("click", ()=>initGame(false));
+
+  // 啟動 60FPS 遊戲主循環
+  let lastTime = performance.now();
+  function loop(now) {
+    const dt = Math.min((now - lastTime) / 1000, 0.033);
+    lastTime = now;
+    update(dt);
+    render();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();</script></body></html>
