@@ -2,7 +2,11 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="好習慣大冒險">
     <title>好習慣小達人：3D 橫向卷軸大冒險 (Q版大頭公仔+暫停版)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -431,6 +435,26 @@
             #rotate-notice .rotate-icon { font-size: 64px; }
             #rotate-notice small { font-size: 15px; font-weight: normal; }
         }
+
+        /* 防止快速連按被瀏覽器當作雙擊放大；禁止頁面跟隨手指移動。 */
+        html { overflow: hidden; touch-action: none; overscroll-behavior: none; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        body { position: fixed; inset: 0; width: 100%; overscroll-behavior: none; }
+        #controls, #controls *, #game-canvas, #game-canvas canvas {
+            touch-action: none; -webkit-touch-callout: none;
+        }
+        .top-btn, .btn-primary, .btn-secondary, .btn-home-modal, .char-card, .speed-pill, .habit-badge {
+            touch-action: manipulation;
+        }
+        :root:fullscreen, :root:-webkit-full-screen { width: 100%; height: 100%; background: #87CEEB; }
+        #fullscreen-help {
+            display: none; position: fixed; z-index: 110; top: max(80px, env(safe-area-inset-top));
+            left: 50%; transform: translateX(-50%); width: min(92vw, 460px);
+            padding: 12px 16px; border: 3px solid #FF9F43; border-radius: 16px;
+            background: #FFFDF9; color: #34495E; font-size: 14px; line-height: 1.6;
+            box-shadow: 0 8px 25px rgba(0,0,0,.25); text-align: center; touch-action: pan-y;
+        }
+        .fullscreen-btn { background: linear-gradient(135deg, #16A085, #117864); }
+        @media (pointer: fine) { .fullscreen-btn { display: none; } }
     </style>
 </head>
 <body>
@@ -440,6 +464,10 @@
         <small>如畫面未能轉向，請先關閉手機的直向鎖定。<br>轉回直向時，遊戲會暫停等候。</small>
     </div>
 
+    <div id="fullscreen-help" role="status">
+        <div>這個瀏覽器未能進入全螢幕。<br>iPhone／iPad：請用 Safari 開啟遊戲網址，按「分享」→「加入主畫面」，然後從主畫面開啟。<br>如有「以網頁 App 開啟」選項，請開啟它。</div>
+        <button class="btn-secondary" onclick="document.getElementById('fullscreen-help').style.display='none'">知道了</button>
+    </div>
     <!-- 頂部 HUD -->
     <div id="hud">
         <div class="hud-card">
@@ -455,6 +483,7 @@
 
         <div class="hud-card" style="align-items: flex-end;">
             <div class="hud-row">
+                <button class="top-btn fullscreen-btn" onclick="enterGameFullscreen(true)" title="隱藏瀏覽器工具列">⛶ 全螢幕</button>
                 <button class="top-btn pause-btn" id="btn-pause" onclick="togglePause()" title="暫停遊戲 (P)">⏸️ 暫停</button>
                 <button class="top-btn home-btn" onclick="goHome()" title="返回主頁">🏠 主頁</button>
                 <button class="top-btn voice-btn" id="btn-voice" onclick="toggleVoice()">🔊 粵語: 開</button>
@@ -765,6 +794,9 @@ function initThreeJS() {
         renderer.setSize(width, height);
     }
     window.addEventListener('resize', resizeGameViewport);
+    document.addEventListener('fullscreenchange', resizeGameViewport);
+    document.addEventListener('webkitfullscreenchange', resizeGameViewport);
+    window.addEventListener('orientationchange', () => requestAnimationFrame(resizeGameViewport));
     if (window.visualViewport) window.visualViewport.addEventListener('resize', resizeGameViewport);
     if (window.ResizeObserver) new ResizeObserver(resizeGameViewport).observe(container);
     resizeGameViewport();
@@ -1321,8 +1353,36 @@ function setupInputs() {
         }
     });
 
-    document.getElementById('btn-jump').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); doJump(); });
-    document.getElementById('btn-slide').addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); doSlide(); });
+    function bindGameButton(id, action) {
+        const button = document.getElementById(id);
+        const hasTouchEvents = 'ontouchstart' in window;
+        // 使用非 passive 觸控事件，從 touchstart 到 touchend 都取消瀏覽器預設手勢。
+        // 同一手指會同時產生 pointer 和 touch 事件，只處理其中一組，保留二段跳。
+        if (hasTouchEvents) {
+            button.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                action();
+            }, { passive: false });
+            for (const type of ['touchmove', 'touchend', 'touchcancel']) {
+                button.addEventListener(type, (event) => {
+                    if (event.cancelable) event.preventDefault();
+                    event.stopPropagation();
+                }, { passive: false });
+            }
+        }
+        button.addEventListener('pointerdown', (event) => {
+            if (hasTouchEvents && event.pointerType === 'touch') return;
+            if (event.pointerType === 'mouse' && event.button !== 0) return;
+            event.preventDefault();
+            event.stopPropagation();
+            action();
+        });
+        button.addEventListener('dblclick', (event) => event.preventDefault());
+        button.addEventListener('contextmenu', (event) => event.preventDefault());
+    }
+    bindGameButton('btn-jump', doJump);
+    bindGameButton('btn-slide', doSlide);
 }
 
 /**
@@ -1573,6 +1633,7 @@ function togglePause() {
 
 function resumeGame() {
     if (!isPlaying) return;
+    if (window.matchMedia('(any-pointer: coarse)').matches) void enterGameFullscreen();
     isPaused = false;
     document.getElementById('btn-pause').innerText = "⏸️ 暫停";
     document.getElementById('pause-modal').style.display = 'none';
@@ -1630,7 +1691,45 @@ function updateHUD() {
     document.getElementById('combo-text').innerText = `${combo} Combo`;
 }
 
+function installMobileGestureGuards() {
+    for (const type of ['gesturestart', 'gesturechange', 'gestureend']) {
+        document.addEventListener(type, (event) => {
+            if (event.cancelable) event.preventDefault();
+        }, { passive: false });
+    }
+    document.addEventListener('touchmove', (event) => {
+        // 圖鑑及選單仍可用一隻手指滑動閱讀。
+        const scrollPanel = event.target.closest && event.target.closest('.modal-box, #fullscreen-help');
+        if ((!scrollPanel || event.touches.length > 1) && event.cancelable) event.preventDefault();
+    }, { passive: false });
+}
+installMobileGestureGuards();
+
+async function enterGameFullscreen(showHelp = false) {
+    const root = document.documentElement;
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (standalone || document.fullscreenElement || document.webkitFullscreenElement) return;
+    const showFallback = () => {
+        if (!showHelp) return;
+        if (isPlaying && !isPaused) togglePause();
+        document.getElementById('fullscreen-help').style.display = 'block';
+    };
+    try {
+        if (root.requestFullscreen) {
+            await root.requestFullscreen({ navigationUI: 'hide' });
+        } else if (root.webkitRequestFullscreen) {
+            await root.webkitRequestFullscreen();
+        } else {
+            showFallback();
+        }
+    } catch (error) {
+        // 瀏覽器不支援或拒絕時，不影響遊戲開始；使用者仍可選擇加入主畫面。
+        showFallback();
+    }
+}
+
 function startGame() {
+    if (window.matchMedia('(any-pointer: coarse)').matches) void enterGameFullscreen();
     sfx.init();
     activeItems.forEach(item => scene.remove(item));
     activeItems = [];
