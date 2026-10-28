@@ -455,6 +455,17 @@
         }
         .fullscreen-btn { background: linear-gradient(135deg, #16A085, #117864); }
         @media (pointer: fine) { .fullscreen-btn { display: none; } }
+
+        /* Safari：原生按鈕 + manipulation 明確排除「雙擊放大」。
+           子元素不接收觸控，兩次點擊都命中同一個原生按鈕。 */
+        #controls { position: fixed; touch-action: manipulation; }
+        #controls .ctrl-btn {
+            appearance: none; -webkit-appearance: none;
+            touch-action: manipulation; font-family: inherit;
+            padding: 0; margin: 0; line-height: normal;
+            -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+        }
+        #controls .ctrl-btn * { pointer-events: none; touch-action: manipulation; }
     </style>
 </head>
 <body>
@@ -505,14 +516,14 @@
 
     <!-- 手機與桌面觸控按鈕 -->
     <div id="controls">
-        <div class="ctrl-btn" id="btn-slide">
+        <button type="button" class="ctrl-btn" id="btn-slide">
             <span>⬇️ 蹲下</span>
             <span class="ctrl-sub">躲避空中烏雲</span>
-        </div>
-        <div class="ctrl-btn" id="btn-jump">
+        </button>
+        <button type="button" class="ctrl-btn" id="btn-jump">
             <span>⬆️ 跳躍</span>
             <span class="ctrl-sub">可連跳兩次!</span>
-        </div>
+        </button>
     </div>
 
     <!-- 開始主頁 Modal (HOME) -->
@@ -1692,16 +1703,28 @@ function updateHUD() {
 }
 
 function installMobileGestureGuards() {
+    const captureTouch = { capture: true, passive: false };
+    const gameSurface = (target) => target && target.closest && target.closest('#controls, #game-canvas');
+    // 在捕獲階段攔截：不依賴按鈕事件能否冒泡，也不阻斷遊戲的 touchstart。
+    // 尤其 touchend 必須取消，避免 Safari 在第二次放手後啟動智慧縮放。
+    for (const type of ['touchstart', 'touchend', 'touchcancel']) {
+        document.addEventListener(type, (event) => {
+            if (gameSurface(event.target) && event.cancelable) event.preventDefault();
+        }, captureTouch);
+    }
+    document.addEventListener('dblclick', (event) => {
+        if (gameSurface(event.target) && event.cancelable) event.preventDefault();
+    }, captureTouch);
     for (const type of ['gesturestart', 'gesturechange', 'gestureend']) {
         document.addEventListener(type, (event) => {
             if (event.cancelable) event.preventDefault();
-        }, { passive: false });
+        }, captureTouch);
     }
     document.addEventListener('touchmove', (event) => {
         // 圖鑑及選單仍可用一隻手指滑動閱讀。
         const scrollPanel = event.target.closest && event.target.closest('.modal-box, #fullscreen-help');
         if ((!scrollPanel || event.touches.length > 1) && event.cancelable) event.preventDefault();
-    }, { passive: false });
+    }, captureTouch);
 }
 installMobileGestureGuards();
 
